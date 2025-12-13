@@ -5,8 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gaussian Splats Viewer</title>
     <link rel="stylesheet" crossorigin href="./assets/main-CEbNBvh5.css" />
+    <style>
+      /* Password Protection Styles */
+      .password-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .password-overlay.hidden {
+        display: none;
+      }
+
+      .password-modal {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: slideUp 0.4s ease;
+      }
+
+      .password-modal h2 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+        color: #333;
+      }
+
+      .password-modal p {
+        margin: 0 0 30px 0;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .password-input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+        outline: none;
+      }
+
+      .password-input:focus {
+        border-color: #4caf50;
+      }
+
+      .password-input.error {
+        border-color: #f44336;
+        animation: shake 0.5s ease;
+      }
+
+      .password-button {
+        width: 100%;
+        padding: 15px 20px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .password-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .password-button:active {
+        transform: translateY(0);
+      }
+
+      .error-message {
+        color: #f44336;
+        font-size: 14px;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .error-message.show {
+        opacity: 1;
+      }
+
+      .content-blur {
+        filter: blur(8px);
+        pointer-events: none;
+        user-select: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- Password Protection Overlay -->
+    <div id="passwordOverlay" class="password-overlay">
+      <div class="password-modal">
+        <h2>🔒 Protected Access</h2>
+        <p>Please enter the password to continue</p>
+        <input
+          type="password"
+          id="passwordInput"
+          class="password-input"
+          placeholder="Enter password"
+          autocomplete="off"
+        />
+        <button id="passwordButton" class="password-button">Unlock</button>
+        <div id="errorMessage" class="error-message">
+          Incorrect password. Try again.
+        </div>
+      </div>
+    </div>
+
     <!-- SVG Definitions -->
     <svg style="display: none">
       <defs>
@@ -22,9 +178,65 @@
       </defs>
     </svg>
 
-    <div id="container"></div>
+    <div id="container" class="content-blur"></div>
 
     <script>
+      // Password Protection
+      const CORRECT_PASSWORD = "seragakakaha";
+      const passwordOverlay = document.getElementById("passwordOverlay");
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordButton = document.getElementById("passwordButton");
+      const errorMessage = document.getElementById("errorMessage");
+      const container = document.getElementById("container");
+
+      // Check if password was already entered in this session
+      const isAuthenticated =
+        sessionStorage.getItem("authenticated") === "true";
+      if (isAuthenticated) {
+        unlockPage();
+      }
+
+      // Focus on input when page loads
+      passwordInput.focus();
+
+      function checkPassword() {
+        const enteredPassword = passwordInput.value;
+
+        if (enteredPassword === CORRECT_PASSWORD) {
+          sessionStorage.setItem("authenticated", "true");
+          unlockPage();
+        } else {
+          // Show error
+          passwordInput.classList.add("error");
+          errorMessage.classList.add("show");
+
+          // Clear error after animation
+          setTimeout(() => {
+            passwordInput.classList.remove("error");
+            errorMessage.classList.remove("show");
+          }, 2000);
+
+          // Clear input
+          passwordInput.value = "";
+          passwordInput.focus();
+        }
+      }
+
+      function unlockPage() {
+        passwordOverlay.classList.add("hidden");
+        container.classList.remove("content-blur");
+      }
+
+      // Button click
+      passwordButton.addEventListener("click", checkPassword);
+
+      // Enter key press
+      passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          checkPassword();
+        }
+      });
+
       const projects = [
         {
           title: "Visualisation",
@@ -113,7 +325,6 @@
         },
       ];
 
-      const container = document.getElementById("container");
       const defaultImage = "./assets/second-BBil4YOb.png";
 
       projects.forEach((project) => {
