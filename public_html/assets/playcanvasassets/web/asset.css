@@ -1,0 +1,896 @@
+.blur-background {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 432px; /* 600px */
+    height: 50px;
+    backdrop-filter: blur(20px);
+    background-color: #1c1c1c63;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px #00000066;
+    z-index: 1000;
+}
+
+.button-container {
+    display: flex;
+    gap: 16px;
+}
+
+.icon-image {
+    height: 18px;
+    width: auto;
+    padding: 8px 16px;
+    object-fit: contain;
+    display: block;
+    align-self: center;
+}
+
+
+.button {
+    position: relative;
+    background-color: transparent;
+    color: white;
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff80;
+    opacity: 0;
+    border-radius: 999px;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.button:hover::before {
+    opacity: 1;
+}
+
+.button:hover {
+    color: white;
+}
+
+.button.active::before {
+    opacity: 1;
+}
+
+.button.active {
+    color: white;
+}
+
+.blur-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 350px;
+    height: 410px;
+    backdrop-filter: blur(20px);
+    background-color: #1c1c1c63;
+    border-radius: 54px;
+    box-sizing: border-box;
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0; /* убрали паддинг */
+}
+
+.panel-image {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin: 0; /* убраны отступы */
+    display: block;
+}
+
+.panel-title {
+    padding: 12px 16px 0 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.panel-description {
+    padding: 8px 16px 16px 16px;
+    font-size: 14px;
+    color: white;
+}
+
+#info-apartments {
+    opacity: 0;
+    pointer-events: none;
+    height: 360px;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+#info-apartments.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+#info-apartments .panel-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: block;
+    margin: 0;
+}
+
+#info-apartments .panel-title {
+    padding: 12px 16px 0 16px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+#info-apartments .panel-description {
+    padding: 8px 16px 8px 16px;
+    font-size: 14px;
+    color: white;
+}
+
+.panel-columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* 👈 центрирует по вертикали */
+    padding: 0 16px 8px 16px;
+    color: white;
+    font-size: 14px;
+}
+
+.panel-column {
+    flex: 1;
+}
+
+.panel-column.panel-column-right {
+    text-align: left; /* 👈 или center, если хочешь выровнять по центру внутри блока */
+    padding-left: 12px; /* 👈 немного отступа, чтобы не "прилипал" */
+}
+
+.panel-column strong {
+    font-weight: bold;
+}
+
+.panel-button-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px 16px 16px;
+    gap: 12px;
+}
+
+.action-button {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    background-color: #ffffff20;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #ffffff40;
+}
+
+
+.amenities-panel {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    height: 36px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    background-color: #5c5c5c21;
+    border-radius: 999px;
+    padding: 0 16px 0 0;
+    font-size: 18px;
+    color: white;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: auto;
+    box-sizing: border-box;
+
+    width: max-content;
+    max-width: 100%;
+    transition: transform 0.2s ease;
+}
+
+
+.amenities-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+    display: block;
+}
+
+.amenities-text {
+    margin-left: 6px;
+    line-height: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.amenities-panel:hover {
+    transform: translate(-50%, -100%) scale(1.1);
+}
+
+
+/* Начальное состояние: скрыт */
+#info-panel {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px); /* Сдвиг вверх при скрытии */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Видимая панель */
+#apartments-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0); /* Возвращение на место */
+    display: flex;
+}
+
+/* Начальное состояние: скрыт */
+#apartments-panel {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px); /* Сдвиг вверх при скрытии */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Видимая панель */
+#info-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0); /* Возвращение на место */
+    display: flex;
+}
+
+/* Левая панель */
+.blur-panel.left-panel {
+    left: 20px;
+    right: auto;
+    bottom: 20px;
+    top: auto;
+    height: 500px;
+}
+
+/* Горизонтальные линии */
+.panel-separator {
+    height: 2px;
+    background-color: white;
+    border: none;
+    margin: 8px 16px;
+}
+
+/* Контейнер кнопок */
+.panel-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 0px 16px;
+    height: 152px;
+}
+
+/* Кнопки внутри панели */
+.panel-button {
+    padding: 10px;
+    font-size: 16px;
+    color: white;
+    background-color: #ffffff00;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, padding-left 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.panel-button:hover {
+    background-color: #ffffff80;
+    padding-left: 14px;
+}
+
+#apartments-panel .panel-image {
+    margin: 16px 16px 0 16px;
+    border-radius: 0px;
+    height: 160px; /* опционально можно уменьшить */
+    width: calc(100% - 32px); /* с учетом горизонтальных отступов */
+}
+
+#apartments-panel .panel-description {
+    padding: 8px 16px 8px 16px;
+    font-size: 16px;
+}
+
+.state-switcher {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 50px;
+    backdrop-filter: blur(20px);
+    background-color: #1c1c1c63;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px #00000066;
+    z-index: 1000;
+}
+
+.gallery-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(20px);
+}
+
+.gallery-content {
+    position: relative;
+    width: 100%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(34, 34, 34, 0.5);
+    flex-direction: column;
+}
+
+.gallery-main-image {
+    max-width: 90%;
+    max-height: 95%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.gallery-dark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    gap: 0px;
+    overflow-x: auto;
+    padding: 0px;
+    z-index: 2050;
+}
+
+.gallery-thumbnails {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow-x: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0px;
+    z-index: 2050;
+}
+
+.thumbnail {
+    height: 70%;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+}
+
+.thumbnail:hover,
+.thumbnail.active {
+    opacity: 1;
+    border: 2px solid white;
+}
+
+.gallery-arrow {
+    position: absolute;
+    top: 50%;
+    font-size: 128px;
+    color: #fadab8;
+    cursor: pointer;
+    user-select: none;
+    z-index: 2010;
+    transform: translateY(-50%);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.gallery-left {
+    left: 20px;
+}
+
+.gallery-right {
+    right: 20px;
+}
+
+.gallery-close {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    font-size: 64px;
+    color: white;
+    cursor: pointer;
+    z-index: 2010;
+}
+
+.gallery-panel.hidden {
+    display: none;
+}
+
+/* landscape mode */
+@media screen and (max-height: 480px) and (orientation: landscape),
+       screen and (max-width: 812px) and (orientation: landscape),
+       screen and (max-aspect-ratio: 4/3) and (orientation: landscape) {
+    
+    .blur-panel {
+        width: 175px;         /* было 350px */
+        height: 205px;        /* было 410px */
+        top: 10px;
+        right: 10px;
+        border-radius: 6px;
+
+    }
+    
+    #info-panel {
+        width: 175px;
+        height: 205px;
+        top: 10px;
+        right: 10px;
+    }
+
+    #apartments-panel .panel-description {
+        padding: 4px 8px 4px 8px;
+        font-size: 8px;
+    }
+
+    #info-apartments {
+        width: 175px;
+        height: 205px;
+        top: 10px;
+        right: 10px;
+    }
+    #apartments-panel {
+        width: 175px;
+        height: 250px;
+        left: 10px;
+        bottom: 10px;
+    }
+
+    .panel-image {
+        height: 130px;        /* было 260px */
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+    }
+
+    #apartments-panel .panel-image {
+        margin: 8px 8px 0 8px;
+        border-radius: 0px;
+        height: 80px; /* опционально можно уменьшить */
+        width: calc(100% - 16px); /* с учетом горизонтальных отступов */
+    }
+    .panel-title {
+        font-size: 10px;      /* было 20px */
+        padding: 6px 8px 0 8px;
+    }
+
+    .panel-description {
+        font-size: 7px;       /* было 14px */
+        padding: 4px 8px 8px 8px;
+    }
+
+    /* Верхняя панель с кнопками */
+    .blur-background {
+        top: 10px;
+        left: 50%;
+        width: 268px;
+        height: 30px;
+        padding: 4px;
+    }
+
+    .icon-image {
+        height: 12px;
+        padding: 4px 8px;
+    }
+    .button {
+        padding: 8px 8px;
+        font-size: 12px;       /* было 16px */
+        border-radius: 4px;
+    }
+
+    .button-container {
+        gap: 8px;
+    }
+    
+    .amenities-panel {
+        color: white;
+
+        position: absolute;
+        transform: translate(-50%, -100%);
+        height: 18px;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 8px 0 0;
+        font-size: 9px;
+        white-space: nowrap;
+        pointer-events: auto;
+        box-sizing: border-box;
+        width: max-content;
+        max-width: 100%;
+        transition: transform 0.2s ease;
+    }
+
+    .amenities-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .amenities-text {
+        margin-left: 3px;
+    }
+
+    .amenities-panel:hover {
+        transform: translate(-50%, -100%) scale(1.1);
+    }
+
+    .blur-panel.left-panel {
+        width: 175px;
+        height: 205px;
+        left: 10px;
+        bottom: 10px;
+        border-radius: 6px;
+    }
+
+    .panel-separator {
+        height: 1px;
+        background-color: white;
+        border: none;
+        margin: 4px 8px;
+    }
+
+    .panel-button {
+        font-size: 8px;
+        padding: 3px;
+        border-radius: 4px;
+    }
+
+    .panel-buttons {
+        padding: 3px 8px;
+        gap: 2px;
+        height: 76px;
+    }
+
+    #info-apartments {
+        height: 180px; /* было 360px */
+    }
+
+    #info-apartments .panel-image {
+        height: 100px; /* было 200px */
+        border-radius: 6px;
+    }
+
+    #info-apartments .panel-title {
+        font-size: 10px;
+        padding: 6px 8px 0 8px;
+    }
+
+    #info-apartments .panel-description {
+        font-size: 7px;
+        padding: 4px 8px 4px 8px;
+    }
+
+    .panel-columns {
+        padding: 0 8px 4px 8px;
+        font-size: 7px;
+    }
+
+    .panel-column.panel-column-right {
+        padding-left: 6px;
+    }
+
+    .panel-button-row {
+        padding: 4px 8px 8px 8px;
+        gap: 6px;
+    }
+
+    .action-button {
+        font-size: 7px;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .state-switcher {
+        width: 124px;
+        height: 40px;
+        bottom: 10px;
+    }
+
+    .state-switcher .button {
+        padding: 8px 8px;
+        font-size: 12px;
+    }
+
+    .state-switcher .button-container {
+        gap: 8px;
+    }
+
+    .gallery-arrow {
+        font-size: 64px;
+        z-index: 2010;
+        padding: 5px;
+    }
+
+    .gallery-close {
+        top: 5px;
+        right: 15px;
+        font-size: 32px;
+    }
+}
+
+/* portrait mode */
+@media screen and (max-height: 812px) and (orientation: portrait),
+       screen and (max-width: 480px) and (orientation: portrait),
+       screen and (max-aspect-ratio: 3/4) and (orientation: portrait) {
+    /* Правая панель */
+    .blur-panel {
+        width: 175px;         /* было 350px */
+        height: 205px;        /* было 410px */
+        top: 60px;
+        right: 10px;
+        border-radius: 6px;
+
+    }
+    
+    #info-panel {
+        width: 175px;
+        height: 205px;
+        top: 60px;
+        right: 10px;
+    }
+
+    #apartments-panel .panel-description {
+        padding: 4px 4px 4px 4px;
+        font-size: 8px;
+    }
+
+    #info-apartments {
+        width: 175px;
+        height: 205px;
+        top: 60px;
+        right: 10px;
+    }
+    #apartments-panel {
+        width: 150px;
+        height: 230px;
+        left: 10px;
+        bottom: 50px;
+    }
+
+    .panel-image {
+        height: 130px;        /* было 260px */
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+    }
+
+    #apartments-panel .panel-image {
+        margin: 4px 4px 0 4px;
+        border-radius: 0px;
+        height: 60px; /* опционально можно уменьшить */
+        width: calc(100% - 8px); /* с учетом горизонтальных отступов */
+    }
+
+    #apartments-panel .panel-title {
+        margin: 4px 4px 0 4px;
+        border-radius: 0px;
+    }
+
+    .panel-title {
+        font-size: 10px;      /* было 20px */
+        padding: 6px 8px 0 8px;
+    }
+
+    .panel-description {
+        font-size: 7px;       /* было 14px */
+        padding: 4px 8px 8px 8px;
+    }
+
+    /* Верхняя панель с кнопками */
+    .blur-background {
+        transform: translateX(-50%);
+        left: 50%;
+        top: 10px;
+        width: 280px;
+        height: 30px;
+        padding: 4px;
+    }
+
+    .icon-image {
+        height: 14px;
+        padding: 4px 8px;
+    }
+    .button {
+        padding: 8px 8px;
+        font-size: 12px;       /* было 16px */
+        border-radius: 4px;
+    }
+
+    .button-container {
+        gap: 6px;
+    }
+    
+    .amenities-panel {
+        color: white;
+
+        position: absolute;
+        transform: translate(-50%, -100%);
+        height: 18px;
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0 8px 0 0;
+        font-size: 9px;
+        white-space: nowrap;
+        pointer-events: auto;
+        box-sizing: border-box;
+        width: max-content;
+        max-width: 100%;
+        transition: transform 0.2s ease;
+    }
+
+    .amenities-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .amenities-text {
+        margin-left: 3px;
+    }
+
+    .amenities-panel:hover {
+        transform: translate(-50%, -100%) scale(1.1);
+    }
+
+    .blur-panel.left-panel {
+        width: 175px;
+        height: 205px;
+        left: 10px;
+        bottom: 50px;
+        border-radius: 6px;
+    }
+
+    .panel-separator {
+        height: 1px;
+        background-color: white;
+        border: none;
+        margin: 4px 4px;
+    }
+
+    .panel-button {
+        font-size: 8px;
+        padding: 3px;
+        border-radius: 4px;
+    }
+
+    .panel-buttons {
+        padding: 3px 8px;
+        gap: 2px;
+        height: 76px;
+    }
+
+    #info-apartments {
+        height: 180px; /* было 360px */
+    }
+
+    #info-apartments .panel-image {
+        height: 100px; /* было 200px */
+        border-radius: 6px;
+    }
+
+    #info-apartments .panel-title {
+        font-size: 10px;
+        padding: 6px 8px 0 8px;
+    }
+
+    #info-apartments .panel-description {
+        font-size: 7px;
+        padding: 4px 8px 4px 8px;
+    }
+
+    .panel-columns {
+        padding: 0 8px 4px 8px;
+        font-size: 7px;
+    }
+
+    .panel-column.panel-column-right {
+        padding-left: 6px;
+    }
+
+    .panel-button-row {
+        padding: 4px 8px 8px 8px;
+        gap: 6px;
+    }
+
+    .action-button {
+        font-size: 7px;
+        padding: 6px;
+        border-radius: 4px;
+    }
+
+    .state-switcher {
+        width: 128px;
+        height: 36px;
+        bottom: 10px;
+    }
+
+    .state-switcher .button {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .state-switcher .button-container {
+        gap: 8px;
+    }
+
+    .gallery-arrow {
+        font-size: 64px;
+        z-index: 2010;
+        padding: 5px;
+    }
+    
+    .gallery-close {
+        top: 10px;
+        right: 15px;
+        font-size: 32px;
+    }
+}

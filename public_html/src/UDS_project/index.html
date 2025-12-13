@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PlayCanvas Standalone</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" href="assets/web/asset.css"/>
+  </head>
+  <body>
+    <canvas id="application-canvas"></canvas>
+    <script src="playcanvas.min.js"></script>
+    <script type="module" src="main.js"></script>
+
+  <div id="start-screen">
+      <div class="start-image"></div>
+      <div id="start-button" role="button" tabindex="0" aria-label="Start" alt="Start"></div>
+  </div>
+
+  <div id="amenities-container"></div>
+
+  <div class="mode-panel center hidden">
+      <div class="glass-panel border-shadow"></div>
+      <div class="panel-container">
+          <div class="button active" data-mode="0" data-lng="home" alt="Home"></div>
+          <div class="button" data-mode="1" data-lng="amenities" alt="Amenities"></div>
+      </div>
+  </div>
+
+  <div id="fullscreen-button" role="button" tabindex="0" aria-label="Fullscreen" alt="Fullscreen"></div>
+
+  <script>
+  function resizeCanvasForiOS() {
+      const canvas = document.getElementById('application-canvas');
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+  }
+
+  window.addEventListener('resize', resizeCanvasForiOS);
+  window.addEventListener('orientationchange', resizeCanvasForiOS);
+  resizeCanvasForiOS();
+  </script>
+  </body>
+</html>
