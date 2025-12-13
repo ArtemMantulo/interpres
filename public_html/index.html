@@ -7,380 +7,134 @@
     <link rel="stylesheet" crossorigin href="./assets/main-CEbNBvh5.css" />
   </head>
   <body>
-    <div id="container">
-      <div class="card">
-        <a href="src/project2/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Visualisation</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
+    <!-- SVG Definitions -->
+    <svg style="display: none">
+      <defs>
+        <symbol id="arrow-icon" viewBox="0 0 24 24">
+          <path
+            d="M7 17L17 7M17 7H7M17 7V17"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+      </defs>
+    </svg>
 
-      <div class="card">
-        <a href="src/breigproject/current/generalviewentrance/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Digital Twin</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
+    <div id="container"></div>
 
-      <div class="card">
-        <a href="src/breigproject/current/closeview/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">3D Widget</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
+    <script>
+      const projects = [
+        {
+          title: "Visualisation",
+          url: "src/project2/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Digital Twin",
+          url: "src/breigproject/current/generalviewentrance/index.html",
+          image: "./assets/breig/Initial_picture.webp",
+        },
+        {
+          title: "3D Widget",
+          url: "src/breigproject/current/closeview/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Web Catalog",
+          url: "src/breigproject/future/generalview/index.html",
+          image: "./assets/breig/Breig_shot_05_v01.png",
+        },
+        {
+          title: "Future Close View",
+          url: "src/breigproject/future/closeview/index.html",
+          image: "./assets/breig/pool_chill_area_photo.png",
+        },
+        {
+          title: "Atrium MVP",
+          url: "src/project4/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Magnum Project",
+          url: "src/magnum/index.html",
+          image: "./assets/second-BBil4YOb.png",
+        },
+        {
+          title: "Test Atrium",
+          url: "src/test_atrium/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Test Breig",
+          url: "src/test_breig/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Project 5",
+          url: "src/project5/index.html",
+          image: "./assets/second-BBil4YOb.png",
+        },
+        {
+          title: "Drone Scan",
+          url: "src/test_dron_scan/index.html",
+          image: "./assets/unnamed.jpg",
+        },
+        {
+          title: "Interior",
+          url: "src/interior/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "UDS Project",
+          url: "src/UDS_project/index.html",
+          image: "src/UDS_project/assets/images/pictures/pic_startscreen.jpg",
+        },
+        {
+          title: "Nuanu Project",
+          url: "src/nuanu/index.html",
+          image: "src/nuanu/assets/icons/bg_default.jpg",
+        },
+        {
+          title: "Breig Elysium",
+          url: "src/breig_elysium/index.html",
+          image: "src/breig_elysium/assets/images/pictures/pic_startscreen.jpg",
+        },
+        {
+          title: "Room Project",
+          url: "src/room/index.html",
+          image: "src/room/assets/icons/bg_default.jpg",
+        },
+        {
+          title: "UDS AR",
+          url: "src/uds_ar/index.html",
+          image: "src/uds_ar/assets/images/pictures/pic_startscreen.jpg",
+        },
+      ];
 
-      <div class="card">
-        <a href="src/breigproject/future/generalview/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Web Catalog</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
+      const container = document.getElementById("container");
+      const defaultImage = "./assets/second-BBil4YOb.png";
 
-      <div class="card">
-        <a href="src/breigproject/future/closeview/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Future Close View</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+      projects.forEach((project) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <a href="${project.url}">
+            <div class="card-image" style="background-image: url('${
+              project.image || defaultImage
+            }')">
+              <h3 class="card-title">${project.title}</h3>
+              <div class="card-arrow">
+                <svg width="24" height="24" fill="none">
+                  <use href="#arrow-icon" />
+                </svg>
+              </div>
             </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/project4/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Atrium MVP</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/magnum/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Magnum Project</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/test_atrium/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Test Atrium</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/test_breig/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Test Breig</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/project5/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Project 5</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/test_dron_scan/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Drone Scan</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/interior/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Interior</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/UDS_project/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">UDS Project</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/nuanu/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Nuanu Project</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/breig_elysium/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Breig Elysium</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/room/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">Room Project</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="src/uds_ar/index.html">
-          <div
-            class="card-image"
-            style="background-image: url('./assets/second-BBil4YOb.png')"
-          >
-            <h3 class="card-title">UDS AR</h3>
-            <div class="card-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M7 17L17 7M17 7H7M17 7V17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
+          </a>
+        `;
+        container.appendChild(card);
+      });
+    </script>
   </body>
 </html>
