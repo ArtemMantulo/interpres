@@ -6,7 +6,7 @@ import {
 } from './assets/scripts/loader.js';
 import { setupFullscreenButton } from './assets/scripts/utils/fullscreen.js';
 import { loadLanguage } from './assets/scripts/utils/language.js';
-import { GsplatRevealRadial } from './assets/shaders/reveal-radial.mjs';
+import { GsplatRevealRadial } from './assets/shaders/reveal-radial.js';
 import { isMobile, isTablet } from './assets/scripts/utils/detect.js';
 import {
     delay,

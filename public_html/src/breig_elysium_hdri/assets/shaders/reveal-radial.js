@@ -1,4 +1,4 @@
-import { GsplatShaderEffect } from './gsplat-shader-effect.mjs';
+import { GsplatShaderEffect } from './gsplat-shader-effect.js';
 const { Vec3, Color } = pc;
 
 const shaderGLSL = `
