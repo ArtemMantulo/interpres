@@ -1,2 +1,4 @@
 /.trash
 /start_server.ps1
+node_modules/
+package-lock.json

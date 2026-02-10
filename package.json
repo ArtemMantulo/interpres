@@ -1,0 +1,15 @@
+{
+  "name": "interpres-live",
+  "version": "1.0.0",
+  "description": "Gaussian Splats Viewer",
+  "scripts": {
+    "start": "http-server public_html -p 8000 -o",
+    "dev": "http-server public_html -p 8000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
