@@ -7,6 +7,7 @@ import {
 import { setupFullscreenButton } from './assets/scripts/utils/fullscreen.js';
 import { loadLanguage } from './assets/scripts/utils/language.js';
 import { GsplatRevealRadial } from './assets/shaders/reveal-radial.js';
+import { createAmbientAudio } from './assets/scripts/utils/ambientAudio.js';
 import { isMobile, isTablet } from './assets/scripts/utils/detect.js';
 import {
     delay,
@@ -450,6 +451,15 @@ async function startApp() {
                     });
                     app.fire('ui:ready');
                     syncUiVisibility();
+
+                    // Start ambient tropical birds sound
+                    const ambientAudio = createAmbientAudio('./assets/audio/tropical-birds.mp3', {
+                        volume: 0.25,
+                        loop: true,
+                        fadeInDuration: 3000
+                    });
+                    ambientAudio.play();
+                    onAppDestroy(() => ambientAudio.destroy());
 
                     const waterTimerId = window.setTimeout(() => {
                         fadeInWater(2000);
