@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Breig Standalone</title>
+        <link rel="icon" href="/favicon.ico" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="stylesheet" href="assets/web/asset.css" />
+    </head>
+    <body>
+        <canvas id="application-canvas"></canvas>
+        <script src="playcanvas.min.js"></script>
+
+        <div id="start-screen">
+            <div class="start-image"></div>
+            <div id="start-button" role="button" tabindex="0" aria-label="Start"></div>
+        </div>
+
+        <div id="amenities-container">
+            <div
+                class="amenities-empty"
+                data-lng="amenities_empty"
+                role="status"
+                aria-live="polite"
+            >
+                No amenities available
+            </div>
+        </div>
+
+        <div class="mode-panel center hidden">
+            <div class="glass-panel border-shadow"></div>
+            <div class="panel-container">
+                <div class="icon-image"></div>
+                <div
+                    class="button active"
+                    role="button"
+                    tabindex="0"
+                    data-mode="0"
+                    data-lng="home"
+                ></div>
+                <div
+                    class="button"
+                    role="button"
+                    tabindex="0"
+                    data-mode="1"
+                    data-lng="amenities"
+                ></div>
+                <div
+                    class="button"
+                    role="button"
+                    tabindex="0"
+                    data-mode="Gallery"
+                    data-lng="gallery"
+                ></div>
+            </div>
+            <div class="amenities-line"></div>
+        </div>
+
+        <div id="info-panel">
+            <div class="glass-panel border-shadow"></div>
+            <div class="panel-container">
+                <img
+                    class="panel-image"
+                    src="assets/images/pictures/pic_loading.png"
+                    alt="Picture"
+                />
+                <div class="panel-title">Loading data...</div>
+                <div class="panel-description">Loading data...</div>
+            </div>
+        </div>
+
+        <div class="gallery-panel hidden">
+            <div class="gallery-dark">
+                <div
+                    class="gallery-close"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Close gallery"
+                ></div>
+            </div>
+            <div class="gallery-content">
+                <img class="gallery-main-image" alt="Gallery image" />
+                <div class="gallery-empty" data-lng="gallery_empty" role="status" aria-live="polite">
+                    No images available
+                </div>
+            </div>
+            <div class="gallery-thumbnails"></div>
+        </div>
+
+        <div id="ui-toggles" class="hidden">
+            <div id="fps-locker" class="ui-toggle">
+                <span class="setting-label">30 FPS</span>
+                <label class="switch">
+                    <input type="checkbox" id="fps30" />
+                    <span class="slider" aria-hidden="true"></span>
+                </label>
+            </div>
+            <div id="ui-visibility-toggle" class="ui-toggle">
+                <span class="setting-label">HIDE UI</span>
+                <label class="switch">
+                    <input type="checkbox" id="hide-ui" />
+                    <span class="slider" aria-hidden="true"></span>
+                </label>
+            </div>
+            <div id="quality-toggle" class="ui-toggle hidden">
+                <span class="setting-label">QUALITY</span>
+                <label class="switch">
+                    <input type="checkbox" id="quality" />
+                    <span class="slider" aria-hidden="true"></span>
+                </label>
+            </div>
+        </div>
+
+        <div id="fullscreen-button" role="button" tabindex="0" aria-label="Fullscreen"></div>
+
+        <div id="debug-stats" class="hidden"></div>
+
+        <script type="module" src="main.js"></script>
+
+        <script>
+            const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            let lastW = 0;
+            let lastH = 0;
+
+            function resizeCanvasForiOS() {
+                if (!isiOS) return;
+                const canvas = document.getElementById('application-canvas');
+                if (!canvas) return;
+
+                const w = window.innerWidth | 0;
+                const h = window.innerHeight | 0;
+
+                if (w === lastW && h === lastH) return;
+                lastW = w;
+                lastH = h;
+
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+            }
+
+            window.addEventListener('resize', resizeCanvasForiOS);
+            window.addEventListener('orientationchange', resizeCanvasForiOS);
+            resizeCanvasForiOS();
+        </script>
+    </body>
+</html>
