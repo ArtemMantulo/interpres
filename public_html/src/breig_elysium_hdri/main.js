@@ -82,6 +82,7 @@ let qualityToggle = null;
 let syncUiVisibility = () => {};
 let waterMaterial = null;
 let waterEntityRef = null;
+let ambientAudio = null;
 
 const shouldRender = () => {
     if (pageHidden) return false;
@@ -139,7 +140,28 @@ const onQualityChange = () => {
     activeProfile = getQualityProfile();
     applyQualityProfile(activeProfile, gsplatRef);
 };
-const uiToggles = setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange });
+
+const onSoundChange = (event) => {
+    if (!ambientAudio) return;
+    
+    if (event.target.checked) {
+        ambientAudio.play();
+    } else {
+        ambientAudio.stop();
+    }
+    
+    // Remove focus from toggle to prevent interaction interruption
+    if (event.target) {
+        event.target.blur();
+    }
+    
+    // Continue rendering during sound toggle
+    if (app && !app.autoRender && 'renderNextFrame' in app) {
+        app.renderNextFrame = true;
+    }
+};
+
+const uiToggles = setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, onSoundChange });
 qualityToggle = uiToggles.qualityToggle;
 syncUiVisibility = uiToggles.syncUiVisibility;
 
@@ -452,14 +474,15 @@ async function startApp() {
                     app.fire('ui:ready');
                     syncUiVisibility();
 
-                    // Start ambient tropical birds sound
-                    const ambientAudio = createAmbientAudio('./assets/audio/tropical-birds.mp3', {
+                    // Create ambient tropical birds sound (controlled by sound toggle)
+                    ambientAudio = createAmbientAudio('./assets/audio/tropical-birds.mp3', {
                         volume: 0.25,
                         loop: true,
                         fadeInDuration: 3000
                     });
-                    ambientAudio.play();
-                    onAppDestroy(() => ambientAudio.destroy());
+                    onAppDestroy(() => {
+                        if (ambientAudio) ambientAudio.destroy();
+                    });
 
                     const waterTimerId = window.setTimeout(() => {
                         fadeInWater(2000);
