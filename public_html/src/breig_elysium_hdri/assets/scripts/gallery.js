@@ -18,6 +18,9 @@ Gallery.prototype.initialize = function () {
     this.emptyEl = null;
     this.closeButton = null;
     this.lastFocusEl = null;
+    this._modeManager = window.AppModeManager || null;
+    this._unregisterMode = null;
+    this._pendingModeEnter = false;
 
     this.urls = null;
     this.index = 0;
@@ -56,6 +59,17 @@ Gallery.prototype.initialize = function () {
     this._onUiReady = () => {
         if (this._trySetup()) this.app.off('ui:ready', this._onUiReady);
     };
+    if (this._modeManager?.registerMode) {
+        this._unregisterMode = this._modeManager.registerMode('Gallery', {
+            enter: () => {
+                if (this.openHandler) this.openHandler();
+                else this._pendingModeEnter = true;
+            },
+            exit: () => {
+                if (this.isOpen) this._emitVisibility(true);
+            }
+        });
+    }
 
     if (!this._trySetup()) this.app.on('ui:ready', this._onUiReady);
 };
@@ -102,7 +116,7 @@ Gallery.prototype._emitVisibility = function (hidden) {
     this.app.fire(hidden ? 'gallery:close' : 'gallery:open');
 
     if (hidden) {
-        if (this.modeButton) {
+        if (this.modeButton && !this._modeManager) {
             this.modeButton.classList.remove('active');
             if (typeof this.modeButton.blur === 'function') this.modeButton.blur();
         }
@@ -112,13 +126,23 @@ Gallery.prototype._emitVisibility = function (hidden) {
             this.lastFocusEl.focus();
         this.lastFocusEl = null;
     } else {
-        if (this.modeButton) this.modeButton.classList.add('active');
         if (this.thumbs) {
             setTimeout(() => {
                 if (this.thumbs) this.thumbs.scrollLeft = 0;
             }, this.thumbResetDelayMs | 0);
         }
+        if (this.modeButton && !this._modeManager) this.modeButton.classList.add('active');
     }
+};
+
+Gallery.prototype._requestCloseMode = function () {
+    if (!this._modeManager || !this._modeManager.setMode) return false;
+    if (this._modeManager.getMode && this._modeManager.getMode() !== 'Gallery') return false;
+
+    const prev = this._modeManager.getPreviousMode ? this._modeManager.getPreviousMode() : null;
+    const fallback = prev && prev !== 'Gallery' ? prev : '0';
+    this._modeManager.setMode(fallback, { source: 'galleryClose' });
+    return true;
 };
 
 Gallery.prototype._focusPrimary = function () {
@@ -184,7 +208,10 @@ Gallery.prototype._setup = function (btn, panel) {
     const closeBtn = panel.querySelector('.gallery-close');
     if (closeBtn) {
         this.closeButton = closeBtn;
-        this.closeHandler = () => this._emitVisibility(true);
+        this.closeHandler = () => {
+            if (this._requestCloseMode()) return;
+            this._emitVisibility(true);
+        };
         closeBtn.addEventListener('click', this.closeHandler);
         closeBtn.addEventListener('touchstart', this.closeHandler, { passive: true });
         closeBtn.addEventListener('pointerdown', this.closeHandler, { passive: true });
@@ -193,6 +220,7 @@ Gallery.prototype._setup = function (btn, panel) {
             if (!this.isOpen) return;
             if (!window.UiKeys?.isActivateKey?.(e)) return;
             e.preventDefault();
+            if (this._requestCloseMode()) return;
             this._emitVisibility(true);
         };
         closeBtn.addEventListener('keydown', this.closeKeyHandler);
@@ -284,11 +312,17 @@ Gallery.prototype._setup = function (btn, panel) {
         this._focusPrimary();
     };
 
-    btn.addEventListener('click', this.openHandler);
+    if (!this._modeManager) btn.addEventListener('click', this.openHandler);
+
+    if (this._pendingModeEnter) {
+        this._pendingModeEnter = false;
+        this.openHandler();
+    }
 
     this.keyHandler = (e) => {
         if (!this.isOpen) return;
         if (e.key === 'Escape') {
+            if (this._requestCloseMode()) return;
             this._emitVisibility(true);
             return;
         }
@@ -469,6 +503,7 @@ Gallery.prototype._resetVisual = function () {
 
 Gallery.prototype.onDestroy = function () {
     if (this._onUiReady) this.app.off('ui:ready', this._onUiReady);
+    if (this._unregisterMode) this._unregisterMode();
 
     if (this.modeButton && this.openHandler)
         this.modeButton.removeEventListener('click', this.openHandler);
@@ -522,6 +557,9 @@ Gallery.prototype.onDestroy = function () {
     this.emptyEl = null;
     this.closeButton = null;
     this.lastFocusEl = null;
+    this._modeManager = null;
+    this._unregisterMode = null;
+    this._pendingModeEnter = false;
 
     this.openHandler = null;
     this.closeHandler = null;

@@ -21,6 +21,7 @@ import {
 } from './assets/scripts/utils/functions.js';
 import { createFpsLocker } from './assets/scripts/utils/fpslocker.js';
 import { createDestroyRegistry } from './assets/scripts/utils/onAppDestroy.js';
+import { createModeManager } from './assets/scripts/utils/modeManager.js';
 import './assets/scripts/ui/uiKeys.js';
 import { setupUiToggles } from './assets/scripts/ui/uiToggles.js';
 import {
@@ -36,7 +37,10 @@ import {
     REVEAL_SETTINGS,
     HOME_PLANE_SETTINGS,
     GALLERY_SETTINGS,
-    AMENITIES_SETTINGS
+    AMENITIES_SETTINGS,
+    APP_SCRIPT_SPECS,
+    MODE_DEFINITIONS,
+    MODE_MANAGER_SETTINGS
 } from './assets/scripts/config.js';
 
 const canvas = document.getElementById('application-canvas');
@@ -57,6 +61,24 @@ const app = new pc.Application(canvas, {
 });
 
 const { onAppDestroy } = createDestroyRegistry(app);
+
+const modeButtonRoot =
+    MODE_MANAGER_SETTINGS?.buttonRootSelector
+        ? document.querySelector(MODE_MANAGER_SETTINGS.buttonRootSelector)
+        : document;
+const initialModeFromUi = document.querySelector('.mode-panel .button.active')?.dataset?.mode;
+const modeManager = createModeManager(app, {
+    modes: MODE_DEFINITIONS,
+    initialMode: initialModeFromUi || MODE_MANAGER_SETTINGS?.initialMode || '0',
+    buttonRoot: modeButtonRoot
+});
+const unbindModeButtons = modeManager.bindModeButtons();
+window.AppModeManager = modeManager;
+onAppDestroy(() => {
+    unbindModeButtons?.();
+    modeManager.destroy();
+    if (window.AppModeManager === modeManager) window.AppModeManager = null;
+});
 
 const onHomeMarkerActive = (active) => {
     appState.homeMarkerActive = !!active;
@@ -172,14 +194,7 @@ const assets = {
     waterModel: new pc.Asset('water', 'container', { url: 'assets/models/Water.glb' })
 };
 
-const scriptSpecs = [
-    ['adjustPixelRatio.js', 'assets/scripts/utils/adjustPixelRatio.js', 1024],
-    ['orbitCamera.js', 'assets/scripts/orbitCamera.js', 3 * 1024],
-    ['amenitiesUi.js', 'assets/scripts/ui/amenitiesUi.js', 3 * 1024],
-    ['homeMode.js', 'assets/scripts/homeMode.js', 3 * 1024],
-    ['amenitiesMode.js', 'assets/scripts/amenitiesMode.js', 3 * 1024],
-    ['gallery.js', 'assets/scripts/gallery.js', 3 * 1024]
-];
+const scriptSpecs = APP_SCRIPT_SPECS;
 
 const scriptAssets = scriptSpecs.map(([name, url]) => new pc.Asset(name, 'script', { url }));
 

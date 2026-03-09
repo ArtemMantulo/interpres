@@ -1,0 +1,284 @@
+#ui-toggles {
+    position: fixed;
+    left: 0px;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+}
+
+#ui-toggles .glass-panel.border-shadow,
+#ui-toggles .amenities-line {
+    border-radius: 0 24px 24px 0;
+}
+
+#ui-toggles .glass-panel.border-shadow {
+    border-left: 0;
+}
+
+#ui-toggles .amenities-line {
+    padding: 1px 1px 1px 0;
+    background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.0001) 33.33%,
+            rgba(255, 255, 255, 0.0001) 66.66%,
+            rgba(255, 255, 255, 0.1) 100%
+        )
+        top left / 100% 100% no-repeat;
+}
+
+.ui-toggle {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.ui-toggle-tooltip {
+    position: absolute;
+    left: 58px;
+    top: 50%;
+    height: 24px;
+    min-width: max-content;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 8px;
+    -webkit-backdrop-filter: blur(68px);
+    backdrop-filter: blur(68px);
+    background-color: rgba(51, 51, 51, 0.4);
+    pointer-events: none;
+    transform: translate3d(-8px, -50%, 0);
+    clip-path: inset(0 100% 0 0 round 8px);
+    transition:
+        transform 0.24s ease,
+        clip-path 0.24s ease;
+    will-change: transform, clip-path;
+    z-index: 6;
+}
+
+.ui-toggle:hover .ui-toggle-tooltip,
+.ui-toggle > button:focus-visible + .ui-toggle-tooltip {
+    transform: translate3d(0, -50%, 0);
+    clip-path: inset(0 0 0 0 round 8px);
+}
+
+#ui-toggles .ui-toggle-tooltip .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-radius: 8px;
+    background: transparent;
+}
+
+#ui-toggles .ui-toggle-tooltip .amenities-line {
+    padding: 1px;
+    border-radius: 8px;
+    background: linear-gradient(
+            155deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.0001) 33%,
+            rgba(255, 255, 255, 0.0001) 66%,
+            rgba(255, 255, 255, 0.1) 100%
+        )
+        top left / 100% 100% no-repeat;
+}
+
+.ui-toggle-tooltip-text {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateX(-4px);
+    color: rgba(255, 255, 255, 0.95);
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    white-space: nowrap;
+    transition:
+        opacity 0.18s ease 0.03s,
+        transform 0.18s ease 0.03s;
+}
+
+.ui-toggle:hover .ui-toggle-tooltip-text,
+.ui-toggle > button:focus-visible + .ui-toggle-tooltip .ui-toggle-tooltip-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.sound-toggle-button,
+.visibility-toggle-button,
+.quality-toggle-button,
+.fpslock-toggle-button {
+    display: block;
+    position: relative;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+}
+
+.sound-toggle-button.is-on {
+    background-image: url('../../assets/images/icons/ui_sound_on.png');
+}
+
+.sound-toggle-button.is-off {
+    background-image: url('../../assets/images/icons/ui_sound_off.png');
+}
+
+.visibility-toggle-button.is-on {
+    background-image: url('../../assets/images/icons/ui_visibility_off.png');
+}
+
+.visibility-toggle-button.is-off {
+    background-image: url('../../assets/images/icons/ui_visibility_on.png');
+}
+
+.quality-toggle-button.is-on {
+    background-image: url('../../assets/images/icons/ui_hd_on.png');
+}
+
+.quality-toggle-button.is-off {
+    background-image: url('../../assets/images/icons/ui_hd_off.png');
+}
+
+.fpslock-toggle-button.is-on {
+    background-image: url('../../assets/images/icons/ui_fpslock_on.png');
+}
+
+.fpslock-toggle-button.is-off {
+    background-image: url('../../assets/images/icons/ui_fpslock_off.png');
+}
+
+.sound-toggle-button:hover,
+.visibility-toggle-button:hover,
+.quality-toggle-button:hover,
+.fpslock-toggle-button:hover {
+    background-color: rgba(255, 255, 255, 0.09);
+}
+
+#ui-restore-wrap {
+    position: fixed;
+    left: 50%;
+    bottom: var(--ui-bottom);
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 999px;
+}
+
+#ui-restore-wrap .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    border-radius: 999px;
+}
+
+#ui-restore-wrap .amenities-line {
+    padding: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+            155deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.0001) 33%,
+            rgba(255, 255, 255, 0.0001) 66%,
+            rgba(255, 255, 255, 0.1) 100%
+        )
+        top left / 100% 100% no-repeat;
+}
+
+.setting-label {
+    font-size: 14px;
+    user-select: none;
+    color: white;
+}
+
+.switch {
+    position: relative;
+    width: 52px;
+    height: 32px;
+    display: inline-block;
+    flex: 0 0 auto;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    transition:
+        transform 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+}
+
+.slider::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 26px;
+    left: 2px;
+    top: 2px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    transition: transform 180ms ease;
+}
+
+.switch input:checked + .slider {
+    background: rgb(66, 208, 96);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
+@media (pointer: coarse) {
+    .switch {
+        width: 56px;
+        height: 32px;
+    }
+    .slider::before {
+        width: 26px;
+        height: 27px;
+    }
+    .switch input:checked + .slider::before {
+        transform: translateX(24px);
+    }
+}
+

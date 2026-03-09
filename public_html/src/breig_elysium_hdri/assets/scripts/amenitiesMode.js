@@ -6,22 +6,29 @@ AmenitiesMode.attributes.add('domUpdateInterval', { type: 'number', default: 120
 AmenitiesMode.attributes.add('csvMinColumns', { type: 'number', default: 7 });
 AmenitiesMode.attributes.add('screenVisibilityThreshold', { type: 'number', default: 0.25 });
 AmenitiesMode.attributes.add('transformSuffix', { type: 'string', default: ' translate(-50%, -50%)' });
+AmenitiesMode.attributes.add('infoPanelOffset', { type: 'number', default: 36 });
+AmenitiesMode.attributes.add('infoPanelViewportMargin', { type: 'number', default: 12 });
 
 AmenitiesMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
     this.amenitiesContainer = document.querySelector('#amenities-container');
 
     this.infoPanel = document.querySelector('#info-panel');
+    this.infoPanelClose = this.infoPanel ? this.infoPanel.querySelector('.panel-close') : null;
     this.panelImage = this.infoPanel ? this.infoPanel.querySelector('.panel-image') : null;
     this.panelTitle = this.infoPanel ? this.infoPanel.querySelector('.panel-title') : null;
     this.panelDescription = this.infoPanel ? this.infoPanel.querySelector('.panel-description') : null;
 
     this._modeButtons = Array.from(document.querySelectorAll('.mode-panel .button'));
+    this._modeManager = window.AppModeManager || null;
 
     this._modeBtn0 = this._modeButtons.find((b) => b && b.dataset && b.dataset.mode === '0') || null;
     this._modeBtn1 = this._modeButtons.find((b) => b && b.dataset && b.dataset.mode === '1') || null;
 
-    this.currentMode = document.querySelector('.mode-panel .button.active')?.dataset?.mode || '0';
+    this.currentMode =
+        (this._modeManager && this._modeManager.getMode && this._modeManager.getMode()) ||
+        document.querySelector('.mode-panel .button.active')?.dataset?.mode ||
+        '0';
 
     const orbit = this.getOrbit();
     if (orbit && orbit.targetPosition) {
@@ -43,8 +50,13 @@ AmenitiesMode.prototype.initialize = function () {
     this._csvLoadToken = 0;
     this._amenitiesCache = new Map();
     this._ui = null;
+    this._shared = window.AmenitiesShared || null;
     this._emptyMessageEl = null;
     this._currentLang = null;
+    this._expandedAmenityEl = null;
+    this._selectedAmenityEl = null;
+    this._selectedAmenityData = null;
+    this._textWidthRaf = 0;
 
     this._onModeBtn0Click = () => this.setMode('0');
     this._onModeBtn1Click = () => this.setMode('1');
@@ -56,8 +68,20 @@ AmenitiesMode.prototype.initialize = function () {
 
     this._onAmenityClick = this.onAmenityClick.bind(this);
     this._onAmenityKeyDown = this.onAmenityKeyDown.bind(this);
+    this._onModeChange = (mode, _prev, source) => {
+        if (source === 'amenitiesMode') return;
+        this.setMode(mode, { fromManager: true, silentEvent: true });
+    };
+    this._onInfoPanelCloseClick = this.closeInfoPanel.bind(this);
+    this._onInfoPanelCloseKeyDown = (e) => {
+        if (!window.UiKeys?.isActivateKey?.(e)) return;
+        e.preventDefault();
+        this.closeInfoPanel();
+    };
     this._onViewportDirty = () => {
         this._rectDirty = true;
+        this.scheduleAmenityTextWidthUpdate();
+        this._forceDomUpdate = true;
     };
 
     this.bindDomEvents();
@@ -80,37 +104,50 @@ AmenitiesMode.prototype.initialize = function () {
 };
 
 AmenitiesMode.prototype.bindDomEvents = function () {
-    this._modeBtn0 && this._modeBtn0.addEventListener('click', this._onModeBtn0Click);
-    this._modeBtn1 && this._modeBtn1.addEventListener('click', this._onModeBtn1Click);
+    if (!this._modeManager) {
+        this._modeBtn0 && this._modeBtn0.addEventListener('click', this._onModeBtn0Click);
+        this._modeBtn1 && this._modeBtn1.addEventListener('click', this._onModeBtn1Click);
 
-    if (this._modeButtons && this._modeButtons.length) {
-        for (let i = 0; i < this._modeButtons.length; i++) {
-            this._modeButtons[i].addEventListener('keydown', this._onModeKeyDown);
+        if (this._modeButtons && this._modeButtons.length) {
+            for (let i = 0; i < this._modeButtons.length; i++) {
+                this._modeButtons[i].addEventListener('keydown', this._onModeKeyDown);
+            }
         }
     }
 
     this.amenitiesContainer && this.amenitiesContainer.addEventListener('click', this._onAmenityClick);
     this.amenitiesContainer && this.amenitiesContainer.addEventListener('keydown', this._onAmenityKeyDown);
+    this.infoPanelClose && this.infoPanelClose.addEventListener('click', this._onInfoPanelCloseClick);
+    this.infoPanelClose &&
+        this.infoPanelClose.addEventListener('keydown', this._onInfoPanelCloseKeyDown);
 
     window.addEventListener('resize', this._onViewportDirty, { passive: true });
     window.addEventListener('scroll', this._onViewportDirty, { passive: true });
+    this.app.on('mode:change', this._onModeChange, this);
 };
 
 AmenitiesMode.prototype.unbindDomEvents = function () {
-    this._modeBtn0 && this._modeBtn0.removeEventListener('click', this._onModeBtn0Click);
-    this._modeBtn1 && this._modeBtn1.removeEventListener('click', this._onModeBtn1Click);
+    if (!this._modeManager) {
+        this._modeBtn0 && this._modeBtn0.removeEventListener('click', this._onModeBtn0Click);
+        this._modeBtn1 && this._modeBtn1.removeEventListener('click', this._onModeBtn1Click);
 
-    if (this._modeButtons && this._modeButtons.length) {
-        for (let i = 0; i < this._modeButtons.length; i++) {
-            this._modeButtons[i].removeEventListener('keydown', this._onModeKeyDown);
+        if (this._modeButtons && this._modeButtons.length) {
+            for (let i = 0; i < this._modeButtons.length; i++) {
+                this._modeButtons[i].removeEventListener('keydown', this._onModeKeyDown);
+            }
         }
     }
 
     this.amenitiesContainer && this.amenitiesContainer.removeEventListener('click', this._onAmenityClick);
     this.amenitiesContainer && this.amenitiesContainer.removeEventListener('keydown', this._onAmenityKeyDown);
+    this.infoPanelClose &&
+        this.infoPanelClose.removeEventListener('click', this._onInfoPanelCloseClick);
+    this.infoPanelClose &&
+        this.infoPanelClose.removeEventListener('keydown', this._onInfoPanelCloseKeyDown);
 
     window.removeEventListener('resize', this._onViewportDirty);
     window.removeEventListener('scroll', this._onViewportDirty);
+    this.app.off('mode:change', this._onModeChange, this);
 };
 
 AmenitiesMode.prototype.getOrbit = function () {
@@ -122,7 +159,17 @@ AmenitiesMode.prototype.getUi = function () {
     return this._ui;
 };
 
+AmenitiesMode.prototype.getShared = function () {
+    if (!this._shared && window.AmenitiesShared) this._shared = window.AmenitiesShared;
+    return this._shared;
+};
+
 AmenitiesMode.prototype.getLang = function () {
+    const shared = this.getShared();
+    if (shared?.resolveLang) {
+        return shared.resolveLang(window.AppLanguage, document.documentElement, navigator.language);
+    }
+
     const appLang = window.AppLanguage;
     if (appLang?.get) return appLang.get();
 
@@ -162,25 +209,24 @@ AmenitiesMode.prototype.ensureCsvAssets = function () {
 };
 
 AmenitiesMode.prototype.getAssetCacheKey = function (asset) {
+    const shared = this.getShared();
+    if (shared?.getAssetCacheKey) return shared.getAssetCacheKey(asset);
     if (!asset) return '';
     const url = asset.getFileUrl?.() || asset.file?.url || asset.url || '';
     return url || String(asset.id || asset.name || '');
 };
 
 AmenitiesMode.prototype.parseCsvText = function (csvText) {
+    const shared = this.getShared();
+    if (shared?.parseCsvText) return shared.parseCsvText(csvText, this.csvMinColumns);
+
     const rows = String(csvText || '').trim().split(/\r?\n/).filter(Boolean);
     const dataList = [];
-
     const minColumns = isFinite(this.csvMinColumns) ? this.csvMinColumns : 7;
 
     for (let i = 0; i < rows.length; i++) {
         const parts = rows[i].split(';');
         if (parts.length < minColumns) continue;
-
-        const iconUrl = parts[0].trim();
-        const title = parts[1].trim();
-        const image = parts[2].trim();
-        const description = parts[3].trim();
 
         const x = parseFloat(parts[4]);
         const y = parseFloat(parts[5]);
@@ -188,10 +234,10 @@ AmenitiesMode.prototype.parseCsvText = function (csvText) {
         if (!isFinite(x) || !isFinite(y) || !isFinite(z)) continue;
 
         dataList.push({
-            iconUrl,
-            title,
-            image,
-            description,
+            iconUrl: parts[0].trim(),
+            title: parts[1].trim(),
+            image: parts[2].trim(),
+            description: parts[3].trim(),
             worldPos: new pc.Vec3(x, y, z)
         });
     }
@@ -200,9 +246,13 @@ AmenitiesMode.prototype.parseCsvText = function (csvText) {
 };
 
 AmenitiesMode.prototype.getAmenitiesData = function (asset) {
+    const shared = this.getShared();
+    if (shared?.getAmenitiesData) {
+        return shared.getAmenitiesData(this._amenitiesCache, asset, this.csvMinColumns);
+    }
+
     const key = this.getAssetCacheKey(asset);
     if (key && this._amenitiesCache.has(key)) return this._amenitiesCache.get(key);
-
     const dataList = this.parseCsvText(asset?.resource || '');
     if (key) this._amenitiesCache.set(key, dataList);
     return dataList;
@@ -238,14 +288,22 @@ AmenitiesMode.prototype.setActiveModeButton = function (modeStr) {
     }
 };
 
-AmenitiesMode.prototype.setMode = function (modeStr) {
+AmenitiesMode.prototype.setMode = function (modeStr, options) {
+    const opts = options || {};
     const next = modeStr ?? '0';
+    if (!opts.fromManager && this._modeManager?.setMode) {
+        this._modeManager.setMode(next, { source: 'amenitiesMode' });
+        return;
+    }
+
     const sameMode = this.currentMode === next;
     if (sameMode && next !== '0') return;
 
+    const prevMode = this.currentMode;
     this.currentMode = next;
     this.setActiveModeButton(next);
-    this.app.fire('mode:change', next);
+
+    if (!opts.silentEvent) this.app.fire('mode:change', next, prevMode, 'amenitiesMode');
 
     if (next === '0') {
         this._csvLoadToken++;
@@ -267,6 +325,13 @@ AmenitiesMode.prototype.setMode = function (modeStr) {
         return;
     }
 
+    if (next !== '1') {
+        this._csvLoadToken++;
+        this.clearAmenities();
+        this.infoPanel && this.infoPanel.classList.remove('visible');
+        return;
+    }
+
     const orbit = this.getOrbit();
     if (orbit) {
         orbit.autoRotateMode = 1;
@@ -283,6 +348,36 @@ AmenitiesMode.prototype.setMode = function (modeStr) {
     this.loadDataFromCsv();
 };
 
+AmenitiesMode.prototype.applyInfoPanelContent = function (data) {
+    if (!data) return;
+    if (this.panelImage) {
+        this.panelImage.src = data.image || '';
+        this.panelImage.alt = data.title || '';
+    }
+    if (this.panelTitle) this.panelTitle.textContent = data.title || '';
+    if (this.panelDescription) this.panelDescription.textContent = data.description || '';
+};
+
+AmenitiesMode.prototype.openInfoPanel = function () {
+    if (!this.infoPanel) return;
+    if (this.infoPanel.classList.contains('visible')) return;
+    requestAnimationFrame(() => {
+        if (!this.infoPanel || !this._selectedAmenityData) return;
+        this.infoPanel.classList.add('visible');
+    });
+};
+
+AmenitiesMode.prototype.closeInfoPanel = function () {
+    if (this.infoPanel) this.infoPanel.classList.remove('visible');
+
+    if (this._selectedAmenityEl) {
+        this._selectedAmenityEl.classList.remove('selected-for-info');
+    }
+
+    this._selectedAmenityEl = null;
+    this._selectedAmenityData = null;
+};
+
 AmenitiesMode.prototype.onAmenityClick = function (e) {
     const item = e.target && e.target.closest ? e.target.closest('.amenities') : null;
     if (!item) return;
@@ -291,15 +386,34 @@ AmenitiesMode.prototype.onAmenityClick = function (e) {
     const data = this.amenitiesData[index];
     if (!data) return;
 
-    if (this.panelImage) {
-        this.panelImage.src = data.image || '';
-        this.panelImage.alt = data.title || '';
-    }
-    if (this.panelTitle) this.panelTitle.textContent = data.title || '';
-    if (this.panelDescription) this.panelDescription.textContent = data.description || '';
+    const prevSelected = this._selectedAmenityEl;
+    if (prevSelected && prevSelected !== item) prevSelected.classList.remove('selected-for-info');
+    item.classList.add('selected-for-info');
+    this._selectedAmenityEl = item;
 
-    this.infoPanel && this.infoPanel.classList.add('visible');
+    this.setExpandedAmenity(null);
+    this._selectedAmenityData = data;
+    this.applyInfoPanelContent(data);
+    this.updateInfoPanelPosition();
+    this.openInfoPanel();
+    this._forceDomUpdate = true;
+
     this.focusCameraOn(data.worldPos);
+};
+
+AmenitiesMode.prototype.setExpandedAmenity = function (item) {
+    const prev = this._expandedAmenityEl;
+    if (prev && prev !== item) {
+        prev.classList.remove('expanded');
+        prev.setAttribute('aria-expanded', 'false');
+    }
+
+    this._expandedAmenityEl = item || null;
+
+    if (item) {
+        item.classList.add('expanded');
+        item.setAttribute('aria-expanded', 'true');
+    }
 };
 
 AmenitiesMode.prototype.onAmenityKeyDown = function (e) {
@@ -319,6 +433,85 @@ AmenitiesMode.prototype.focusCameraOn = function (targetPosition) {
     orbit.setAmenitiesDistanceByOrientation && orbit.setAmenitiesDistanceByOrientation();
     orbit.focusOn && orbit.focusOn(targetPosition);
     orbit.lookAtPointSmoothly && orbit.lookAtPointSmoothly(targetPosition);
+};
+
+AmenitiesMode.prototype.updateInfoPanelPosition = function () {
+    if (!this.infoPanel || !this._selectedAmenityData || !this._selectedAmenityData.worldPos) return;
+
+    let anchorX = this._selectedAmenityData.lastX;
+    let anchorY = this._selectedAmenityData.lastY;
+
+    const hasDomAnchor =
+        this._selectedAmenityData.visible && Number.isFinite(anchorX) && Number.isFinite(anchorY);
+
+    if (!hasDomAnchor) {
+        const camera = this.cameraEntity && this.cameraEntity.camera;
+        if (!camera) return;
+
+        const rect = this.getCanvasRect();
+        if (!rect) return;
+
+        const screenPos = this._screenPos;
+        camera.worldToScreen(this._selectedAmenityData.worldPos, screenPos);
+
+        const onScreen =
+            screenPos.z > 0 && Number.isFinite(screenPos.x) && Number.isFinite(screenPos.y);
+        if (!onScreen) return;
+
+        anchorX = rect.left + screenPos.x;
+        anchorY = rect.top + screenPos.y;
+    }
+
+    const panelRect = this.infoPanel.getBoundingClientRect();
+    const panelWidth = panelRect.width || 300;
+    const panelHeight = panelRect.height || 200;
+
+    const margin = isFinite(this.infoPanelViewportMargin) ? this.infoPanelViewportMargin : 12;
+    const offset = isFinite(this.infoPanelOffset) ? this.infoPanelOffset : 36;
+    const shared = this.getShared();
+    const pos = shared?.computeInfoPanelPosition
+        ? shared.computeInfoPanelPosition({
+              anchorX,
+              anchorY,
+              panelWidth,
+              panelHeight,
+              viewportWidth: window.innerWidth,
+              viewportHeight: window.innerHeight,
+              offset,
+              margin
+          })
+        : (() => {
+              const halfW = panelWidth * 0.5;
+              const halfH = panelHeight * 0.5;
+              const minX = margin + halfW;
+              const maxX = window.innerWidth - margin - halfW;
+              const minY = margin + halfH;
+              const maxY = window.innerHeight - margin - halfH;
+              let x = anchorX + offset + halfW;
+              let y = anchorY;
+              if (x > maxX) x = anchorX - offset - halfW;
+              x = Math.min(maxX, Math.max(minX, x));
+              y = Math.min(maxY, Math.max(minY, y));
+              return { x, y };
+          })();
+    const x = pos.x;
+    const y = pos.y;
+
+    this.infoPanel.style.setProperty('--info-panel-x', `${x}px`);
+    this.infoPanel.style.setProperty('--info-panel-y', `${y}px`);
+};
+
+AmenitiesMode.prototype.updateAmenityTextWidths = function () {
+    const shared = this.getShared();
+    if (shared?.updateAmenityTextWidths) shared.updateAmenityTextWidths(this.amenitiesData);
+};
+
+AmenitiesMode.prototype.scheduleAmenityTextWidthUpdate = function () {
+    if (this._textWidthRaf) return;
+    this._textWidthRaf = requestAnimationFrame(() => {
+        this._textWidthRaf = 0;
+        this.updateAmenityTextWidths();
+    });
 };
 
 AmenitiesMode.prototype.postUpdate = function (dt) {
@@ -377,7 +570,9 @@ AmenitiesMode.prototype.loadDataFromCsv = function () {
 
 AmenitiesMode.prototype.renderAmenities = function (dataList) {
     this.clearAmenities();
-    this.infoPanel && this.infoPanel.classList.remove('visible');
+    if (this.infoPanel) {
+        this.infoPanel.classList.remove('visible');
+    }
 
     const container = this.amenitiesContainer;
     if (!container) return;
@@ -412,6 +607,7 @@ AmenitiesMode.prototype.renderAmenities = function (dataList) {
         const raw = dataList[i];
         const root = nodes[i];
         const style = root.style;
+        root.setAttribute('aria-expanded', 'false');
 
         this.amenitiesData.push({
             dom: root,
@@ -425,6 +621,8 @@ AmenitiesMode.prototype.renderAmenities = function (dataList) {
             visible: false
         });
     }
+
+    this.updateAmenityTextWidths();
 
     this._rectDirty = true;
     this._forceDomUpdate = true;
@@ -486,6 +684,8 @@ AmenitiesMode.prototype.updateDomPositions = function () {
             data.lastY = y;
         }
     }
+
+    this.updateInfoPanelPosition();
 };
 
 AmenitiesMode.prototype.clearAmenities = function () {
@@ -502,6 +702,11 @@ AmenitiesMode.prototype.clearAmenities = function () {
 
     this.setEmptyVisible(false);
     this.amenitiesData.length = 0;
+    this._expandedAmenityEl = null;
+    this._selectedAmenityData = null;
+    this.infoPanel && this.infoPanel.style.removeProperty('--info-panel-x');
+    this.infoPanel && this.infoPanel.style.removeProperty('--info-panel-y');
+    this._selectedAmenityEl = null;
 };
 
 AmenitiesMode.prototype.onDestroy = function () {
@@ -516,6 +721,7 @@ AmenitiesMode.prototype.onDestroy = function () {
 
     this.amenitiesContainer = null;
     this.infoPanel = null;
+    this.infoPanelClose = null;
     this.panelImage = null;
     this.panelTitle = null;
     this.panelDescription = null;
@@ -523,4 +729,10 @@ AmenitiesMode.prototype.onDestroy = function () {
     this._ui = null;
     this._emptyMessageEl = null;
     this._currentLang = null;
+    this._shared = null;
+    this._modeManager = null;
+    if (this._textWidthRaf) cancelAnimationFrame(this._textWidthRaf);
+    this._textWidthRaf = 0;
+    this._selectedAmenityData = null;
+    this._selectedAmenityEl = null;
 };

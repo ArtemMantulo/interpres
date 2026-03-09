@@ -16,6 +16,8 @@ HomeMode.attributes.add('dragThreshold', { type: 'number', default: 8 });
 HomeMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
     this._canvas = this.app?.graphicsDevice?.canvas || null;
+    this._modeManager = window.AppModeManager || null;
+    this._unregisterMode = null;
 
     this._homePlane = null;
     this._active = this.getInitialMode();
@@ -53,9 +55,13 @@ HomeMode.prototype.initialize = function () {
 
     this._homeMarkerActiveFlag = false;
 
-    this._onModeChange = (mode) => {
-        this._active = mode === '0';
+    this._setModeActive = (active) => {
+        this._active = !!active;
         if (!this._active) this.hideMarker();
+    };
+
+    this._onModeChange = (mode) => {
+        this._setModeActive(mode === '0');
     };
 
     this._onCanvasPointerDown = (e) => {
@@ -93,7 +99,14 @@ HomeMode.prototype.initialize = function () {
         this._pointerActive = false;
     };
 
-    this.app.on('mode:change', this._onModeChange, this);
+    if (this._modeManager?.registerMode) {
+        this._unregisterMode = this._modeManager.registerMode('0', {
+            enter: () => this._setModeActive(true),
+            exit: () => this._setModeActive(false)
+        });
+    } else {
+        this.app.on('mode:change', this._onModeChange, this);
+    }
 
     if (this._canvas) {
         this._canvas.addEventListener('pointerdown', this._onCanvasPointerDown);
@@ -107,6 +120,7 @@ HomeMode.prototype.initialize = function () {
 };
 
 HomeMode.prototype.getInitialMode = function () {
+    if (this._modeManager?.getMode) return this._modeManager.getMode() === '0';
     const mode = document.querySelector('.mode-panel .button.active')?.dataset?.mode || '0';
     return mode === '0';
 };
@@ -400,7 +414,8 @@ HomeMode.prototype.update = function (dt) {
 };
 
 HomeMode.prototype.onDestroy = function () {
-    this.app.off('mode:change', this._onModeChange, this);
+    if (this._unregisterMode) this._unregisterMode();
+    else this.app.off('mode:change', this._onModeChange, this);
 
     if (this._canvas) {
         this._canvas.removeEventListener('pointerdown', this._onCanvasPointerDown);
@@ -419,6 +434,9 @@ HomeMode.prototype.onDestroy = function () {
     this._markerLayerId = null;
     this._markerPending = false;
     this._setHomeMarkerActive(false);
+    this._modeManager = null;
+    this._unregisterMode = null;
+    this._setModeActive = null;
     this._onModeChange = null;
     this._onCanvasPointerDown = null;
     this._onCanvasPointerMove = null;

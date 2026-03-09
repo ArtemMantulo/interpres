@@ -22,8 +22,9 @@
         const line = document.createElement('div');
         line.className = 'amenities-line';
 
+        glass.appendChild(line);
         container.append(icon, text);
-        root.append(glass, container, line);
+        root.append(glass, container);
 
         template = root;
         return template;

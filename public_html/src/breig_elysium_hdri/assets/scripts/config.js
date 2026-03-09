@@ -83,6 +83,27 @@ export const AMENITIES_SETTINGS = {
     transformSuffix: ' translate(-50%, -50%)'
 };
 
+export const MODE_DEFINITIONS = [
+    { id: '0', label: 'home' },
+    { id: '1', label: 'amenities' },
+    { id: 'Gallery', label: 'gallery' }
+];
+
+export const MODE_MANAGER_SETTINGS = {
+    initialMode: '0',
+    buttonRootSelector: '.mode-panel'
+};
+
+export const APP_SCRIPT_SPECS = [
+    ['adjustPixelRatio.js', 'assets/scripts/utils/adjustPixelRatio.js', 1024],
+    ['orbitCamera.js', 'assets/scripts/orbitCamera.js', 3 * 1024],
+    ['amenitiesUi.js', 'assets/scripts/ui/amenitiesUi.js', 3 * 1024],
+    ['amenitiesShared.js', 'assets/scripts/modes/amenitiesShared.js', 3 * 1024],
+    ['homeMode.js', 'assets/scripts/homeMode.js', 3 * 1024],
+    ['amenitiesMode.js', 'assets/scripts/amenitiesMode.js', 3 * 1024],
+    ['gallery.js', 'assets/scripts/gallery.js', 3 * 1024]
+];
+
 export const CAMERA_SETTINGS = {
     position: [-1.792, 0.976, 1.127],
     euler: [-24.6, -58, 0],

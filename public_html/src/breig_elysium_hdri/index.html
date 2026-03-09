@@ -8,6 +8,12 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
         <link rel="stylesheet" href="assets/web/asset.css" />
     </head>
     <body>
@@ -31,15 +37,17 @@
         </div>
 
         <div class="mode-panel center hidden">
-            <div class="glass-panel border-shadow"></div>
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
+            </div>
             <div class="panel-container">
-                <div class="icon-image"></div>
                 <div
-                    class="button active"
+                    class="icon-image button active"
                     role="button"
                     tabindex="0"
                     data-mode="0"
-                    data-lng="home"
+                    aria-label="Home"
+                    aria-pressed="true"
                 ></div>
                 <div
                     class="button"
@@ -56,19 +64,26 @@
                     data-lng="gallery"
                 ></div>
             </div>
-            <div class="amenities-line"></div>
         </div>
 
         <div id="info-panel">
-            <div class="glass-panel border-shadow"></div>
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
+            </div>
             <div class="panel-container">
+                <button
+                    class="panel-close"
+                    type="button"
+                    aria-label="Close info panel"
+                ></button>
+                <div class="panel-title">Loading data...</div>
+                <div class="panel-description">Loading data...</div>
+                <div class="panel-line" aria-hidden="true"></div>
                 <img
                     class="panel-image"
                     src="assets/images/pictures/pic_loading.png"
                     alt="Picture"
                 />
-                <div class="panel-title">Loading data...</div>
-                <div class="panel-description">Loading data...</div>
             </div>
         </div>
 
@@ -91,34 +106,82 @@
         </div>
 
         <div id="ui-toggles" class="hidden">
-            <div id="fps-locker" class="ui-toggle">
-                <span class="setting-label">30 FPS</span>
-                <label class="switch">
-                    <input type="checkbox" id="fps30" />
-                    <span class="slider" aria-hidden="true"></span>
-                </label>
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
             </div>
             <div id="ui-visibility-toggle" class="ui-toggle">
-                <span class="setting-label">HIDE UI</span>
-                <label class="switch">
-                    <input type="checkbox" id="hide-ui" />
-                    <span class="slider" aria-hidden="true"></span>
-                </label>
+                <button
+                    id="hide-ui"
+                    class="visibility-toggle-button is-on"
+                    type="button"
+                    aria-label="UI Visibility"
+                    aria-pressed="false"
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text">Hide UI</span>
+                </div>
+            </div>
+            <div id="fps-locker" class="ui-toggle">
+                <button
+                    id="fps30"
+                    class="fpslock-toggle-button is-off"
+                    type="button"
+                    aria-label="FPS Lock"
+                    aria-pressed="false"
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text">FPS Lock</span>
+                </div>
             </div>
             <div id="quality-toggle" class="ui-toggle hidden">
-                <span class="setting-label">QUALITY</span>
-                <label class="switch">
-                    <input type="checkbox" id="quality" />
-                    <span class="slider" aria-hidden="true"></span>
-                </label>
+                <button
+                    id="quality"
+                    class="quality-toggle-button is-off"
+                    type="button"
+                    aria-label="Quality"
+                    aria-pressed="false"
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text">Quality</span>
+                </div>
             </div>
             <div id="sound-toggle" class="ui-toggle">
-                <span class="setting-label">SOUND</span>
-                <label class="switch">
-                    <input type="checkbox" id="sound" />
-                    <span class="slider" aria-hidden="true"></span>
-                </label>
+                <button
+                    id="sound"
+                    class="sound-toggle-button is-off"
+                    type="button"
+                    aria-label="Sound"
+                    aria-pressed="false"
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text">Sound</span>
+                </div>
             </div>
+        </div>
+
+        <div id="ui-restore-wrap" class="hidden">
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
+            </div>
+            <button
+                id="ui-restore-toggle"
+                class="visibility-toggle-button is-off"
+                type="button"
+                aria-label="Show UI"
+                aria-pressed="false"
+            ></button>
         </div>
 
         <div id="fullscreen-button" role="button" tabindex="0" aria-label="Fullscreen"></div>
