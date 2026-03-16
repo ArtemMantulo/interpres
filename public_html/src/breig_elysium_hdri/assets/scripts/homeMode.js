@@ -60,10 +60,6 @@ HomeMode.prototype.initialize = function () {
         if (!this._active) this.hideMarker();
     };
 
-    this._onModeChange = (mode) => {
-        this._setModeActive(mode === '0');
-    };
-
     this._onCanvasPointerDown = (e) => {
         if (!this._active) return;
         if (this._canvas && e.target !== this._canvas) return;
@@ -104,9 +100,7 @@ HomeMode.prototype.initialize = function () {
             enter: () => this._setModeActive(true),
             exit: () => this._setModeActive(false)
         });
-    } else {
-        this.app.on('mode:change', this._onModeChange, this);
-    }
+    } else console.warn('Home mode manager is unavailable.');
 
     if (this._canvas) {
         this._canvas.addEventListener('pointerdown', this._onCanvasPointerDown);
@@ -415,7 +409,6 @@ HomeMode.prototype.update = function (dt) {
 
 HomeMode.prototype.onDestroy = function () {
     if (this._unregisterMode) this._unregisterMode();
-    else this.app.off('mode:change', this._onModeChange, this);
 
     if (this._canvas) {
         this._canvas.removeEventListener('pointerdown', this._onCanvasPointerDown);
@@ -437,7 +430,6 @@ HomeMode.prototype.onDestroy = function () {
     this._modeManager = null;
     this._unregisterMode = null;
     this._setModeActive = null;
-    this._onModeChange = null;
     this._onCanvasPointerDown = null;
     this._onCanvasPointerMove = null;
     this._onCanvasPointerUp = null;

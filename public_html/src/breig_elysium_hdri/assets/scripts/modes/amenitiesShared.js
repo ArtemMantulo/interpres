@@ -14,15 +14,15 @@
     };
 
     const parseCsvText = (csvText, minColumns) => {
-        const rows = String(csvText || '')
-            .trim()
-            .split(/\r?\n/)
-            .filter(Boolean);
+        const csv = window.CsvShared;
+        const rows = csv?.parseRows
+            ? csv.parseRows(csvText, { delimiter: ';', minColumns })
+            : [];
         const dataList = [];
         const minCols = isFinite(minColumns) ? minColumns : 7;
 
         for (let i = 0; i < rows.length; i++) {
-            const parts = rows[i].split(';');
+            const parts = rows[i];
             if (parts.length < minCols) continue;
 
             const x = parseFloat(parts[4]);
@@ -81,7 +81,8 @@
         viewportWidth,
         viewportHeight,
         offset,
-        margin
+        margin,
+        portraitPlacement
     }) => {
         const halfW = panelWidth * 0.5;
         const halfH = panelHeight * 0.5;
@@ -90,16 +91,25 @@
         const maxX = viewportWidth - margin - halfW;
         const minY = margin + halfH;
         const maxY = viewportHeight - margin - halfH;
-
-        let x = anchorX + offset + halfW;
+        const isPortrait = viewportHeight > viewportWidth;
+        let x = anchorX;
         let y = anchorY;
+        let nextPortraitPlacement = portraitPlacement || null;
 
-        if (x > maxX) x = anchorX - offset - halfW;
+        if (isPortrait) {
+            const requiredOffset = offset + halfH;
+            const yAbove = anchorY - requiredOffset;
+            nextPortraitPlacement = 'above';
+            y = yAbove;
+        } else {
+            x = anchorX + offset + halfW;
+            if (x > maxX) x = anchorX - offset - halfW;
+        }
 
         x = Math.min(maxX, Math.max(minX, x));
         y = Math.min(maxY, Math.max(minY, y));
 
-        return { x, y };
+        return { x, y, portraitPlacement: nextPortraitPlacement };
     };
 
     window.AmenitiesShared = {

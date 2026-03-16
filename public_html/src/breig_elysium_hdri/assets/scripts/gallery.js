@@ -9,7 +9,6 @@ Gallery.attributes.add('thumbResetDelayMs', { type: 'number', default: 10 });
 Gallery.attributes.add('transitionMs', { type: 'number', default: 210 });
 
 Gallery.prototype.initialize = function () {
-    this.modeButton = null;
     this.panel = null;
     this.mainImage = null;
     this.thumbs = null;
@@ -69,7 +68,7 @@ Gallery.prototype.initialize = function () {
                 if (this.isOpen) this._emitVisibility(true);
             }
         });
-    }
+    } else console.warn('Gallery mode manager is unavailable.');
 
     if (!this._trySetup()) this.app.on('ui:ready', this._onUiReady);
 };
@@ -78,7 +77,7 @@ Gallery.prototype._trySetup = function () {
     const btn = document.querySelector('[data-mode="Gallery"]');
     const panel = document.querySelector('.gallery-panel');
     if (!btn || !panel) return false;
-    this._setup(btn, panel);
+    this._setup(panel);
     return true;
 };
 
@@ -116,10 +115,6 @@ Gallery.prototype._emitVisibility = function (hidden) {
     this.app.fire(hidden ? 'gallery:close' : 'gallery:open');
 
     if (hidden) {
-        if (this.modeButton && !this._modeManager) {
-            this.modeButton.classList.remove('active');
-            if (typeof this.modeButton.blur === 'function') this.modeButton.blur();
-        }
         this._resetVisual();
         this._setEmptyVisible(false);
         if (this.lastFocusEl && typeof this.lastFocusEl.focus === 'function')
@@ -131,7 +126,6 @@ Gallery.prototype._emitVisibility = function (hidden) {
                 if (this.thumbs) this.thumbs.scrollLeft = 0;
             }, this.thumbResetDelayMs | 0);
         }
-        if (this.modeButton && !this._modeManager) this.modeButton.classList.add('active');
     }
 };
 
@@ -200,8 +194,7 @@ Gallery.prototype._setIndex = function (i) {
     this._ensureActiveVisible();
 };
 
-Gallery.prototype._setup = function (btn, panel) {
-    this.modeButton = btn;
+Gallery.prototype._setup = function (panel) {
     this.panel = panel;
     this.emptyEl = panel.querySelector('.gallery-empty');
 
@@ -311,8 +304,6 @@ Gallery.prototype._setup = function (btn, panel) {
         this._emitVisibility(false);
         this._focusPrimary();
     };
-
-    if (!this._modeManager) btn.addEventListener('click', this.openHandler);
 
     if (this._pendingModeEnter) {
         this._pendingModeEnter = false;
@@ -505,8 +496,6 @@ Gallery.prototype.onDestroy = function () {
     if (this._onUiReady) this.app.off('ui:ready', this._onUiReady);
     if (this._unregisterMode) this._unregisterMode();
 
-    if (this.modeButton && this.openHandler)
-        this.modeButton.removeEventListener('click', this.openHandler);
     if (this.keyHandler) document.removeEventListener('keydown', this.keyHandler);
 
     if (this.panel && this.closeHandler) {
@@ -548,7 +537,6 @@ Gallery.prototype.onDestroy = function () {
     if (this.ptrWindowCancelHandler)
         window.removeEventListener('pointercancel', this.ptrWindowCancelHandler);
 
-    this.modeButton = null;
     this.panel = null;
     this.mainImage = null;
     this.thumbs = null;

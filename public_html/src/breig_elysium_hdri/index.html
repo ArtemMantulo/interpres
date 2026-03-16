@@ -36,24 +36,36 @@
             </div>
         </div>
 
+        <div id="apartments-container">
+            <div class="apartments-empty" role="status" aria-live="polite">No apartments available</div>
+        </div>
+
         <div class="mode-panel center hidden">
             <div class="glass-panel border-shadow">
                 <div class="amenities-line"></div>
             </div>
+            <div
+                class="icon-image button active"
+                role="button"
+                tabindex="0"
+                data-mode="0"
+                aria-label="Home"
+                aria-pressed="true"
+            ></div>
             <div class="panel-container">
-                <div
-                    class="icon-image button active"
-                    role="button"
-                    tabindex="0"
-                    data-mode="0"
-                    aria-label="Home"
-                    aria-pressed="true"
-                ></div>
                 <div
                     class="button"
                     role="button"
                     tabindex="0"
                     data-mode="1"
+                >
+                    Apartments
+                </div>
+                <div
+                    class="button"
+                    role="button"
+                    tabindex="0"
+                    data-mode="2"
                     data-lng="amenities"
                 ></div>
                 <div
@@ -62,6 +74,20 @@
                     tabindex="0"
                     data-mode="Gallery"
                     data-lng="gallery"
+                ></div>
+            </div>
+        </div>
+        <div id="floor-panel" class="center hidden" aria-hidden="true">
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
+            </div>
+            <div class="panel-container">
+                <div class="floor-panel-label">Floor:</div>
+                <div
+                    id="floor-panel-scroll"
+                    class="floor-panel-scroll"
+                    role="listbox"
+                    aria-label="Floors"
                 ></div>
             </div>
         </div>
@@ -85,6 +111,75 @@
                     alt="Picture"
                 />
             </div>
+        </div>
+
+        <div id="apartments-info-panel">
+            <div class="glass-panel border-shadow">
+                <div class="amenities-line"></div>
+            </div>
+            <div class="panel-container">
+                <button
+                    class="panel-close apartment-panel-close"
+                    type="button"
+                    aria-label="Close apartments panel"
+                ></button>
+                <div id="apartments-panel-title" class="panel-title apartment-panel-title">
+                    Loading data...
+                </div>
+                <div id="apartments-panel-data" class="apartment-panel-data">
+                    <span
+                        id="apartments-panel-area"
+                        class="apartment-panel-value apartment-panel-area"
+                    ></span>
+                    <span class="apartment-panel-separator" aria-hidden="true"></span>
+                    <span class="apartment-bed-icon" aria-hidden="true"></span>
+                    <span
+                        id="apartments-panel-bedrooms"
+                        class="apartment-panel-value apartment-panel-bedrooms"
+                    ></span>
+                    <span class="apartment-panel-separator" aria-hidden="true"></span>
+                    <span
+                        id="apartments-panel-availability"
+                        class="apartment-panel-value apartment-panel-availability"
+                    ></span>
+                </div>
+                <div id="apartments-panel-description" class="panel-description apartment-panel-description">
+                    Loading data...
+                </div>
+                <img
+                    id="apartments-panel-image"
+                    class="panel-image apartment-panel-image"
+                    src="assets/images/pictures/pic_loading.png"
+                    alt="Apartment"
+                />
+                <button id="apartments-panel-visit" class="apartment-panel-visit" type="button">
+                    Visit
+                </button>
+            </div>
+        </div>
+        <div id="info-panel-nav-wrap" aria-hidden="true">
+            <button
+                id="info-panel-prev"
+                class="info-panel-nav info-panel-nav-prev"
+                type="button"
+                aria-label="Previous amenity"
+            >
+                <div class="glass-panel border-shadow">
+                    <div class="amenities-line"></div>
+                </div>
+                <span class="info-panel-nav-arrow" aria-hidden="true"></span>
+            </button>
+            <button
+                id="info-panel-next"
+                class="info-panel-nav info-panel-nav-next"
+                type="button"
+                aria-label="Next amenity"
+            >
+                <div class="glass-panel border-shadow">
+                    <div class="amenities-line"></div>
+                </div>
+                <span class="info-panel-nav-arrow" aria-hidden="true"></span>
+            </button>
         </div>
 
         <div class="gallery-panel hidden">

@@ -19,6 +19,109 @@
         height: 32px;
         padding: 4px 0;
     }
+    #floor-panel {
+        position: absolute;
+        top: 46px;
+        height: 32px;
+        left: 50%;
+        width: var(--floor-panel-width, calc(100vw - 40px));
+        max-width: calc(100vw - 40px);
+        transform: translateX(-50%);
+        overflow: visible;
+    }
+    #floor-panel.is-overflowing {
+        overflow: hidden;
+    }
+    #floor-panel > .glass-panel {
+        display: block;
+        background: rgba(51, 51, 51, 0.4);
+    }
+    #floor-panel .border-shadow {
+        border: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        filter: none;
+        border-radius: 999px;
+    }
+    #floor-panel .amenities-line {
+        padding: 1px;
+        background: linear-gradient(
+                to bottom,
+                rgba(200, 200, 200, 0.4) 0%,
+                rgba(200, 200, 200, 0) 100%
+            )
+            top left / 100% 100% no-repeat;
+    }
+    #floor-panel .panel-container {
+        width: 100%;
+        min-width: 0;
+        height: 28px;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        padding: 0 8px;
+        justify-content: flex-start;
+    }
+    .floor-panel-label {
+        display: block;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.46);
+    }
+    .floor-panel-scroll {
+        flex: 1 1 auto;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .floor-panel-item {
+        width: 24px;
+        min-width: 24px;
+        height: 24px;
+        padding: 0;
+        justify-content: center;
+        background-color: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: none;
+        font-size: 11px;
+    }
+    .floor-panel-item::before {
+        display: none;
+    }
+    .floor-panel-item-number {
+        position: static;
+        inset: auto;
+        width: auto;
+        min-width: 0;
+        flex: 0 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transform: none;
+    }
+    .floor-panel-item-label {
+        display: none;
+    }
+    .floor-panel-item:hover,
+    .floor-panel-item:focus-visible {
+        width: 24px;
+        background-color: transparent;
+    }
+    .floor-panel-item:focus-visible {
+        outline: none !important;
+    }
+    .floor-panel-item.active {
+        width: 24px;
+        background-color: rgba(255, 255, 255, 0.28);
+    }
+    .floor-panel-item.active .floor-panel-item-number {
+        opacity: 1;
+        transform: none;
+    }
     .icon-image {
         height: 12px;
         width: 49px;
@@ -60,6 +163,31 @@
     .amenities:focus-visible:not(.selected-for-info) .amenities-text {
         max-width: var(--amenities-text-max-width);
         padding-right: 4px;
+    }
+    .apartment-pin {
+        height: 36px;
+    }
+    .apartment-pin-icon {
+        width: 18px;
+        height: 18px;
+        padding: 9px;
+    }
+    .apartment-pin-text {
+        font-size: 12px;
+        padding-right: 6px;
+    }
+    #apartments-info-panel {
+        width: 280px;
+    }
+    #apartments-info-panel .panel-container {
+        gap: 8px;
+    }
+    .apartment-panel-data {
+        font-size: 11px;
+    }
+    .apartment-panel-visit {
+        height: 36px;
+        font-size: 13px;
     }
     .amenities-line {
         padding: 1px;
@@ -129,8 +257,175 @@
 
     .mode-panel {
         top: 10px;
+        height: 56px;
+        padding: 0;
+        left: 30px;
+        right: 30px;
+        width: auto;
+        max-width: calc(100vw - 60px);
+        transform: none;
+        overflow: visible;
+        justify-content: flex-start;
+        gap: 4px;
+    }
+    #floor-panel {
+        position: absolute;
+        top: 72px;
+        height: 56px;
+        left: 50%;
+        right: auto;
+        width: var(--floor-panel-width, calc(100vw - 60px));
+        max-width: calc(100vw - 60px);
+        transform: translateX(-50%);
+        justify-content: flex-start;
+        overflow: visible;
+    }
+    #floor-panel.is-overflowing {
+        overflow: hidden;
+    }
+    #floor-panel > .glass-panel {
+        display: block;
+        background: rgba(51, 51, 51, 0.4);
+    }
+    #floor-panel .border-shadow {
+        border: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        filter: none;
+        border-radius: 100px;
+    }
+    #floor-panel .amenities-line {
+        padding: 1px;
+        background: linear-gradient(
+                to bottom,
+                rgba(200, 200, 200, 0.4) 0%,
+                rgba(200, 200, 200, 0) 100%
+            )
+            top left / 100% 100% no-repeat;
+    }
+    #floor-panel .panel-container {
+        width: 100%;
+        min-width: 0;
+        height: 40px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 0 12px;
+    }
+    .floor-panel-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.46);
+        font-size: 14px;
+    }
+    .floor-panel-scroll {
+        flex: 1 1 auto;
+        min-width: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .floor-panel-item {
+        width: 32px;
+        min-width: 32px;
         height: 32px;
-        padding: 4px 0;
+        padding: 0;
+        justify-content: center;
+        background-color: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: none;
+    }
+    .floor-panel-item::before {
+        display: none;
+    }
+    .floor-panel-item-number {
+        position: static;
+        inset: auto;
+        width: auto;
+        min-width: 0;
+        flex: 0 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transform: none;
+    }
+    .floor-panel-item-label {
+        display: none;
+    }
+    .floor-panel-item:hover,
+    .floor-panel-item:focus-visible {
+        width: 32px;
+        background-color: transparent;
+    }
+    .floor-panel-item:focus-visible {
+        outline: none !important;
+    }
+    .floor-panel-item.active {
+        width: 32px;
+        background-color: rgba(255, 255, 255, 0.28);
+    }
+    .floor-panel-item.active .floor-panel-item-number {
+        opacity: 1;
+        transform: none;
+    }
+    .mode-panel > [data-mode='0'] {
+        flex: 0 0 auto;
+        position: relative;
+        z-index: 3;
+    }
+    .mode-panel .panel-container {
+        width: auto;
+        min-width: 0;
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        gap: 4px;
+        --mode-scroll-pad-left: 12px;
+        --mode-scroll-pad-right: 16px;
+        padding: 0 var(--mode-scroll-pad-right) 0 var(--mode-scroll-pad-left);
+        transition: padding-left 0.24s ease;
+    }
+    .mode-panel .panel-container::-webkit-scrollbar {
+        display: none;
+    }
+    .mode-panel .panel-container {
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            #000 16px,
+            #000 calc(100% - 32px),
+            transparent calc(100% - 16px),
+            transparent 100%
+        );
+        mask-image: linear-gradient(
+            to right,
+            transparent 0,
+            #000 16px,
+            #000 calc(100% - 32px),
+            transparent calc(100% - 16px),
+            transparent 100%
+        );
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+    }
+    .mode-panel .panel-container.is-scrolled {
+        --mode-scroll-pad-left: 4px;
+    }
+    .mode-panel .panel-container .button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+    .mode-panel .panel-container.is-dragging {
+        cursor: grabbing;
     }
     .icon-image {
         height: 14px;
@@ -147,6 +442,38 @@
 
     #fullscreen-button {
         right: 18px;
+    }
+    #info-panel-nav-wrap .info-panel-nav {
+        display: flex;
+        height: 215px;
+    }
+
+    #ui-toggles {
+        left: 50%;
+        right: auto;
+        top: auto;
+        bottom: var(--ui-bottom);
+        transform: translateX(-50%);
+        flex-direction: row;
+    }
+    #ui-toggles .glass-panel.border-shadow,
+    #ui-toggles .amenities-line {
+        border-radius: 999px;
+    }
+    #ui-toggles .glass-panel.border-shadow {
+        border: 0px;
+    }
+    #ui-toggles .amenities-line {
+        padding: 1px;
+        border-radius: 999px;
+        background: linear-gradient(
+            155deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0.0001) 45%,
+            rgba(255, 255, 255, 0.0001) 55%,
+            rgba(255, 255, 255, 0.4) 100%
+        )
+        top left / 100% 100% no-repeat;
     }
 
     .amenities {
@@ -177,34 +504,38 @@
         max-width: var(--amenities-text-max-width);
         padding-right: 4px;
     }
+    .apartment-pin {
+        height: 40px;
+        max-width: calc(100vw - 40px);
+    }
+    .apartment-pin-icon {
+        width: 20px;
+        height: 20px;
+        padding: 10px;
+    }
+    .apartment-pin-text {
+        font-size: 12px;
+        padding-right: 6px;
+    }
+    #apartments-info-panel {
+        width: min(340px, calc(100vw - 24px));
+    }
+    #apartments-info-panel .panel-container {
+        gap: 10px;
+    }
+    .apartment-panel-data {
+        font-size: 12px;
+        gap: 6px;
+    }
+    .apartment-panel-visit {
+        height: 38px;
+        font-size: 14px;
+    }
     .amenities-line {
         padding: 1px;
     }
     .mode-panel .amenities-line {
         padding: 1px;
-    }
-
-    #info-panel {
-        width: 175px;
-        height: auto;
-    }
-    #info-panel .glass-panel.border-shadow {
-        border-radius: 24px;
-    }
-    #info-panel .panel-container {
-        gap: 4px;
-    }
-    .panel-image {
-        height: 150px;
-        border-radius: 16px;
-    }
-    .panel-title {
-        padding: 2px 44px 0 8px;
-        font-size: 16px;
-    }
-    .panel-description {
-        padding: 0 8px 16px 8px;
-        font-size: 7px;
     }
 
     .gallery-panel {
@@ -223,5 +554,14 @@
     .thumbnail {
         scroll-snap-align: start;
         height: 60%;
+    }
+
+    .amenities-text {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .apartment-pin-text {
+        font-size: 14px;
     }
 }

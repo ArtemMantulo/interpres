@@ -52,6 +52,9 @@ button,
 #ui-restore-toggle:focus-visible,
 .gallery-close:focus-visible,
 .amenities:focus-visible,
+.apartment-pin:focus-visible,
+.apartment-panel-visit:focus-visible,
+.floor-panel-item:focus-visible,
 .thumbnail:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85) !important;
     outline-offset: 3px;
@@ -223,6 +226,11 @@ button,
 .mode-panel .panel-container {
     gap: 4px;
     height: 40px;
+    padding: 0 8px 0 4px;
+}
+
+.mode-panel > [data-mode='0'] {
+    margin-left: 24px;
 }
 
 .mode-panel .button {

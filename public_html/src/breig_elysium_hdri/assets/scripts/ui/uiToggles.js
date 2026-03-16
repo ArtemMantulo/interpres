@@ -35,8 +35,11 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
 
     const uiTargets = [
         document.getElementById('amenities-container'),
+        document.getElementById('apartments-container'),
         document.querySelector('.mode-panel'),
+        document.getElementById('floor-panel'),
         document.getElementById('info-panel'),
+        document.getElementById('apartments-info-panel'),
         document.getElementById('debug-stats'),
         document.getElementById('fullscreen-button'),
         uiTogglesPanel,
@@ -53,7 +56,9 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
             const el = uiTargets[i];
             if (!el) continue;
             const forceHidden = el === qualityToggleWrap && !isDesktop;
-            el.classList.toggle('hidden', hidden || forceHidden);
+            const keepHiddenByState =
+                !hidden && el.id === 'floor-panel' && el.getAttribute('aria-hidden') === 'true';
+            el.classList.toggle('hidden', hidden || forceHidden || keepHiddenByState);
         }
         if (uiRestoreToggleWrap) uiRestoreToggleWrap.classList.toggle('hidden', !hidden);
         if (app && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;

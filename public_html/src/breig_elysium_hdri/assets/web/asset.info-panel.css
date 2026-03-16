@@ -56,6 +56,107 @@
     padding: 16px;
 }
 
+#info-panel-nav-wrap {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    --info-panel-nav-left-x: calc(var(--info-panel-x) - 180px);
+    --info-panel-nav-right-x: calc(var(--info-panel-x) + 180px);
+    --info-panel-nav-y: var(--info-panel-y);
+}
+
+#info-panel-nav-wrap[aria-hidden='true'] {
+    display: none;
+}
+
+.info-panel-nav {
+    position: absolute;
+    top: var(--info-panel-nav-y);
+    width: 28px;
+    height: 56px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: 16px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    transform: translateY(-50%);
+    transition: none;
+    z-index: 3;
+    pointer-events: auto;
+    overflow: hidden;
+}
+
+.info-panel-nav:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+.info-panel-nav[aria-hidden='true'] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.info-panel-nav:hover,
+.info-panel-nav:focus-visible,
+.info-panel-nav:active {
+    background-color: transparent;
+    outline: none;
+}
+
+.info-panel-nav-prev {
+    left: var(--info-panel-nav-left-x);
+    border-radius: 16px 0 0 16px;
+}
+
+.info-panel-nav-next {
+    left: var(--info-panel-nav-right-x);
+    border-radius: 0 16px 16px 0;
+}
+
+.info-panel-nav .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    -webkit-backdrop-filter: blur(68px);
+    backdrop-filter: blur(68px);
+    border-radius: 16px;
+    background-color: rgba(51, 51, 51, 0.4);
+}
+
+.info-panel-nav .amenities-line {
+    display: none;
+}
+
+.info-panel-nav-prev .glass-panel.border-shadow {
+    border-radius: 16px 0 0 16px;
+}
+
+.info-panel-nav-next .glass-panel.border-shadow {
+    border-radius: 0 16px 16px 0;
+}
+
+.info-panel-nav-arrow {
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid rgba(255, 255, 255, 0.95);
+    border-right: 2px solid rgba(255, 255, 255, 0.95);
+    z-index: 2;
+}
+
+.info-panel-nav-prev .info-panel-nav-arrow {
+    transform: rotate(-135deg);
+}
+
+.info-panel-nav-next .info-panel-nav-arrow {
+    transform: rotate(45deg);
+}
+
 .panel-close {
     position: absolute;
     top: 12px;

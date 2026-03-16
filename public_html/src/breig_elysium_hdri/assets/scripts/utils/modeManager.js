@@ -55,12 +55,7 @@ export function createModeManager(app, options = {}) {
     const setMode = (nextMode, meta = {}) => {
         const next = String(nextMode ?? '');
         if (!next) return false;
-        if (!modeMap.size || modeMap.has(next)) {
-            // Known mode set
-        } else {
-            // Allow dynamic modes, but keep trace in mode map.
-            modeMap.set(next, { id: next, label: next });
-        }
+        if (modeMap.size && !modeMap.has(next)) modeMap.set(next, { id: next, label: next });
 
         const prev = state.mode;
         if (prev === next) {

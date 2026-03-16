@@ -40,6 +40,7 @@
         for (let i = 0; i < dataList.length; i++) {
             const data = dataList[i];
             const root = tpl.cloneNode(true);
+            root.style.display = 'none';
 
             const panelContainer = root.children[1];
             panelContainer.children[0].src = data.iconUrl;

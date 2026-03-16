@@ -1,4 +1,6 @@
 var AmenitiesMode = pc.createScript('amenitiesMode');
+const MODE_HOME = '0';
+const MODE_AMENITIES = '2';
 
 AmenitiesMode.attributes.add('currentCsv', { type: 'asset' });
 AmenitiesMode.attributes.add('fpsLockerState', { type: 'json' });
@@ -8,27 +10,27 @@ AmenitiesMode.attributes.add('screenVisibilityThreshold', { type: 'number', defa
 AmenitiesMode.attributes.add('transformSuffix', { type: 'string', default: ' translate(-50%, -50%)' });
 AmenitiesMode.attributes.add('infoPanelOffset', { type: 'number', default: 36 });
 AmenitiesMode.attributes.add('infoPanelViewportMargin', { type: 'number', default: 12 });
+AmenitiesMode.attributes.add('portraitLookUpDegrees', { type: 'number', default: 10 });
 
 AmenitiesMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
     this.amenitiesContainer = document.querySelector('#amenities-container');
 
     this.infoPanel = document.querySelector('#info-panel');
+    this.infoPanelNavWrap = document.querySelector('#info-panel-nav-wrap');
     this.infoPanelClose = this.infoPanel ? this.infoPanel.querySelector('.panel-close') : null;
+    this.infoPanelPrev = document.querySelector('#info-panel-prev');
+    this.infoPanelNext = document.querySelector('#info-panel-next');
     this.panelImage = this.infoPanel ? this.infoPanel.querySelector('.panel-image') : null;
     this.panelTitle = this.infoPanel ? this.infoPanel.querySelector('.panel-title') : null;
     this.panelDescription = this.infoPanel ? this.infoPanel.querySelector('.panel-description') : null;
 
-    this._modeButtons = Array.from(document.querySelectorAll('.mode-panel .button'));
     this._modeManager = window.AppModeManager || null;
-
-    this._modeBtn0 = this._modeButtons.find((b) => b && b.dataset && b.dataset.mode === '0') || null;
-    this._modeBtn1 = this._modeButtons.find((b) => b && b.dataset && b.dataset.mode === '1') || null;
 
     this.currentMode =
         (this._modeManager && this._modeManager.getMode && this._modeManager.getMode()) ||
         document.querySelector('.mode-panel .button.active')?.dataset?.mode ||
-        '0';
+        MODE_HOME;
 
     const orbit = this.getOrbit();
     if (orbit && orbit.targetPosition) {
@@ -40,6 +42,7 @@ AmenitiesMode.prototype.initialize = function () {
 
     this.amenitiesData = [];
     this._screenPos = new pc.Vec3();
+    this._focusTarget = new pc.Vec3();
 
     this._canvasRect = null;
     this._rectDirty = true;
@@ -51,20 +54,18 @@ AmenitiesMode.prototype.initialize = function () {
     this._amenitiesCache = new Map();
     this._ui = null;
     this._shared = window.AmenitiesShared || null;
+    this._modeShared = window.AmenitiesModeShared || null;
+    this._panelShared = window.AmenitiesPanelShared || null;
+    this._domShared = window.AmenitiesDomShared || null;
     this._emptyMessageEl = null;
     this._currentLang = null;
     this._expandedAmenityEl = null;
     this._selectedAmenityEl = null;
     this._selectedAmenityData = null;
+    this._infoPanelPortraitPlacement = null;
     this._textWidthRaf = 0;
-
-    this._onModeBtn0Click = () => this.setMode('0');
-    this._onModeBtn1Click = () => this.setMode('1');
-    this._onModeKeyDown = (e) => {
-        if (!window.UiKeys?.isActivateKey?.(e)) return;
-        e.preventDefault();
-        e.currentTarget?.click?.();
-    };
+    this._infoPanelSize = { width: 300, height: 200, dirty: true };
+    this._infoPanelResizeObserver = null;
 
     this._onAmenityClick = this.onAmenityClick.bind(this);
     this._onAmenityKeyDown = this.onAmenityKeyDown.bind(this);
@@ -78,14 +79,25 @@ AmenitiesMode.prototype.initialize = function () {
         e.preventDefault();
         this.closeInfoPanel();
     };
+    this._onInfoPanelPrevClick = () => this.navigateSelectedAmenity(-1);
+    this._onInfoPanelNextClick = () => this.navigateSelectedAmenity(1);
     this._onViewportDirty = () => {
         this._rectDirty = true;
+        this.markInfoPanelSizeDirty();
+        const orbit = this.getOrbit();
+        if (orbit && orbit.setLookAtVerticalAngle) {
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const lookUpDegrees = isFinite(this.portraitLookUpDegrees) ? this.portraitLookUpDegrees : 15;
+            const shouldOffset = this.currentMode === MODE_AMENITIES && isPortrait;
+            orbit.setLookAtVerticalAngle(shouldOffset ? lookUpDegrees : 0);
+        }
         this.scheduleAmenityTextWidthUpdate();
         this._forceDomUpdate = true;
+        this.updateInfoPanelNavState();
     };
 
     this.bindDomEvents();
-    this.setActiveModeButton(this.currentMode);
+    this.updateInfoPanelNavState();
 
     this._ui = window.AmenitiesUi || null;
 
@@ -101,25 +113,21 @@ AmenitiesMode.prototype.initialize = function () {
             }
         }
     }
+
+    if (this.infoPanel && typeof ResizeObserver !== 'undefined') {
+        this._infoPanelResizeObserver = new ResizeObserver(() => this.markInfoPanelSizeDirty());
+        this._infoPanelResizeObserver.observe(this.infoPanel);
+    }
 };
 
 AmenitiesMode.prototype.bindDomEvents = function () {
-    if (!this._modeManager) {
-        this._modeBtn0 && this._modeBtn0.addEventListener('click', this._onModeBtn0Click);
-        this._modeBtn1 && this._modeBtn1.addEventListener('click', this._onModeBtn1Click);
-
-        if (this._modeButtons && this._modeButtons.length) {
-            for (let i = 0; i < this._modeButtons.length; i++) {
-                this._modeButtons[i].addEventListener('keydown', this._onModeKeyDown);
-            }
-        }
-    }
-
     this.amenitiesContainer && this.amenitiesContainer.addEventListener('click', this._onAmenityClick);
     this.amenitiesContainer && this.amenitiesContainer.addEventListener('keydown', this._onAmenityKeyDown);
     this.infoPanelClose && this.infoPanelClose.addEventListener('click', this._onInfoPanelCloseClick);
     this.infoPanelClose &&
         this.infoPanelClose.addEventListener('keydown', this._onInfoPanelCloseKeyDown);
+    this.infoPanelPrev && this.infoPanelPrev.addEventListener('click', this._onInfoPanelPrevClick);
+    this.infoPanelNext && this.infoPanelNext.addEventListener('click', this._onInfoPanelNextClick);
 
     window.addEventListener('resize', this._onViewportDirty, { passive: true });
     window.addEventListener('scroll', this._onViewportDirty, { passive: true });
@@ -127,23 +135,14 @@ AmenitiesMode.prototype.bindDomEvents = function () {
 };
 
 AmenitiesMode.prototype.unbindDomEvents = function () {
-    if (!this._modeManager) {
-        this._modeBtn0 && this._modeBtn0.removeEventListener('click', this._onModeBtn0Click);
-        this._modeBtn1 && this._modeBtn1.removeEventListener('click', this._onModeBtn1Click);
-
-        if (this._modeButtons && this._modeButtons.length) {
-            for (let i = 0; i < this._modeButtons.length; i++) {
-                this._modeButtons[i].removeEventListener('keydown', this._onModeKeyDown);
-            }
-        }
-    }
-
     this.amenitiesContainer && this.amenitiesContainer.removeEventListener('click', this._onAmenityClick);
     this.amenitiesContainer && this.amenitiesContainer.removeEventListener('keydown', this._onAmenityKeyDown);
     this.infoPanelClose &&
         this.infoPanelClose.removeEventListener('click', this._onInfoPanelCloseClick);
     this.infoPanelClose &&
         this.infoPanelClose.removeEventListener('keydown', this._onInfoPanelCloseKeyDown);
+    this.infoPanelPrev && this.infoPanelPrev.removeEventListener('click', this._onInfoPanelPrevClick);
+    this.infoPanelNext && this.infoPanelNext.removeEventListener('click', this._onInfoPanelNextClick);
 
     window.removeEventListener('resize', this._onViewportDirty);
     window.removeEventListener('scroll', this._onViewportDirty);
@@ -164,6 +163,21 @@ AmenitiesMode.prototype.getShared = function () {
     return this._shared;
 };
 
+AmenitiesMode.prototype.getModeShared = function () {
+    if (!this._modeShared && window.AmenitiesModeShared) this._modeShared = window.AmenitiesModeShared;
+    return this._modeShared;
+};
+
+AmenitiesMode.prototype.getPanelShared = function () {
+    if (!this._panelShared && window.AmenitiesPanelShared) this._panelShared = window.AmenitiesPanelShared;
+    return this._panelShared;
+};
+
+AmenitiesMode.prototype.getDomShared = function () {
+    if (!this._domShared && window.AmenitiesDomShared) this._domShared = window.AmenitiesDomShared;
+    return this._domShared;
+};
+
 AmenitiesMode.prototype.getLang = function () {
     const shared = this.getShared();
     if (shared?.resolveLang) {
@@ -175,19 +189,8 @@ AmenitiesMode.prototype.getLang = function () {
 
     const raw = document.documentElement.getAttribute('lang') || navigator.language || 'en';
     if (appLang?.normalize) return appLang.normalize(raw);
-
     const lang = String(raw).split('-')[0].toLowerCase();
-    return lang === 'en' ||
-        lang === 'ru' ||
-        lang === 'ko' ||
-        lang === 'zh' ||
-        lang === 'de' ||
-        lang === 'fr' ||
-        lang === 'es' ||
-        lang === 'ar' ||
-        lang === 'ja'
-        ? lang
-        : 'en';
+    return lang || 'en';
 };
 
 AmenitiesMode.prototype.ensureCsvAssets = function () {
@@ -208,54 +211,10 @@ AmenitiesMode.prototype.ensureCsvAssets = function () {
     if (this.currentCsv && !this.currentCsv.registry) this.app.assets.add(this.currentCsv);
 };
 
-AmenitiesMode.prototype.getAssetCacheKey = function (asset) {
-    const shared = this.getShared();
-    if (shared?.getAssetCacheKey) return shared.getAssetCacheKey(asset);
-    if (!asset) return '';
-    const url = asset.getFileUrl?.() || asset.file?.url || asset.url || '';
-    return url || String(asset.id || asset.name || '');
-};
-
-AmenitiesMode.prototype.parseCsvText = function (csvText) {
-    const shared = this.getShared();
-    if (shared?.parseCsvText) return shared.parseCsvText(csvText, this.csvMinColumns);
-
-    const rows = String(csvText || '').trim().split(/\r?\n/).filter(Boolean);
-    const dataList = [];
-    const minColumns = isFinite(this.csvMinColumns) ? this.csvMinColumns : 7;
-
-    for (let i = 0; i < rows.length; i++) {
-        const parts = rows[i].split(';');
-        if (parts.length < minColumns) continue;
-
-        const x = parseFloat(parts[4]);
-        const y = parseFloat(parts[5]);
-        const z = parseFloat(parts[6]);
-        if (!isFinite(x) || !isFinite(y) || !isFinite(z)) continue;
-
-        dataList.push({
-            iconUrl: parts[0].trim(),
-            title: parts[1].trim(),
-            image: parts[2].trim(),
-            description: parts[3].trim(),
-            worldPos: new pc.Vec3(x, y, z)
-        });
-    }
-
-    return dataList;
-};
-
 AmenitiesMode.prototype.getAmenitiesData = function (asset) {
     const shared = this.getShared();
-    if (shared?.getAmenitiesData) {
-        return shared.getAmenitiesData(this._amenitiesCache, asset, this.csvMinColumns);
-    }
-
-    const key = this.getAssetCacheKey(asset);
-    if (key && this._amenitiesCache.has(key)) return this._amenitiesCache.get(key);
-    const dataList = this.parseCsvText(asset?.resource || '');
-    if (key) this._amenitiesCache.set(key, dataList);
-    return dataList;
+    if (!shared?.getAmenitiesData) return [];
+    return shared.getAmenitiesData(this._amenitiesCache, asset, this.csvMinColumns);
 };
 
 AmenitiesMode.prototype.setEmptyVisible = function (visible) {
@@ -276,229 +235,74 @@ AmenitiesMode.prototype.getCanvasRect = function () {
     return this._canvasRect;
 };
 
-AmenitiesMode.prototype.setActiveModeButton = function (modeStr) {
-    if (!this._modeButtons) return;
+AmenitiesMode.prototype.markInfoPanelSizeDirty = function () {
+    if (!this._infoPanelSize) return;
+    this._infoPanelSize.dirty = true;
+};
 
-    for (let i = 0; i < this._modeButtons.length; i++) {
-        const btn = this._modeButtons[i];
-        if (!btn) continue;
-        const isActive = btn.dataset.mode === modeStr;
-        btn.classList.toggle('active', isActive);
-        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+AmenitiesMode.prototype.getInfoPanelSize = function () {
+    const state = this._infoPanelSize || (this._infoPanelSize = { width: 300, height: 200, dirty: true });
+    if (!this.infoPanel) return { width: state.width, height: state.height };
+    if (!state.dirty && state.width > 0 && state.height > 0) {
+        return { width: state.width, height: state.height };
     }
+    const rect = this.infoPanel.getBoundingClientRect();
+    if (rect && isFinite(rect.width) && rect.width > 0) state.width = rect.width;
+    if (rect && isFinite(rect.height) && rect.height > 0) state.height = rect.height;
+    state.dirty = false;
+    return { width: state.width || 300, height: state.height || 200 };
 };
 
 AmenitiesMode.prototype.setMode = function (modeStr, options) {
-    const opts = options || {};
-    const next = modeStr ?? '0';
-    if (!opts.fromManager && this._modeManager?.setMode) {
-        this._modeManager.setMode(next, { source: 'amenitiesMode' });
-        return;
-    }
-
-    const sameMode = this.currentMode === next;
-    if (sameMode && next !== '0') return;
-
-    const prevMode = this.currentMode;
-    this.currentMode = next;
-    this.setActiveModeButton(next);
-
-    if (!opts.silentEvent) this.app.fire('mode:change', next, prevMode, 'amenitiesMode');
-
-    if (next === '0') {
-        this._csvLoadToken++;
-        this.clearAmenities();
-        this.infoPanel && this.infoPanel.classList.remove('visible');
-
-        const orbit = this.getOrbit();
-        if (!orbit) return;
-
-        orbit.autoRotateMode = 0;
-        if (orbit.setAutoRotateEnabled) orbit.setAutoRotateEnabled(true);
-        else orbit.autoRotateEnabled = true;
-
-        orbit.adjustDistanceForOrientation && orbit.adjustDistanceForOrientation();
-        orbit.setDistanceLimits && orbit.setDistanceLimits(orbit.minDistance, orbit.maxDistance);
-
-        orbit.resetInteractionState && orbit.resetInteractionState();
-        orbit.focusOn && orbit.focusOn(this._homeTarget);
-        return;
-    }
-
-    if (next !== '1') {
-        this._csvLoadToken++;
-        this.clearAmenities();
-        this.infoPanel && this.infoPanel.classList.remove('visible');
-        return;
-    }
-
-    const orbit = this.getOrbit();
-    if (orbit) {
-        orbit.autoRotateMode = 1;
-        if (orbit.setAutoRotateEnabled) orbit.setAutoRotateEnabled(false);
-        else orbit.autoRotateEnabled = false;
-        orbit.resetInteractionState && orbit.resetInteractionState();
-        orbit.focusOn && orbit.focusOn(this._homeTarget);
-    }
-
-    this._forceDomUpdate = true;
-    this._rectDirty = true;
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) this.app.renderNextFrame = true;
-
-    this.loadDataFromCsv();
+    this.getModeShared()?.setMode?.(this, modeStr, options);
 };
 
 AmenitiesMode.prototype.applyInfoPanelContent = function (data) {
-    if (!data) return;
-    if (this.panelImage) {
-        this.panelImage.src = data.image || '';
-        this.panelImage.alt = data.title || '';
-    }
-    if (this.panelTitle) this.panelTitle.textContent = data.title || '';
-    if (this.panelDescription) this.panelDescription.textContent = data.description || '';
+    this.getPanelShared()?.applyInfoPanelContent?.(this, data);
 };
 
 AmenitiesMode.prototype.openInfoPanel = function () {
-    if (!this.infoPanel) return;
-    if (this.infoPanel.classList.contains('visible')) return;
-    requestAnimationFrame(() => {
-        if (!this.infoPanel || !this._selectedAmenityData) return;
-        this.infoPanel.classList.add('visible');
-    });
+    this.getPanelShared()?.openInfoPanel?.(this);
 };
 
 AmenitiesMode.prototype.closeInfoPanel = function () {
-    if (this.infoPanel) this.infoPanel.classList.remove('visible');
-
-    if (this._selectedAmenityEl) {
-        this._selectedAmenityEl.classList.remove('selected-for-info');
-    }
-
-    this._selectedAmenityEl = null;
-    this._selectedAmenityData = null;
+    this.getPanelShared()?.closeInfoPanel?.(this);
 };
 
 AmenitiesMode.prototype.onAmenityClick = function (e) {
-    const item = e.target && e.target.closest ? e.target.closest('.amenities') : null;
-    if (!item) return;
-
-    const index = item.dataset.index | 0;
-    const data = this.amenitiesData[index];
-    if (!data) return;
-
-    const prevSelected = this._selectedAmenityEl;
-    if (prevSelected && prevSelected !== item) prevSelected.classList.remove('selected-for-info');
-    item.classList.add('selected-for-info');
-    this._selectedAmenityEl = item;
-
-    this.setExpandedAmenity(null);
-    this._selectedAmenityData = data;
-    this.applyInfoPanelContent(data);
-    this.updateInfoPanelPosition();
-    this.openInfoPanel();
-    this._forceDomUpdate = true;
-
-    this.focusCameraOn(data.worldPos);
+    this.getPanelShared()?.onAmenityClick?.(this, e);
 };
 
 AmenitiesMode.prototype.setExpandedAmenity = function (item) {
-    const prev = this._expandedAmenityEl;
-    if (prev && prev !== item) {
-        prev.classList.remove('expanded');
-        prev.setAttribute('aria-expanded', 'false');
-    }
-
-    this._expandedAmenityEl = item || null;
-
-    if (item) {
-        item.classList.add('expanded');
-        item.setAttribute('aria-expanded', 'true');
-    }
+    this.getPanelShared()?.setExpandedAmenity?.(this, item);
 };
 
 AmenitiesMode.prototype.onAmenityKeyDown = function (e) {
-    if (!window.UiKeys?.isActivateKey?.(e)) return;
-    const item = e.target && e.target.closest ? e.target.closest('.amenities') : null;
-    if (!item) return;
-    e.preventDefault();
-    this.onAmenityClick({ target: item });
+    this.getPanelShared()?.onAmenityKeyDown?.(this, e);
+};
+
+AmenitiesMode.prototype.getSelectedAmenityIndex = function () {
+    return this.getPanelShared()?.getSelectedAmenityIndex?.(this) ?? -1;
+};
+
+AmenitiesMode.prototype.updateInfoPanelNavState = function () {
+    this.getPanelShared()?.updateInfoPanelNavState?.(this);
+};
+
+AmenitiesMode.prototype.selectAmenityByIndex = function (index) {
+    return this.getPanelShared()?.selectAmenityByIndex?.(this, index) || false;
+};
+
+AmenitiesMode.prototype.navigateSelectedAmenity = function (step) {
+    this.getPanelShared()?.navigateSelectedAmenity?.(this, step);
 };
 
 AmenitiesMode.prototype.focusCameraOn = function (targetPosition) {
-    const orbit = this.getOrbit();
-    if (!orbit) return;
-
-    orbit.resetInteractionState();
-
-    orbit.setAmenitiesDistanceByOrientation && orbit.setAmenitiesDistanceByOrientation();
-    orbit.focusOn && orbit.focusOn(targetPosition);
-    orbit.lookAtPointSmoothly && orbit.lookAtPointSmoothly(targetPosition);
+    this.getPanelShared()?.focusCameraOn?.(this, targetPosition);
 };
 
 AmenitiesMode.prototype.updateInfoPanelPosition = function () {
-    if (!this.infoPanel || !this._selectedAmenityData || !this._selectedAmenityData.worldPos) return;
-
-    let anchorX = this._selectedAmenityData.lastX;
-    let anchorY = this._selectedAmenityData.lastY;
-
-    const hasDomAnchor =
-        this._selectedAmenityData.visible && Number.isFinite(anchorX) && Number.isFinite(anchorY);
-
-    if (!hasDomAnchor) {
-        const camera = this.cameraEntity && this.cameraEntity.camera;
-        if (!camera) return;
-
-        const rect = this.getCanvasRect();
-        if (!rect) return;
-
-        const screenPos = this._screenPos;
-        camera.worldToScreen(this._selectedAmenityData.worldPos, screenPos);
-
-        const onScreen =
-            screenPos.z > 0 && Number.isFinite(screenPos.x) && Number.isFinite(screenPos.y);
-        if (!onScreen) return;
-
-        anchorX = rect.left + screenPos.x;
-        anchorY = rect.top + screenPos.y;
-    }
-
-    const panelRect = this.infoPanel.getBoundingClientRect();
-    const panelWidth = panelRect.width || 300;
-    const panelHeight = panelRect.height || 200;
-
-    const margin = isFinite(this.infoPanelViewportMargin) ? this.infoPanelViewportMargin : 12;
-    const offset = isFinite(this.infoPanelOffset) ? this.infoPanelOffset : 36;
-    const shared = this.getShared();
-    const pos = shared?.computeInfoPanelPosition
-        ? shared.computeInfoPanelPosition({
-              anchorX,
-              anchorY,
-              panelWidth,
-              panelHeight,
-              viewportWidth: window.innerWidth,
-              viewportHeight: window.innerHeight,
-              offset,
-              margin
-          })
-        : (() => {
-              const halfW = panelWidth * 0.5;
-              const halfH = panelHeight * 0.5;
-              const minX = margin + halfW;
-              const maxX = window.innerWidth - margin - halfW;
-              const minY = margin + halfH;
-              const maxY = window.innerHeight - margin - halfH;
-              let x = anchorX + offset + halfW;
-              let y = anchorY;
-              if (x > maxX) x = anchorX - offset - halfW;
-              x = Math.min(maxX, Math.max(minX, x));
-              y = Math.min(maxY, Math.max(minY, y));
-              return { x, y };
-          })();
-    const x = pos.x;
-    const y = pos.y;
-
-    this.infoPanel.style.setProperty('--info-panel-x', `${x}px`);
-    this.infoPanel.style.setProperty('--info-panel-y', `${y}px`);
+    this.getPanelShared()?.updateInfoPanelPosition?.(this);
 };
 
 AmenitiesMode.prototype.updateAmenityTextWidths = function () {
@@ -535,193 +339,38 @@ AmenitiesMode.prototype.postUpdate = function (dt) {
 };
 
 AmenitiesMode.prototype.loadDataFromCsv = function () {
-    this.ensureCsvAssets();
-
-    const asset = this.currentCsv;
-    if (!asset) {
-        this.renderAmenities([]);
-        return;
-    }
-
-    const token = ++this._csvLoadToken;
-
-    const parse = () => {
-        if (token !== this._csvLoadToken) return;
-        if (this.currentMode !== '1') return;
-        const dataList = this.getAmenitiesData(asset);
-        this.renderAmenities(dataList);
-    };
-
-    if (asset.resource) return parse();
-
-    asset.once('load', parse);
-    asset.once('error', (err) => {
-        if (token !== this._csvLoadToken) return;
-        console.warn('Amenities CSV load failed:', err);
-        this.renderAmenities([]);
-    });
-
-    if (asset.registry) this.app.assets.load(asset);
-    else {
-        this.app.assets.add(asset);
-        this.app.assets.load(asset);
-    }
+    this.getDomShared()?.loadDataFromCsv?.(this);
 };
 
 AmenitiesMode.prototype.renderAmenities = function (dataList) {
-    this.clearAmenities();
-    if (this.infoPanel) {
-        this.infoPanel.classList.remove('visible');
-    }
-
-    const container = this.amenitiesContainer;
-    if (!container) return;
-
-    if (!dataList || !dataList.length) {
-        this.setEmptyVisible(true);
-        return;
-    }
-
-    const ui = this.getUi();
-    if (!ui || !ui.createAmenityNodes) {
-        console.warn('Amenities UI helper is not available.');
-        this.setEmptyVisible(true);
-        return;
-    }
-
-    this.setEmptyVisible(false);
-
-    const result = ui.createAmenityNodes(dataList);
-    const fragment = result?.fragment;
-    const nodes = result?.nodes;
-    if (!fragment || !nodes || nodes.length !== dataList.length) {
-        console.warn('Amenities UI nodes are missing or invalid.');
-        this.setEmptyVisible(true);
-        return;
-    }
-
-    container.appendChild(fragment);
-
-    this.amenitiesData.length = 0;
-    for (let i = 0; i < dataList.length; i++) {
-        const raw = dataList[i];
-        const root = nodes[i];
-        const style = root.style;
-        root.setAttribute('aria-expanded', 'false');
-
-        this.amenitiesData.push({
-            dom: root,
-            style,
-            worldPos: raw.worldPos,
-            title: raw.title,
-            image: raw.image,
-            description: raw.description,
-            lastX: NaN,
-            lastY: NaN,
-            visible: false
-        });
-    }
-
-    this.updateAmenityTextWidths();
-
-    this._rectDirty = true;
-    this._forceDomUpdate = true;
-    this.updateDomPositions();
-
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) this.app.renderNextFrame = true;
+    this.getDomShared()?.renderAmenities?.(this, dataList);
 };
 
 AmenitiesMode.prototype.updateDomPositions = function () {
-    const camera = this.cameraEntity && this.cameraEntity.camera;
-    if (!camera) return;
-
-    const rect = this.getCanvasRect();
-    if (!rect) return;
-
-    const rectLeft = rect.left;
-    const rectTop = rect.top;
-    const screenPos = this._screenPos;
-
-    const dataList = this.amenitiesData;
-    const threshold = isFinite(this.screenVisibilityThreshold) ? this.screenVisibilityThreshold : 0.25;
-    const transformSuffix = this.transformSuffix || ' translate(-50%, -50%)';
-
-    for (let i = 0; i < dataList.length; i++) {
-        const data = dataList[i];
-        if (!data) continue;
-
-        camera.worldToScreen(data.worldPos, screenPos);
-
-        const onScreen = screenPos.z > 0 && Number.isFinite(screenPos.x) && Number.isFinite(screenPos.y);
-        const style = data.style || data.dom.style;
-
-        if (!onScreen) {
-            if (data.visible) {
-                data.visible = false;
-                style.display = 'none';
-                data.lastX = NaN;
-                data.lastY = NaN;
-            }
-            continue;
-        }
-
-        const x = rectLeft + screenPos.x;
-        const y = rectTop + screenPos.y;
-
-        if (!data.visible) {
-            data.visible = true;
-            style.display = 'block';
-            data.lastX = NaN;
-            data.lastY = NaN;
-        }
-
-        const dx = isNaN(data.lastX) ? Infinity : Math.abs(x - data.lastX);
-        const dy = isNaN(data.lastY) ? Infinity : Math.abs(y - data.lastY);
-
-        if (dx > threshold || dy > threshold) {
-            style.transform = `translate3d(${x}px, ${y}px, 0)` + transformSuffix;
-            data.lastX = x;
-            data.lastY = y;
-        }
-    }
-
-    this.updateInfoPanelPosition();
+    this.getDomShared()?.updateDomPositions?.(this);
 };
 
 AmenitiesMode.prototype.clearAmenities = function () {
-    const ui = this.getUi();
-
-    if (ui && ui.clearContainer) ui.clearContainer(this.amenitiesContainer, this._emptyMessageEl);
-    else if (this.amenitiesContainer) {
-        if (this._emptyMessageEl && this._emptyMessageEl.parentNode === this.amenitiesContainer) {
-            this.amenitiesContainer.replaceChildren(this._emptyMessageEl);
-        } else {
-            this.amenitiesContainer.textContent = '';
-        }
-    }
-
-    this.setEmptyVisible(false);
-    this.amenitiesData.length = 0;
-    this._expandedAmenityEl = null;
-    this._selectedAmenityData = null;
-    this.infoPanel && this.infoPanel.style.removeProperty('--info-panel-x');
-    this.infoPanel && this.infoPanel.style.removeProperty('--info-panel-y');
-    this._selectedAmenityEl = null;
+    this.getDomShared()?.clearAmenities?.(this);
 };
 
 AmenitiesMode.prototype.onDestroy = function () {
+    const orbit = this.getOrbit();
+    orbit && orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
+    orbit && orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(0);
+
     this.unbindDomEvents();
     this.clearAmenities();
+    if (this._infoPanelResizeObserver) this._infoPanelResizeObserver.disconnect();
 
-    this._modeButtons = null;
-    this._modeBtn0 = null;
-    this._modeBtn1 = null;
-    this._onModeKeyDown = null;
     this._onAmenityKeyDown = null;
 
     this.amenitiesContainer = null;
     this.infoPanel = null;
+    this.infoPanelNavWrap = null;
     this.infoPanelClose = null;
+    this.infoPanelPrev = null;
+    this.infoPanelNext = null;
     this.panelImage = null;
     this.panelTitle = null;
     this.panelDescription = null;
@@ -730,9 +379,16 @@ AmenitiesMode.prototype.onDestroy = function () {
     this._emptyMessageEl = null;
     this._currentLang = null;
     this._shared = null;
+    this._modeShared = null;
+    this._panelShared = null;
+    this._domShared = null;
     this._modeManager = null;
+    this._infoPanelResizeObserver = null;
+    this._infoPanelSize = null;
     if (this._textWidthRaf) cancelAnimationFrame(this._textWidthRaf);
     this._textWidthRaf = 0;
     this._selectedAmenityData = null;
     this._selectedAmenityEl = null;
+    this._infoPanelPortraitPlacement = null;
+    this._focusTarget = null;
 };
