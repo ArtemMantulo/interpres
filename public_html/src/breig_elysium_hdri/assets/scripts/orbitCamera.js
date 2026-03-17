@@ -51,13 +51,6 @@ OrbitCamera.prototype.initialize = function () {
     this.lastTouchPosition = new pc.Vec2();
 
     this.tmpDirection = new pc.Vec3();
-    this.lookAtOffset = new pc.Vec3(0, 0, 0);
-    this.lookAtVerticalAngleDeg = 0;
-    this._lookAtTarget = new pc.Vec3();
-    this._lookDir = new pc.Vec3();
-    this._lookRight = new pc.Vec3();
-    this._lookUp = new pc.Vec3();
-    this._worldUp = new pc.Vec3(0, 1, 0);
     this.smoothAlpha = this.lerpFactor;
 
     this.onResize = this.adjustDistanceForOrientation.bind(this);
@@ -158,8 +151,6 @@ OrbitCamera.prototype.resetToInitial = function () {
         this.distance = this._initialDistance;
         this.distanceTarget = this._initialDistance;
     }
-    this.setLookAtOffset(0, 0, 0);
-    this.setLookAtVerticalAngle(0);
     this.lastInputTime = performance.now();
 };
 
@@ -385,44 +376,7 @@ OrbitCamera.prototype.updatePosition = function () {
 
     this.target.lerp(this.target, this.targetLerp, this.smoothAlpha);
     this.entity.setPosition(this.target.x + x, this.target.y + y, this.target.z + z);
-    this._lookAtTarget.copy(this.target).add(this.lookAtOffset);
-
-    const verticalAngleDeg = isFinite(this.lookAtVerticalAngleDeg) ? this.lookAtVerticalAngleDeg : 0;
-    if (Math.abs(verticalAngleDeg) > 1e-4) {
-        const lookDir = this._lookDir.sub2(this._lookAtTarget, this.entity.getPosition());
-        const lookDist = lookDir.length();
-        if (lookDist > 1e-6) {
-            lookDir.scale(1 / lookDist);
-
-            const lookRight = this._lookRight.cross(this._worldUp, lookDir);
-            const rightLen = lookRight.length();
-            if (rightLen > 1e-6) lookRight.scale(1 / rightLen);
-            else lookRight.set(1, 0, 0);
-
-            const lookUp = this._lookUp.cross(lookDir, lookRight);
-            const upLen = lookUp.length();
-            if (upLen > 1e-6) {
-                lookUp.scale(1 / upLen);
-                const upOffset = Math.tan(verticalAngleDeg * pc.math.DEG_TO_RAD) * lookDist;
-                this._lookAtTarget.add(lookUp.scale(upOffset));
-            }
-        }
-    }
-
-    this.entity.lookAt(this._lookAtTarget);
-};
-
-OrbitCamera.prototype.setLookAtOffset = function (x, y, z) {
-    if (x && typeof x === 'object') {
-        this.lookAtOffset.set(x.x || 0, x.y || 0, x.z || 0);
-    } else {
-        this.lookAtOffset.set(x || 0, y || 0, z || 0);
-    }
-};
-
-OrbitCamera.prototype.setLookAtVerticalAngle = function (deg) {
-    const v = Number(deg);
-    this.lookAtVerticalAngleDeg = isFinite(v) ? v : 0;
+    this.entity.lookAt(this.target);
 };
 
 OrbitCamera.prototype.adjustDistanceForOrientation = function () {
@@ -504,11 +458,4 @@ OrbitCamera.prototype.onDestroy = function () {
             null;
     this._initialTarget = null;
     this._initialEulers = null;
-    this.lookAtOffset = null;
-    this.lookAtVerticalAngleDeg = 0;
-    this._lookAtTarget = null;
-    this._lookDir = null;
-    this._lookRight = null;
-    this._lookUp = null;
-    this._worldUp = null;
 };

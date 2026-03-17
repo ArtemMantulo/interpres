@@ -22,9 +22,8 @@
         const line = document.createElement('div');
         line.className = 'amenities-line';
 
-        glass.appendChild(line);
         container.append(icon, text);
-        root.append(glass, container);
+        root.append(glass, container, line);
 
         template = root;
         return template;
@@ -40,7 +39,6 @@
         for (let i = 0; i < dataList.length; i++) {
             const data = dataList[i];
             const root = tpl.cloneNode(true);
-            root.style.display = 'none';
 
             const panelContainer = root.children[1];
             panelContainer.children[0].src = data.iconUrl;

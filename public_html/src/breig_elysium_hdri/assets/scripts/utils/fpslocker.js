@@ -31,13 +31,7 @@ export function createFpsLocker(app, options = {}) {
             state.rafId = 0;
         }
 
-        if (toggleEl) {
-            toggleEl.classList.toggle('active', state.active);
-            toggleEl.classList.toggle('is-on', state.active);
-            toggleEl.classList.toggle('is-off', !state.active);
-            toggleEl.checked = state.active;
-            toggleEl.setAttribute('aria-pressed', state.active ? 'true' : 'false');
-        }
+        if (toggleEl) toggleEl.classList.toggle('active', state.active);
     };
 
     const onToggleClick = () => setActive(!state.active);
