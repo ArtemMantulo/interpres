@@ -15,6 +15,8 @@ import {
     mapAssetProgress,
     waitForGsplatsGate,
     createDebugStatsOverlayUpdater,
+    getGsplatBudgetCompat,
+    setGsplatBudgetCompat,
     getDeviceProfile,
     finalizeStart,
     createSmoothProgress
@@ -119,7 +121,7 @@ const applyQualityProfile = (profile, gsplatComponent) => {
 
     if (!profile.enableUpgrade) return;
 
-    const startBudget = gsplatComponent.splatBudget;
+    const startBudget = getGsplatBudgetCompat(gsplatComponent) ?? START_SETTINGS.splatBudget;
     const startLodMin = app.scene.gsplat.lodRangeMin;
 
     gsplatComponent.lodDistances = profile.upgradedLodDistances;
@@ -385,7 +387,7 @@ function applySceneGsplatSettings() {
 
 function applyStartSettings(gsplatComponent) {
     app.scene.gsplat.lodRangeMin = START_SETTINGS.lodMin;
-    gsplatComponent.splatBudget = START_SETTINGS.splatBudget;
+    setGsplatBudgetCompat(gsplatComponent, START_SETTINGS.splatBudget);
     gsplatComponent.lodDistances = START_SETTINGS.lodDistances;
 }
 

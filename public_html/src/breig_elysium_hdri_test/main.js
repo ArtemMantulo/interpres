@@ -13,6 +13,7 @@ import {
     mapAssetProgress,
     waitForGsplatsGate,
     createDebugStatsOverlayUpdater,
+    getGsplatBudgetCompat,
     getDeviceProfile,
     finalizeStart,
     createSmoothProgress
@@ -129,7 +130,7 @@ const applyQualityProfile = (profile, gsplatComponent) => {
     if (upgradeTimerId) { clearTimeout(upgradeTimerId); upgradeTimerId = 0; }
     if (!profile.enableUpgrade) return;
 
-    const startBudget = gsplatComponent.splatBudget;
+    const startBudget = getGsplatBudgetCompat(gsplatComponent) ?? START_SETTINGS.splatBudget;
     const startLodMin = app.scene.gsplat.lodRangeMin;
     gsplatComponent.lodDistances = profile.upgradedLodDistances;
     loadLODSmooth(app, gsplatComponent, {

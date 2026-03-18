@@ -9,6 +9,7 @@ import {
     GALLERY_SETTINGS,
     AMENITIES_SETTINGS
 } from '../config.js';
+import { setGsplatBudgetCompat } from '../utils/functions.js';
 import { ensureWaterLayer } from './environment.js';
 
 export function applyRevealSettings(r) {
@@ -44,7 +45,7 @@ export function applySceneGsplatSettings(app) {
 
 export function applyStartSettings(app, gsplatComponent) {
     app.scene.gsplat.lodRangeMin = START_SETTINGS.lodMin;
-    gsplatComponent.splatBudget = START_SETTINGS.splatBudget;
+    setGsplatBudgetCompat(gsplatComponent, START_SETTINGS.splatBudget);
     gsplatComponent.lodDistances = START_SETTINGS.lodDistances;
 }
 

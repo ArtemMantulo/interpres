@@ -8,6 +8,24 @@ export const clamp01 = (value) => {
 export const mapAssetProgress = (assetProgress01, assetProgressWeight) =>
     clamp01(assetProgress01) * clamp01(assetProgressWeight);
 
+export function setGsplatBudgetCompat(gs, value) {
+    if (!gs || !Number.isFinite(value)) return;
+    const rounded = Math.round(value);
+    gs.__debugBudget = rounded;
+    gs.splatBudget = rounded;
+}
+
+export function getGsplatBudgetCompat(gs) {
+    if (!gs) return null;
+    const budget = gs.splatBudget;
+    if (typeof budget === 'number' && budget > 0) return budget;
+
+    const cachedBudget = gs.__debugBudget;
+    if (typeof cachedBudget === 'number' && cachedBudget > 0) return cachedBudget;
+
+    return null;
+}
+
 export function createSmoothProgress(setProgress, { speed = 8, snapEps = 0.001 } = {}) {
     let current01 = 0;
     let target01 = 0;
@@ -77,7 +95,7 @@ export function loadLODSmooth(
         const t = Math.min((performance.now() - startTime) / duration, 1);
         const k = t * t * (3 - 2 * t);
 
-        gs.splatBudget = Math.round(pc.math.lerp(startBudget, endBudget, k));
+        setGsplatBudgetCompat(gs, pc.math.lerp(startBudget, endBudget, k));
 
         const lodMin = Math.round(pc.math.lerp(startLodMin, endLodMin, k));
         if (sceneGs.lodRangeMin !== lodMin) {
@@ -87,7 +105,7 @@ export function loadLODSmooth(
 
         if (t < 1) requestAnimationFrame(step);
         else {
-            gs.splatBudget = endBudget;
+            setGsplatBudgetCompat(gs, endBudget);
             if (sceneGs.lodRangeMin !== endLodMin) {
                 sceneGs.lodRangeMin = endLodMin;
                 refreshGsplat();
@@ -167,7 +185,7 @@ export function createDebugStatsOverlayUpdater(
         const gsplats = app.stats?.frame?.gsplats;
         const splatsText = typeof gsplats === 'number' ? gsplats.toLocaleString() : 'n/a';
 
-        const budget = gs?.splatBudget;
+        const budget = getGsplatBudgetCompat(gs);
         const budgetText = typeof budget === 'number' ? Math.round(budget).toLocaleString() : 'n/a';
 
         const sceneGs = app.scene?.gsplat;

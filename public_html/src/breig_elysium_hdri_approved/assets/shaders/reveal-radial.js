@@ -35,7 +35,7 @@ float hash(vec3 p) {
     return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
 }
 
-void modifyCenter(inout vec3 center) {
+void modifySplatCenter(inout vec3 center) {
     initShared(center);
     
     if (g_dist > uEndRadius) return;
@@ -59,37 +59,34 @@ void modifyCenter(inout vec3 center) {
     }
 }
 
-void modifyCovariance(vec3 originalCenter, vec3 modifiedCenter, inout vec3 covA, inout vec3 covB) {
+void modifySplatRotationScale(vec3 originalCenter, vec3 modifiedCenter, inout vec4 rotation, inout vec3 scale) {
     if (g_dist > uEndRadius) {
-        gsplatMakeRound(covA, covB, 0.0);
+        scale = vec3(0.0);
         return;
     }
 
     if (g_liftTime <= 0.0) {
-        gsplatMakeRound(covA, covB, 0.0);
+        scale = vec3(0.0);
         return;
     }
 
     if (g_liftWavePos < g_dist) {
-        gsplatMakeRound(covA, covB, 0.0);
+        scale = vec3(0.0);
         return;
     }
 
     float behind = g_liftWavePos - g_dist;
     float t = clamp(behind / 2.0, 0.0, 1.0);
 
-    float originalSize = gsplatExtractSize(covA, covB);
+    vec3 originalScale = scale;
+    float originalSize = gsplatGetSizeFromScale(scale);
     float dotSize = min(originalSize, 0.05);
 
-    vec3 origCovA = covA;
-    vec3 origCovB = covB;
-
-    gsplatMakeRound(covA, covB, dotSize);
-    covA = mix(covA, origCovA, t);
-    covB = mix(covB, origCovB, t);
+    vec3 dotScale = vec3(dotSize);
+    scale = mix(dotScale, originalScale, t);
 }
 
-void modifyColor(vec3 center, inout vec4 color) {
+void modifySplatColor(vec3 center, inout vec4 color) {
     if (g_dist > uEndRadius) return;
     if (g_liftTime <= 0.0) return;
 
@@ -147,7 +144,7 @@ fn hash(p: vec3f) -> f32 {
     return fract(sin(dot(p, vec3f(127.1, 311.7, 74.7))) * 43758.5453);
 }
 
-fn modifyCenter(center: ptr<function, vec3f>) {
+fn modifySplatCenter(center: ptr<function, vec3f>) {
     initShared(*center);
     
     if (g_dist > uniform.uEndRadius) {
@@ -172,37 +169,34 @@ fn modifyCenter(center: ptr<function, vec3f>) {
     }
 }
 
-fn modifyCovariance(originalCenter: vec3f, modifiedCenter: vec3f, covA: ptr<function, vec3f>, covB: ptr<function, vec3f>) {
+fn modifySplatRotationScale(originalCenter: vec3f, modifiedCenter: vec3f, rotation: ptr<function, vec4f>, scale: ptr<function, vec3f>) {
     if (g_dist > uniform.uEndRadius) {
-        gsplatMakeRound(covA, covB, 0.0);
+        *scale = vec3f(0.0);
         return;
     }
 
     if (g_liftTime <= 0.0) {
-        gsplatMakeRound(covA, covB, 0.0);
+        *scale = vec3f(0.0);
         return;
     }
 
     if (g_liftWavePos < g_dist) {
-        gsplatMakeRound(covA, covB, 0.0);
+        *scale = vec3f(0.0);
         return;
     }
 
     let behind = g_liftWavePos - g_dist;
     let t = clamp(behind / 2.0, 0.0, 1.0);
 
-    let originalSize = gsplatExtractSize(*covA, *covB);
+    let originalScale = *scale;
+    let originalSize = gsplatGetSizeFromScale(*scale);
     let dotSize = min(originalSize, 0.05);
 
-    let origCovA = *covA;
-    let origCovB = *covB;
-
-    gsplatMakeRound(covA, covB, dotSize);
-    *covA = mix(*covA, origCovA, t);
-    *covB = mix(*covB, origCovB, t);
+    let dotScale = vec3f(dotSize);
+    *scale = mix(dotScale, originalScale, t);
 }
 
-fn modifyColor(center: vec3f, color: ptr<function, vec4f>) {
+fn modifySplatColor(center: vec3f, color: ptr<function, vec4f>) {
     if (g_dist > uniform.uEndRadius) { return; }
     if (g_liftTime <= 0.0) { return; }
 
