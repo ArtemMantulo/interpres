@@ -13,47 +13,34 @@
         return SUPPORTED_LANGS.has(lang) ? lang : 'en';
     };
 
-    const parseCsvText = (csvText, minColumns) => {
-        const csv = window.CsvShared;
-        const rows = csv?.parseRows
-            ? csv.parseRows(csvText, { delimiter: ';', minColumns })
-            : [];
+    const parseData = (json, lang) => {
+        const source = json?.amenities;
+        if (!Array.isArray(source) || !source.length) return [];
+
+        const resolvedLang = SUPPORTED_LANGS.has(lang) ? lang : 'en';
         const dataList = [];
-        const minCols = isFinite(minColumns) ? minColumns : 7;
 
-        for (let i = 0; i < rows.length; i++) {
-            const parts = rows[i];
-            if (parts.length < minCols) continue;
+        for (let i = 0; i < source.length; i++) {
+            const entry = source[i];
+            const pos = entry.position;
+            if (!Array.isArray(pos) || pos.length < 3) continue;
 
-            const x = parseFloat(parts[4]);
-            const y = parseFloat(parts[5]);
-            const z = parseFloat(parts[6]);
+            const x = parseFloat(pos[0]);
+            const y = parseFloat(pos[1]);
+            const z = parseFloat(pos[2]);
             if (!isFinite(x) || !isFinite(y) || !isFinite(z)) continue;
 
+            const t = entry.translations?.[resolvedLang] || entry.translations?.['en'] || {};
+
             dataList.push({
-                iconUrl: parts[0].trim(),
-                title: parts[1].trim(),
-                image: parts[2].trim(),
-                description: parts[3].trim(),
+                iconUrl: entry.icon || '',
+                title: t.title || '',
+                image: entry.image || '',
+                description: t.description || '',
                 worldPos: typeof pc !== 'undefined' ? new pc.Vec3(x, y, z) : { x, y, z }
             });
         }
 
-        return dataList;
-    };
-
-    const getAssetCacheKey = (asset) => {
-        if (!asset) return '';
-        const url = asset.getFileUrl?.() || asset.file?.url || asset.url || '';
-        return url || String(asset.id || asset.name || '');
-    };
-
-    const getAmenitiesData = (cache, asset, minColumns) => {
-        const key = getAssetCacheKey(asset);
-        if (key && cache?.has?.(key)) return cache.get(key);
-
-        const dataList = parseCsvText(asset?.resource || '', minColumns);
-        if (key && cache?.set) cache.set(key, dataList);
         return dataList;
     };
 
@@ -126,9 +113,7 @@
 
     window.AmenitiesShared = {
         resolveLang,
-        parseCsvText,
-        getAssetCacheKey,
-        getAmenitiesData,
+        parseData,
         updateAmenityTextWidths,
         computeInfoPanelPosition
     };

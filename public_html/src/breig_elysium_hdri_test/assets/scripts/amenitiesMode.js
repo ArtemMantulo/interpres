@@ -2,10 +2,9 @@ var AmenitiesMode = pc.createScript('amenitiesMode');
 const MODE_HOME = '0';
 const MODE_AMENITIES = '2';
 
-AmenitiesMode.attributes.add('currentCsv', { type: 'asset' });
+AmenitiesMode.attributes.add('dataUrl', { type: 'string', default: 'assets/data/amenities/dataAmenities.json' });
 AmenitiesMode.attributes.add('fpsLockerState', { type: 'json' });
 AmenitiesMode.attributes.add('domUpdateInterval', { type: 'number', default: 33 });
-AmenitiesMode.attributes.add('csvMinColumns', { type: 'number', default: 7 });
 AmenitiesMode.attributes.add('screenVisibilityThreshold', { type: 'number', default: 0.25 });
 AmenitiesMode.attributes.add('transformSuffix', { type: 'string', default: ' translate(-50%, -50%)' });
 AmenitiesMode.attributes.add('infoPanelOffset', { type: 'number', default: 36 });
@@ -19,10 +18,10 @@ AmenitiesMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
     this.amenitiesContainer = document.querySelector('#amenities-container');
 
-    this.infoPanel = document.querySelector('#info-panel');
+    this.infoPanel = document.querySelector('#amenities-info-panel');
     this.infoPanelClose = this.infoPanel ? this.infoPanel.querySelector('.panel-close') : null;
-    this.infoPanelPrev = document.querySelector('#info-panel-prev');
-    this.infoPanelNext = document.querySelector('#info-panel-next');
+    this.infoPanelPrev = document.querySelector('#amenities-info-panel-prev');
+    this.infoPanelNext = document.querySelector('#amenities-info-panel-next');
     this.panelImage = this.infoPanel ? this.infoPanel.querySelector('.panel-image') : null;
     this.panelTitle = this.infoPanel ? this.infoPanel.querySelector('.panel-title') : null;
     this.panelDescription = this.infoPanel ? this.infoPanel.querySelector('.panel-description') : null;
@@ -52,15 +51,14 @@ AmenitiesMode.prototype.initialize = function () {
     this._domUpdateTimer = 0;
     this._forceDomUpdate = false;
     this.domUpdateInterval = this.domUpdateInterval | 0 || 120;
-    this._csvLoadToken = 0;
-    this._amenitiesCache = new Map();
+    this._dataLoadToken = 0;
+    this._cachedJson = null;
     this._ui = null;
     this._shared = window.AmenitiesShared || null;
     this._modeShared = window.AmenitiesModeShared || null;
     this._panelShared = window.AmenitiesPanelShared || null;
     this._domShared = window.AmenitiesDomShared || null;
     this._emptyMessageEl = null;
-    this._currentLang = null;
     this._expandedAmenityEl = null;
     this._selectedAmenityEl = null;
     this._selectedAmenityData = null;
@@ -197,29 +195,6 @@ AmenitiesMode.prototype.getLang = function () {
     return lang || 'en';
 };
 
-AmenitiesMode.prototype.ensureCsvAssets = function () {
-    const lang = this.getLang();
-
-    if (this._currentLang && this._currentLang !== lang) {
-        this._amenitiesCache.clear();
-        this.currentCsv = null;
-    }
-    this._currentLang = lang;
-
-    if (!this.currentCsv) {
-        this.currentCsv = new pc.Asset(`amenities-current-${lang}.csv`, 'text', {
-            url: `assets/data/dataAmenitiesCurrent_${lang}.csv`
-        });
-    }
-
-    if (this.currentCsv && !this.currentCsv.registry) this.app.assets.add(this.currentCsv);
-};
-
-AmenitiesMode.prototype.getAmenitiesData = function (asset) {
-    const shared = this.getShared();
-    if (!shared?.getAmenitiesData) return [];
-    return shared.getAmenitiesData(this._amenitiesCache, asset, this.csvMinColumns);
-};
 
 AmenitiesMode.prototype.setEmptyVisible = function (visible) {
     const ui = this.getUi();
@@ -362,10 +337,9 @@ AmenitiesMode.prototype.onDestroy = function () {
     this.panelImage = null;
     this.panelTitle = null;
     this.panelDescription = null;
-    this._amenitiesCache = null;
+    this._cachedJson = null;
     this._ui = null;
     this._emptyMessageEl = null;
-    this._currentLang = null;
     this._shared = null;
     this._modeShared = null;
     this._panelShared = null;

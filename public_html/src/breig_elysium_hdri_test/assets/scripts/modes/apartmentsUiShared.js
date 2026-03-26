@@ -1,6 +1,9 @@
 (function () {
     if (window.ApartmentsUiShared) return;
 
+    const t = (key, fallback) =>
+        window.AppLanguage?.getText?.(key, fallback) ?? fallback ?? key;
+
     const createMarkerNode = (item, index) => {
         const root = document.createElement('div');
         root.className = 'apartment-pin';
@@ -48,7 +51,8 @@
                 style: node.style,
                 iconUrl: item.iconUrl,
                 title: item.title,
-                detailsCsvUrl: item.detailsCsvUrl,
+                camera: item.camera || null,
+                detailsRows: item.detailsRows || [],
                 worldPos: item.worldPos,
                 visible: false,
                 lastX: NaN,
@@ -76,7 +80,7 @@
             btn.setAttribute('aria-selected', 'false');
 
             const floorText = row?.floorRaw ? String(row.floorRaw) : String(i + 1);
-            btn.setAttribute('aria-label', `Floor ${floorText}`);
+            btn.setAttribute('aria-label', `${t('floor', 'Floor')} ${floorText}`);
 
             const num = document.createElement('span');
             num.className = 'floor-panel-item-number';
@@ -84,7 +88,7 @@
 
             const label = document.createElement('span');
             label.className = 'floor-panel-item-label';
-            label.textContent = `Floor ${floorText}`;
+            label.textContent = `${t('floor', 'Floor')} ${floorText}`;
 
             btn.append(num, label);
             fragment.appendChild(btn);
@@ -109,7 +113,8 @@
     const applyPanelContent = (elements, marker, floorRow) => {
         if (!elements) return;
         const markerTitle = marker?.title || 'Apartments';
-        const floorLabel = floorRow?.floorRaw ? `Floor ${floorRow.floorRaw}` : 'Floor -';
+        const floorWord = t('floor', 'Floor');
+        const floorLabel = floorRow?.floorRaw ? `${floorWord} ${floorRow.floorRaw}` : `${floorWord} -`;
         const unitName = floorRow?.name || markerTitle;
 
         if (elements.title) elements.title.textContent = `${unitName}, ${floorLabel}`;
@@ -123,11 +128,80 @@
         }
     };
 
+    const createMobileCard = (marker, floorRow, apartment, index, selectedIndex) => {
+        const card = document.createElement('article');
+        card.className = 'apartments-mobile-card';
+        card.dataset.index = String(index);
+        card.setAttribute('role', 'group');
+
+        const markerTitle = marker?.title || 'Apartments';
+        const floorWord = t('floor', 'Floor');
+        const floorLabel = floorRow?.floorRaw ? `${floorWord} ${floorRow.floorRaw}` : `${floorWord} -`;
+        const unitName = apartment?.name || markerTitle;
+        card.setAttribute('aria-label', `${unitName}, ${floorLabel}`);
+
+        const image = document.createElement('img');
+        image.className = 'apartments-mobile-card-image';
+        image.src = apartment?.imageUrl || 'assets/images/pictures/pic_loading.png';
+        image.alt = unitName;
+        image.loading = 'lazy';
+        image.decoding = 'async';
+
+        const body = document.createElement('div');
+        body.className = 'apartments-mobile-card-body';
+
+        const title = document.createElement('div');
+        title.className = 'apartments-mobile-card-title';
+        title.textContent = unitName;
+
+        const data = document.createElement('div');
+        data.className = 'apartments-mobile-card-data';
+
+        const area = document.createElement('span');
+        area.className = 'apartments-mobile-card-value';
+        area.textContent = apartment?.area || '-';
+
+        const bedrooms = document.createElement('span');
+        bedrooms.className = 'apartments-mobile-card-value';
+        bedrooms.textContent = apartment?.bedrooms || '-';
+
+        const availability = document.createElement('span');
+        availability.className = 'apartments-mobile-card-value';
+        availability.textContent = apartment?.availability || '-';
+
+        const sep1 = document.createElement('span');
+        sep1.className = 'apartments-mobile-card-separator';
+        sep1.setAttribute('aria-hidden', 'true');
+
+        const sep2 = document.createElement('span');
+        sep2.className = 'apartments-mobile-card-separator';
+        sep2.setAttribute('aria-hidden', 'true');
+
+        const bedIcon = document.createElement('span');
+        bedIcon.className = 'apartments-mobile-card-bed-icon';
+        bedIcon.setAttribute('aria-hidden', 'true');
+
+        data.append(area, sep1, bedIcon, bedrooms, sep2, availability);
+        body.append(title, data);
+
+        const plan = document.createElement('button');
+        plan.type = 'button';
+        plan.className = 'apartments-mobile-card-plan';
+        plan.dataset.action = 'plan';
+        plan.dataset.index = String(index);
+        plan.setAttribute('aria-label', `${t('visit', 'Visit')} ${unitName}`);
+        plan.setAttribute('aria-pressed', index === selectedIndex ? 'true' : 'false');
+
+        card.append(image, body, plan);
+        return card;
+    };
+
     window.ApartmentsUiShared = {
         createMarkerNode,
         renderMarkers,
         createFloorPanelItems,
         getPanelElements,
-        applyPanelContent
+        applyPanelContent,
+        createMobileCard
     };
 })();

@@ -51,8 +51,6 @@ export const GALLERY_SETTINGS = {
     swipeMaxVisualShift: 2000,
     thumbScrollPadding: 16,
     wheelCooldownMs: 180,
-    waitForDomTries: 80,
-    waitForDomDelayMs: 100,
     thumbResetDelayMs: 10,
     transitionMs: 210
 };

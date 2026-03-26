@@ -3,126 +3,64 @@
 
     const syncFloorPanelWidth = (ctx) => {
         if (!ctx.floorPanel) return;
-        const modePanel = document.querySelector('.mode-panel');
-        if (!modePanel || modePanel.classList.contains('hidden')) return;
-        const rect = modePanel.getBoundingClientRect();
-        if (!rect || !isFinite(rect.width) || rect.width <= 0) return;
-        const maxWidth = Math.round(rect.width);
-        ctx.floorPanel.style.setProperty('--floor-panel-max-width', `${maxWidth}px`);
-        updateFloorPanelWidth(ctx);
+        if (!ctx.isPortrait()) return;
+        ctx.floorPanel.style.removeProperty('--floor-panel-max-width');
+        ctx.floorPanel.style.removeProperty('--floor-panel-width');
+        ctx.floorPanel.classList.remove('is-overflowing');
     };
 
     const updateFloorPanelWidth = (ctx) => {
         if (!ctx.floorPanel || !ctx.floorPanelScroll) return;
         if (!ctx.isPortrait()) return;
-        const modePanel = document.querySelector('.mode-panel');
-        if (!modePanel || modePanel.classList.contains('hidden')) return;
-        const modeRect = modePanel.getBoundingClientRect();
-        const maxWidth = modeRect && isFinite(modeRect.width) ? Math.round(modeRect.width) : 0;
-        if (maxWidth <= 0) return;
-
-        const container = ctx.floorPanel.querySelector('.panel-container');
-        const label = ctx.floorPanel.querySelector('.floor-panel-label');
-        if (!container || !label) {
-            ctx.floorPanel.style.setProperty('--floor-panel-width', `${maxWidth}px`);
-            return;
-        }
-
-        const style = window.getComputedStyle(container);
-        const paddingLeft = parseFloat(style.paddingLeft || '0') || 0;
-        const paddingRight = parseFloat(style.paddingRight || '0') || 0;
-        const gap = parseFloat(style.columnGap || style.gap || '0') || 0;
-        const contentWidth = Math.ceil(
-            paddingLeft + paddingRight + label.scrollWidth + gap + ctx.floorPanelScroll.scrollWidth
-        );
-        if (!isFinite(contentWidth) || contentWidth <= 0) {
-            ctx.floorPanel.style.setProperty('--floor-panel-width', `${maxWidth}px`);
-            ctx.floorPanel.classList.add('is-overflowing');
-            return;
-        }
-        const overflow = contentWidth > maxWidth + 1;
-        const finalWidth = overflow ? maxWidth : contentWidth;
-        ctx.floorPanel.style.setProperty('--floor-panel-width', `${finalWidth}px`);
-        ctx.floorPanel.classList.toggle('is-overflowing', overflow);
+        ctx.floorPanel.style.removeProperty('--floor-panel-width');
+        ctx.floorPanel.classList.remove('is-overflowing');
     };
 
-    const getDesktopAnchorScreen = (ctx) => {
-        if (!ctx._selectedApartment?.worldPos) return null;
-        const camera = ctx.cameraEntity && ctx.cameraEntity.camera;
-        const rect = ctx.getCanvasRect();
-        if (!camera || !rect) return null;
-
-        camera.worldToScreen(ctx._selectedApartment.worldPos, ctx._screenPos);
-        if (
-            !Number.isFinite(ctx._screenPos.x) ||
-            !Number.isFinite(ctx._screenPos.y) ||
-            ctx._screenPos.z <= 0
-        ) {
-            return null;
+    const resetFloorItemsInlineStyles = (ctx) => {
+        if (!ctx._floorItemsData) return;
+        for (let i = 0; i < ctx._floorItemsData.length; i++) {
+            const item = ctx._floorItemsData[i];
+            item.style.transform = '';
+            item.style.display = '';
+            item.visible = false;
+            item.lastX = NaN;
+            item.lastY = NaN;
         }
-
-        return {
-            x: rect.left + ctx._screenPos.x,
-            y: rect.top + ctx._screenPos.y
-        };
-    };
-
-    const computeDesktopFloorPanelPosition = (ctx, anchorX, anchorY) => {
-        const panelRect = ctx.floorPanel ? ctx.floorPanel.getBoundingClientRect() : null;
-        const panelWidth = panelRect?.width || 40;
-        const panelHeight = panelRect?.height || 120;
-        const margin = isFinite(ctx.panelViewportMargin) ? ctx.panelViewportMargin : 12;
-        const halfH = panelHeight * 0.5;
-
-        let x = anchorX;
-        let y = anchorY;
-
-        x = Math.max(panelWidth + margin, Math.min(window.innerWidth - margin, x));
-        y = Math.max(margin + halfH, Math.min(window.innerHeight - margin - halfH, y));
-
-        return { x, y };
     };
 
     const updateFloorPanelPosition = (ctx) => {
-        if (!ctx.floorPanel || !ctx.infoPanel) return;
-        if (ctx.isPortrait()) {
-            ctx.floorPanel.style.removeProperty('--floor-panel-x');
-            ctx.floorPanel.style.removeProperty('--floor-panel-y');
-            return;
-        }
-        if (!ctx.infoPanel.classList.contains('visible')) return;
-        const anchor = getDesktopAnchorScreen(ctx);
-        if (!anchor) return;
-        const pos = computeDesktopFloorPanelPosition(ctx, anchor.x, anchor.y);
-
-        ctx.floorPanel.style.setProperty('--floor-panel-x', `${Math.round(pos.x)}px`);
-        ctx.floorPanel.style.setProperty('--floor-panel-y', `${Math.round(pos.y)}px`);
+        if (!ctx.floorPanel) return;
+        // Positioning is handled by ApartmentsMode.updateDomPositions for both desktop and phone.
+        ctx._forceDomUpdate = true;
     };
 
     const clearFloorPanelItems = (ctx) => {
         if (!ctx.floorPanelScroll) return;
         ctx.floorPanelScroll.replaceChildren();
         ctx.floorPanelScroll.scrollLeft = 0;
+        ctx.floorPanelScroll.scrollTop = 0;
         if (ctx._floorPanelNodes) ctx._floorPanelNodes.length = 0;
+        if (ctx._floorItemsData) ctx._floorItemsData.length = 0;
     };
 
     const hideFloorPanel = (ctx) => {
         if (!ctx.floorPanel) return;
         ctx.floorPanel.classList.add('hidden');
         ctx.floorPanel.setAttribute('aria-hidden', 'true');
+        resetFloorItemsInlineStyles(ctx);
     };
 
     const showFloorPanel = (ctx) => {
         if (!ctx.floorPanel) return;
-        syncFloorPanelWidth(ctx);
         ctx.floorPanel.classList.remove('hidden');
         ctx.floorPanel.setAttribute('aria-hidden', 'false');
-        updateFloorPanelWidth(ctx);
-        updateFloorPanelPosition(ctx);
-        requestAnimationFrame(() => {
-            if (!ctx.floorPanel || ctx.floorPanel.classList.contains('hidden')) return;
-            updateFloorPanelWidth(ctx);
-        });
+        if (ctx.isPortrait()) {
+            ctx.floorPanel.style.removeProperty('--floor-panel-max-width');
+            ctx.floorPanel.style.removeProperty('--floor-panel-width');
+            ctx.floorPanel.classList.remove('is-overflowing');
+        } else {
+            ctx._forceDomUpdate = true;
+        }
     };
 
     const updateFloorPanelVisibility = (ctx) => {
@@ -132,8 +70,8 @@
             ctx._selectedApartment &&
             rows &&
             rows.length &&
-            ctx.infoPanel &&
-            ctx.infoPanel.classList.contains('visible')
+            ctx.isInfoPanelOpen?.() &&
+            !ctx.isPlanPanelOpen?.()
         );
         if (!shouldShow) {
             hideFloorPanel(ctx);
@@ -145,6 +83,7 @@
     const renderFloorPanel = (ctx, rows) => {
         if (!ctx.floorPanelScroll) return;
         ctx.floorPanelScroll.replaceChildren();
+        if (ctx._floorItemsData) ctx._floorItemsData.length = 0;
 
         const source = Array.isArray(rows) ? rows : [];
         if (!source.length) {
@@ -156,9 +95,32 @@
         if (built?.fragment) ctx.floorPanelScroll.appendChild(built.fragment);
         ctx._floorPanelNodes = built?.nodes || Array.from(ctx.floorPanelScroll.children);
 
+        const marker = ctx._selectedApartment;
+        const canUseWorldPos = !ctx.isPortrait?.() && marker?.worldPos && typeof pc !== 'undefined';
+        if (!ctx._floorItemsData) ctx._floorItemsData = [];
+        for (let i = 0; i < ctx._floorPanelNodes.length; i++) {
+            const node = ctx._floorPanelNodes[i];
+            const row = source[i];
+            const worldPos = canUseWorldPos
+                ? new pc.Vec3(
+                    marker.worldPos.x,
+                    isFinite(row?.height) ? row.height : marker.worldPos.y,
+                    marker.worldPos.z
+                )
+                : null;
+
+            ctx._floorItemsData.push({
+                dom: node,
+                style: node.style,
+                worldPos,
+                visible: false,
+                lastX: NaN,
+                lastY: NaN
+            });
+        }
+
         updateFloorPanelSelection(ctx, true);
         updateFloorPanelVisibility(ctx);
-        updateFloorPanelWidth(ctx);
     };
 
     const updateFloorPanelSelection = (ctx, scrollIntoView) => {
@@ -177,21 +139,6 @@
             if (isActive) activeNode = node;
         }
 
-        if (scrollIntoView && activeNode) {
-            if (ctx.isPortrait()) {
-                activeNode.scrollIntoView({
-                    block: 'nearest',
-                    inline: 'center',
-                    behavior: 'smooth'
-                });
-            } else {
-                activeNode.scrollIntoView({
-                    block: 'center',
-                    inline: 'nearest',
-                    behavior: 'smooth'
-                });
-            }
-        }
     };
 
     const onFloorPanelClick = (ctx, e) => {
@@ -215,8 +162,6 @@
     window.ApartmentsFloorShared = {
         syncFloorPanelWidth,
         updateFloorPanelWidth,
-        getDesktopAnchorScreen,
-        computeDesktopFloorPanelPosition,
         updateFloorPanelPosition,
         clearFloorPanelItems,
         hideFloorPanel,

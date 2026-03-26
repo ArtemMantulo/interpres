@@ -48,7 +48,7 @@ button,
 .gallery-close:focus-visible,
 .amenities:focus-visible,
 .apartment-pin:focus-visible,
-.apartment-panel-visit:focus-visible,
+.apartment-panel-plan:focus-visible,
 .floor-panel-item:focus-visible,
 .thumbnail:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.85) !important;

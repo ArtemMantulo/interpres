@@ -206,8 +206,6 @@ Gallery.prototype._setup = function (panel) {
             this._emitVisibility(true);
         };
         closeBtn.addEventListener('click', this.closeHandler);
-        closeBtn.addEventListener('touchstart', this.closeHandler, { passive: true });
-        closeBtn.addEventListener('pointerdown', this.closeHandler, { passive: true });
 
         this.closeKeyHandler = (e) => {
             if (!this.isOpen) return;
@@ -501,8 +499,6 @@ Gallery.prototype.onDestroy = function () {
     if (this.panel && this.closeHandler) {
         const closeBtn = this.panel.querySelector('.gallery-close');
         closeBtn && closeBtn.removeEventListener('click', this.closeHandler);
-        closeBtn && closeBtn.removeEventListener('touchstart', this.closeHandler);
-        closeBtn && closeBtn.removeEventListener('pointerdown', this.closeHandler);
         closeBtn &&
             this.closeKeyHandler &&
             closeBtn.removeEventListener('keydown', this.closeKeyHandler);

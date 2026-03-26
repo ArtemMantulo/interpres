@@ -90,12 +90,13 @@ function patchNetworkProgress(resolveAsset, onBytesLoaded) {
 
     XMLHttpRequest.prototype._pcProgressPatched = true;
 
-    XMLHttpRequest.prototype.open = function (_, url, ...rest) {
+    const patchedOpen = function (_, url, ...rest) {
         this._pcUrl = url;
         return originalOpen.call(this, _, url, ...rest);
     };
+    XMLHttpRequest.prototype.open = patchedOpen;
 
-    XMLHttpRequest.prototype.send = function (body) {
+    const patchedSend = function (body) {
         const info = resolveAsset(this._pcUrl);
         if (info?.size) {
             const finalize = () => onBytesLoaded(info, info.size);
@@ -110,9 +111,11 @@ function patchNetworkProgress(resolveAsset, onBytesLoaded) {
         }
         return originalSend.call(this, body);
     };
+    XMLHttpRequest.prototype.send = patchedSend;
 
+    let patchedFetch = null;
     if (originalFetch) {
-        window.fetch = (input, init) => {
+        patchedFetch = (input, init) => {
             const url = typeof input === 'string' ? input : input?.url;
             const info = resolveAsset(url);
             if (!info?.size) return originalFetch(input, init);
@@ -152,19 +155,20 @@ function patchNetworkProgress(resolveAsset, onBytesLoaded) {
                         }
                     });
 
-                    return new Response(stream, res);
+                    return new Response(stream, { status: res.status, statusText: res.statusText, headers: res.headers });
                 })
                 .catch((err) => {
                     onBytesLoaded(info, info.size);
                     throw err;
                 });
         };
+        window.fetch = patchedFetch;
     }
 
     return () => {
-        XMLHttpRequest.prototype.open = originalOpen;
-        XMLHttpRequest.prototype.send = originalSend;
-        if (originalFetch) window.fetch = originalFetch;
+        if (XMLHttpRequest.prototype.open === patchedOpen) XMLHttpRequest.prototype.open = originalOpen;
+        if (XMLHttpRequest.prototype.send === patchedSend) XMLHttpRequest.prototype.send = originalSend;
+        if (patchedFetch && window.fetch === patchedFetch) window.fetch = originalFetch;
         XMLHttpRequest.prototype._pcProgressPatched = false;
     };
 }

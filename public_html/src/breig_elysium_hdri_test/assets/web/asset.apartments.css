@@ -6,16 +6,11 @@
 
 #floor-panel {
     position: fixed;
-    left: 0;
-    top: 0;
-    --floor-panel-x: calc(50vw - 176px);
-    --floor-panel-y: 50vh;
-    width: max-content;
-    max-width: none;
-    height: auto;
+    inset: 0;
+    pointer-events: none;
     overflow: visible;
-    transform: translate3d(var(--floor-panel-x), var(--floor-panel-y), 0) translate(-100%, -50%);
     z-index: 1;
+    transform: none;
 }
 
 #floor-panel > .glass-panel {
@@ -23,15 +18,7 @@
 }
 
 #floor-panel .panel-container {
-    width: max-content;
-    min-width: max-content;
-    height: auto;
-    gap: 8px;
-    justify-content: center;
-    align-items: flex-end;
-    flex-direction: column;
-    padding: 0;
-    box-sizing: border-box;
+    display: contents;
 }
 
 .floor-panel-label {
@@ -39,14 +26,7 @@
 }
 
 .floor-panel-scroll {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    flex-direction: column-reverse;
-    gap: 8px;
-    overflow: visible;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    display: contents;
 }
 
 .floor-panel-scroll::-webkit-scrollbar {
@@ -54,9 +34,12 @@
 }
 
 .floor-panel-item {
-    position: relative;
-    flex: 0 0 auto;
-    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    pointer-events: auto;
+    will-change: transform;
     width: 40px;
     height: 40px;
     padding: 0;
@@ -101,12 +84,14 @@
 
 .floor-panel-item-number {
     position: absolute;
-    inset: 0;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
     z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     line-height: 1;
     color: rgba(255, 255, 255, 0.96);
     transition:
@@ -125,7 +110,7 @@
     justify-content: center;
     text-align: center;
     white-space: nowrap;
-    transform: translateX(4px);
+    transform: translateX(-4px);
     color: rgba(255, 255, 255, 0.95);
     transition:
         opacity 0.2s ease,
@@ -135,24 +120,24 @@
 }
 
 .floor-panel-item:hover,
-.floor-panel-item:focus-visible {
-    width: 40px;
+.floor-panel-item:focus-visible,
+.floor-panel-item.active {
+    width: 80px;
     background-color: rgba(36, 36, 36, 0.48);
 }
 
+.floor-panel-item:hover .floor-panel-item-label,
+.floor-panel-item:focus-visible .floor-panel-item-label,
 .floor-panel-item.active .floor-panel-item-label {
     opacity: 1;
     transform: translateX(0);
 }
 
+.floor-panel-item:hover .floor-panel-item-number,
+.floor-panel-item:focus-visible .floor-panel-item-number,
 .floor-panel-item.active .floor-panel-item-number {
     opacity: 0;
-    transform: translateX(4px);
-}
-
-.floor-panel-item.active {
-    width: 80px;
-    background-color: rgba(36, 36, 36, 0.48);
+    transform: translateX(-4px);
 }
 
 

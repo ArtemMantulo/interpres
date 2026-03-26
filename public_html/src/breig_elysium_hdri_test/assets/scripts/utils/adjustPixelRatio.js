@@ -27,7 +27,7 @@ AdjustPixelRatio.prototype.initialize = function () {
         const ua = navigator.userAgent || '';
         const isTablet =
             /iPad|Tablet/i.test(ua) ||
-            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+            (/mac/i.test(navigator.userAgentData?.platform || navigator.platform || '') && navigator.maxTouchPoints > 1) ||
             (/Android/i.test(ua) && !/Mobile/i.test(ua));
         const isPhone = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
         return isPhone || isTablet;

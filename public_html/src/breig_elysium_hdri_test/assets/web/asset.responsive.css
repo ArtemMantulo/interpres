@@ -43,108 +43,18 @@
         filter: none;
         border-radius: 100px;
     }
-    #floor-panel {
-        position: absolute;
-        top: 46px;
-        height: 32px;
-        left: 50%;
-        width: var(--floor-panel-width, calc(100vw - 40px));
-        max-width: calc(100vw - 40px);
-        transform: translateX(-50%);
-        overflow: visible;
-    }
-    #floor-panel.is-overflowing {
-        overflow: hidden;
-    }
-    #floor-panel > .glass-panel {
-        display: block;
-        background: rgba(51, 51, 51, 0.4);
-    }
-    #floor-panel .border-shadow {
-        border: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        filter: none;
-        border-radius: 999px;
-    }
-    #floor-panel .amenities-line {
-        padding: 1px;
-        background: linear-gradient(
-                to bottom,
-                rgba(200, 200, 200, 0.4) 0%,
-                rgba(200, 200, 200, 0) 100%
-            )
-            top left / 100% 100% no-repeat;
-    }
-    #floor-panel .panel-container {
-        width: 100%;
-        min-width: 0;
-        height: 28px;
-        flex-direction: row;
-        align-items: center;
-        gap: 6px;
-        padding: 0 8px;
-        justify-content: flex-start;
-    }
-    .floor-panel-label {
-        display: block;
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.46);
-    }
-    .floor-panel-scroll {
-        flex: 1 1 auto;
-        min-width: 0;
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
     .floor-panel-item {
-        width: 24px;
-        min-width: 24px;
-        height: 24px;
-        padding: 0;
-        justify-content: center;
-        background-color: transparent;
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-        box-shadow: none;
+        width: 28px;
+        height: 28px;
         font-size: 11px;
-    }
-    .floor-panel-item::before {
-        display: none;
     }
     .floor-panel-item-number {
-        position: static;
-        inset: auto;
-        width: auto;
-        min-width: 0;
-        flex: 0 0 auto;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 1;
-        transform: none;
-    }
-    .floor-panel-item-label {
-        display: none;
+        width: 28px;
     }
     .floor-panel-item:hover,
-    .floor-panel-item:focus-visible {
-        width: 24px;
-        background-color: transparent;
-    }
-    .floor-panel-item:focus-visible {
-        outline: none !important;
-    }
+    .floor-panel-item:focus-visible,
     .floor-panel-item.active {
-        width: 24px;
-        background-color: rgba(255, 255, 255, 0.28);
-    }
-    .floor-panel-item.active .floor-panel-item-number {
-        opacity: 1;
-        transform: none;
+        width: 60px;
     }
     .icon-image {
         height: 14px;
@@ -210,40 +120,12 @@
         max-width: var(--amenities-text-max-width);
         padding-right: 4px;
     }
-    .apartment-pin {
-        height: 36px;
-    }
-    .apartment-pin-icon {
-        width: 18px;
-        height: 18px;
-        padding: 9px;
-    }
-    .apartment-pin-text {
-        font-size: 12px;
-        padding-right: 6px;
-    }
-    #apartments-info-panel {
-        width: 280px;
-    }
-    #apartments-info-panel .panel-container {
-        gap: 8px;
-    }
-    .apartment-panel-data {
-        font-size: 11px;
-    }
-    .apartment-panel-visit {
-        height: 36px;
-        font-size: 13px;
-    }
-    .amenities-line {
-        padding: 1px;
-    }
+    .amenities-line,
     .mode-panel .amenities-line {
         padding: 1px;
     }
 
-
-    #info-panel {
+    #amenities-info-panel {
         width: 210px;
         top: auto;
         bottom: 10px;
@@ -251,16 +133,16 @@
         right: 40px;
         transform: none;
     }
-    #info-panel .panel-image {
+    #amenities-info-panel .panel-image {
         height: 90px;
     }
-    #info-panel .panel-title {
+    #amenities-info-panel .panel-title {
         font-size: 14px;
     }
-    #info-panel .panel-description {
+    #amenities-info-panel .panel-description {
         font-size: 10px;
     }
-    .info-panel-nav {
+    .amenities-info-panel-nav {
         height: 165px;
     }
 
@@ -278,6 +160,126 @@
     .thumbnail {
         scroll-snap-align: start;
         height: 70%;
+    }
+
+    /* ── Small landscape: apartment pin & info panel overrides ──────── */
+    .apartment-pin {
+        height: 28px;
+        min-width: 28px;
+    }
+    .apartment-pin .panel-container {
+        min-width: 28px;
+        padding: 0 4px 0 0;
+    }
+    .apartment-pin-icon {
+        width: 14px;
+        height: 14px;
+        padding: 7px;
+    }
+    .apartment-pin-text {
+        font-size: 11px;
+        padding-right: 6px;
+    }
+
+    #apartments-info-panel,
+    .apartments-info-panel-clone {
+        width: 160px;
+    }
+    #apartments-info-panel > .glass-panel.border-shadow,
+    .apartments-info-panel-clone > .glass-panel.border-shadow {
+        border-radius: 12px;
+        clip-path: inset(0 100% 0 0 round 12px);
+    }
+    #apartments-info-panel .amenities-line,
+    .apartments-info-panel-clone .amenities-line {
+        border-radius: 12px;
+    }
+    #apartments-info-panel .panel-container,
+    .apartments-info-panel-clone .panel-container {
+        gap: 6px;
+        padding: 8px;
+        clip-path: inset(0 100% 0 0 round 12px);
+    }
+    #apartments-info-panel.visible > .glass-panel.border-shadow,
+    .apartments-info-panel-clone.visible > .glass-panel.border-shadow {
+        clip-path: inset(0 0 0 0 round 12px);
+    }
+    #apartments-info-panel.visible .panel-container,
+    .apartments-info-panel-clone.visible .panel-container {
+        clip-path: inset(0 0 0 0 round 12px);
+    }
+    #apartments-info-panel .apartment-panel-close,
+    .apartments-info-panel-clone .apartment-panel-close {
+        top: 6px;
+        right: 6px;
+        width: 14px;
+        height: 14px;
+        background-size: 6px 6px;
+    }
+    #apartments-info-panel .apartments-info-panel-nav {
+        top: 25px;
+        bottom: 25px;
+        width: 14px;
+    }
+    #apartments-info-panel .apartments-info-panel-nav-prev {
+        left: -13px;
+        border-radius: 8px 0 0 8px;
+    }
+    #apartments-info-panel .apartments-info-panel-nav-next {
+        right: -13px;
+        border-radius: 0 8px 8px 0;
+    }
+    #apartments-info-panel .apartments-info-panel-nav-prev .glass-panel.border-shadow {
+        border-radius: 8px 0 0 8px;
+    }
+    #apartments-info-panel .apartments-info-panel-nav-next .glass-panel.border-shadow {
+        border-radius: 0 8px 8px 0;
+    }
+    #apartments-info-panel .apartments-info-panel-nav-arrow {
+        width: 20px;
+        height: 20px;
+    }
+    #apartments-info-panel .apartment-panel-title,
+    .apartments-info-panel-clone .apartment-panel-title {
+        padding-right: 22px;
+        font-size: 8px;
+    }
+    #apartments-info-panel .apartment-panel-description,
+    .apartments-info-panel-clone .apartment-panel-description {
+        font-size: 6px;
+    }
+    #apartments-info-panel .apartment-panel-image,
+    .apartments-info-panel-clone .apartment-panel-image {
+        height: 75px;
+        border-radius: 8px;
+    }
+    #apartments-info-panel .apartment-panel-data,
+    .apartments-info-panel-clone .apartment-panel-data {
+        font-size: 6px;
+        gap: 4px;
+    }
+    #apartments-info-panel .apartment-bed-icon,
+    .apartments-info-panel-clone .apartment-bed-icon {
+        width: 8px;
+        height: 8px;
+    }
+    #apartments-info-panel .apartment-panel-separator,
+    .apartments-info-panel-clone .apartment-panel-separator {
+        height: 8px;
+    }
+    #apartments-info-panel .apartment-panel-plan,
+    .apartments-info-panel-clone .apartment-panel-plan {
+        height: 20px;
+        font-size: 7px;
+        line-height: 10px;
+    }
+    #apartments-panel-plan {
+        gap: 2px;
+    }
+    #apartments-panel-plan::after {
+        width: 12px;
+        height: 12px;
+        flex: 0 0 12px;
     }
 }
 
@@ -310,83 +312,81 @@
         gap: 4px;
     }
     #floor-panel {
-        position: absolute;
-        top: 72px;
-        height: 56px;
-        left: 50%;
-        right: auto;
-        width: var(--floor-panel-width, calc(100vw - 60px));
-        max-width: calc(100vw - 60px);
-        transform: translateX(-50%);
-        justify-content: flex-start;
+        position: fixed;
+        inset: 0;
+        width: auto;
+        height: auto;
+        max-height: none;
+        transform: none;
         overflow: visible;
     }
     #floor-panel.is-overflowing {
-        overflow: hidden;
+        overflow: visible;
     }
     #floor-panel > .glass-panel {
-        display: block;
-        background: rgba(51, 51, 51, 0.4);
+        display: none;
+        background: transparent;
+        border-radius: 0;
     }
     #floor-panel .border-shadow {
         border: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        box-shadow: none;
         filter: none;
-        border-radius: 100px;
+        border-radius: 0;
     }
     #floor-panel .amenities-line {
-        padding: 1px;
-        background: linear-gradient(
-                to bottom,
-                rgba(200, 200, 200, 0.4) 0%,
-                rgba(200, 200, 200, 0) 100%
-            )
-            top left / 100% 100% no-repeat;
+        padding: 0;
+        border-radius: 0;
+        background: none;
     }
     #floor-panel .panel-container {
-        width: 100%;
-        min-width: 0;
-        height: 40px;
+        display: contents;
+        width: auto;
+        height: auto;
         flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 8px;
-        padding: 0 12px;
+        align-items: stretch;
+        justify-content: stretch;
+        gap: 0;
+        padding: 0;
     }
     .floor-panel-label {
-        display: block;
-        color: rgba(255, 255, 255, 0.46);
-        font-size: 14px;
-    }
-    .floor-panel-scroll {
-        flex: 1 1 auto;
-        min-width: 0;
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
-    .floor-panel-item {
-        width: 32px;
-        min-width: 32px;
-        height: 32px;
-        padding: 0;
-        justify-content: center;
-        background-color: transparent;
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-        box-shadow: none;
-    }
-    .floor-panel-item::before {
         display: none;
     }
-    .floor-panel-item-number {
-        position: static;
-        inset: auto;
-        width: auto;
+    .floor-panel-scroll {
+        display: contents;
+        flex: initial;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 0;
+        overflow: visible;
+        max-height: none;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .floor-panel-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    .floor-panel-item {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+        will-change: transform;
+        width: 40px;
         min-width: 0;
-        flex: 0 0 auto;
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+        pointer-events: auto;
+    }
+    .floor-panel-item::before {
+        display: block;
+    }
+    .floor-panel-item-number {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 40px;
         height: 100%;
         display: flex;
         align-items: center;
@@ -395,23 +395,28 @@
         transform: none;
     }
     .floor-panel-item-label {
-        display: none;
+        display: flex;
     }
     .floor-panel-item:hover,
     .floor-panel-item:focus-visible {
-        width: 32px;
-        background-color: transparent;
-    }
-    .floor-panel-item:focus-visible {
-        outline: none !important;
+        width: 80px;
+        background-color: rgba(36, 36, 36, 0.48);
     }
     .floor-panel-item.active {
-        width: 32px;
-        background-color: rgba(255, 255, 255, 0.28);
+        width: 80px;
+        background-color: rgba(36, 36, 36, 0.48);
     }
-    .floor-panel-item.active .floor-panel-item-number {
+    .floor-panel-item:hover .floor-panel-item-label,
+    .floor-panel-item:focus-visible .floor-panel-item-label,
+    .floor-panel-item.active .floor-panel-item-label {
         opacity: 1;
-        transform: none;
+        transform: translateX(0);
+    }
+    .floor-panel-item:hover .floor-panel-item-number,
+    .floor-panel-item:focus-visible .floor-panel-item-number,
+    .floor-panel-item.active .floor-panel-item-number {
+        opacity: 0;
+        transform: translateX(-4px);
     }
     .mode-panel > [data-mode='0'] {
         flex: 0 0 auto;
@@ -523,7 +528,6 @@
         height: 20px;
     }
     .amenities-text {
-        font-size: 10px;
         padding-right: 0;
     }
     .amenities:hover:not(.selected-for-info) .panel-container,
@@ -556,28 +560,7 @@
         padding: 10px;
     }
     .apartment-pin-text {
-        font-size: 12px;
         padding-right: 6px;
-    }
-    #apartments-info-panel {
-        width: min(340px, calc(100vw - 24px));
-    }
-    #apartments-info-panel .panel-container {
-        gap: 10px;
-    }
-    .apartment-panel-data {
-        font-size: 12px;
-        gap: 6px;
-    }
-    .apartment-panel-visit {
-        height: 38px;
-        font-size: 14px;
-    }
-    .amenities-line {
-        padding: 1px;
-    }
-    .mode-panel .amenities-line {
-        padding: 1px;
     }
 
     .gallery-panel {
@@ -607,22 +590,23 @@
         font-size: 14px;
     }
 
-    #info-panel {
+    #amenities-info-panel {
         width: 210px;
         top: 74px;
         left: 50%;
         transform: translateX(-50%);
     }
-    #info-panel .panel-image {
+    #amenities-info-panel .panel-image {
         height: 90px;
     }
-    #info-panel .panel-title {
+    #amenities-info-panel .panel-title {
         font-size: 14px;
     }
-    #info-panel .panel-description {
+    #amenities-info-panel .panel-description {
         font-size: 10px;
     }
-    .info-panel-nav {
+    .amenities-info-panel-nav {
         height: 165px;
     }
 }
+

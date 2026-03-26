@@ -1,6 +1,9 @@
 const SUPPORTED_LANGS = new Set(['en', 'ru', 'ko', 'zh', 'de', 'fr', 'es', 'ar', 'ja']);
 const STORAGE_KEY = 'lang';
 
+let currentDictionary = null;
+let allDictionaries = null;
+
 const safeStorageGet = () => {
     try {
         return localStorage.getItem(STORAGE_KEY);
@@ -49,6 +52,13 @@ const applyTranslations = (dictionary) => {
     }
 };
 
+const getText = (key, fallback) => {
+    if (currentDictionary && Object.prototype.hasOwnProperty.call(currentDictionary, key)) {
+        return currentDictionary[key];
+    }
+    return fallback !== undefined ? fallback : key;
+};
+
 export async function loadLanguage(forcedLanguage) {
     const language = getLanguage(forcedLanguage);
 
@@ -56,8 +66,12 @@ export async function loadLanguage(forcedLanguage) {
     safeStorageSet(language);
 
     try {
-        const response = await fetch(`assets/language/${language}.json`);
-        if (response.ok) applyTranslations(await response.json());
+        const response = await fetch('assets/language/languages.json');
+        if (response.ok) {
+            allDictionaries = await response.json();
+            currentDictionary = allDictionaries[language] || allDictionaries.en || {};
+            applyTranslations(currentDictionary);
+        }
     } catch (err) {
         console.error('Translation load error:', err);
     }
@@ -69,5 +83,8 @@ if (typeof window !== 'undefined') {
     const api = window.AppLanguage || {};
     api.get = getLanguage;
     api.normalize = normalizeLanguage;
+    api.getText = getText;
+    api.getDictionary = () => currentDictionary;
+    api.getAllDictionaries = () => allDictionaries;
     window.AppLanguage = api;
 }

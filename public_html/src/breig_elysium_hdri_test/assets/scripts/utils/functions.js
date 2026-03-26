@@ -238,7 +238,7 @@ export function createDebugStatsOverlayUpdater(
 }
 
 export const getDeviceProfile = ({ isMobile, isTablet, profiles }) =>
-    isMobile() ? profiles.phone : isTablet() ? profiles.tablet : profiles.desktop;
+    isTablet() ? profiles.tablet : isMobile() ? profiles.phone : profiles.desktop;
 
 export function finalizeStart({
     reveal,

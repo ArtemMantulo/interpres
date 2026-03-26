@@ -467,7 +467,7 @@ OrbitCamera.prototype.lookAtPointSmoothly = function (point) {
 };
 
 OrbitCamera.prototype.lerpAngle = function (a, b, t) {
-    const d = ((b - a + 180) % 360) - 180;
+    const d = ((((b - a) % 360) + 540) % 360) - 180;
     return a + d * t;
 };
 

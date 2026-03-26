@@ -2,37 +2,32 @@
     if (window.AmenitiesDomShared) return;
 
     const loadDataFromCsv = (ctx) => {
-        ctx.ensureCsvAssets();
+        const url = ctx.dataUrl || 'assets/data/amenities/dataAmenities.json';
+        const lang = ctx.getLang();
+        const token = ++ctx._dataLoadToken;
 
-        const asset = ctx.currentCsv;
-        if (!asset) {
-            renderAmenities(ctx, []);
-            return;
-        }
-
-        const token = ++ctx._csvLoadToken;
-
-        const parse = () => {
-            if (token !== ctx._csvLoadToken) return;
+        const process = (json) => {
+            if (token !== ctx._dataLoadToken) return;
             if (ctx.currentMode !== '2') return;
-            const dataList = ctx.getAmenitiesData(asset);
+            ctx._cachedJson = json;
+            const shared = ctx.getShared();
+            const dataList = shared?.parseData ? shared.parseData(json, lang) : [];
             renderAmenities(ctx, dataList);
         };
 
-        if (asset.resource) return parse();
-
-        asset.once('load', parse);
-        asset.once('error', (err) => {
-            if (token !== ctx._csvLoadToken) return;
-            console.warn('Amenities CSV load failed:', err);
-            renderAmenities(ctx, []);
-        });
-
-        if (asset.registry) ctx.app.assets.load(asset);
-        else {
-            ctx.app.assets.add(asset);
-            ctx.app.assets.load(asset);
+        if (ctx._cachedJson) {
+            process(ctx._cachedJson);
+            return;
         }
+
+        fetch(url)
+            .then((r) => r.json())
+            .then(process)
+            .catch((err) => {
+                if (token !== ctx._dataLoadToken) return;
+                console.warn('Amenities data load failed:', err);
+                renderAmenities(ctx, []);
+            });
     };
 
     const renderAmenities = (ctx, dataList) => {

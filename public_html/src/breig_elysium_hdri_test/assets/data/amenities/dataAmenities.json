@@ -1,0 +1,212 @@
+{
+  "amenities": [
+    {
+      "icon": "assets/images/icons/ui_gym.png",
+      "image": "assets/images/pictures/pic_gym.jpg",
+      "position": [-9.177, 1, -1.254],
+      "translations": {
+        "en": { "title": "Gym", "description": "Fully equipped gym for workout and physical activities." },
+        "ru": { "title": "Тренажерный зал", "description": "Полностью оборудованный зал для занятий спортом и физической активности." },
+        "de": { "title": "Fitnessstudio", "description": "Voll ausgestattetes Fitnessstudio für Training und körperliche Aktivitäten." },
+        "es": { "title": "Gimnasio", "description": "Gimnasio totalmente equipado para entrenamiento y actividades físicas." },
+        "fr": { "title": "Salle de sport", "description": "Salle de sport entièrement équipée pour l'exercice physique." },
+        "ja": { "title": "ジム", "description": "運動やフィットネス活動のための設備が整ったジムです。" },
+        "ko": { "title": "헬스장", "description": "운동과 신체 활동을 위한 완비된 헬스 시설입니다." },
+        "ar": { "title": "صالة رياضية", "description": "صالة رياضية مجهزة بالكامل لممارسة التمارين والأنشطة البدنية." },
+        "zh": { "title": "健身房", "description": "设备齐全的健身房，适合锻炼和身体活动。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_lounge.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [-5.677, 1, -1.754],
+      "translations": {
+        "en": { "title": "Lounge Area by the Pool", "description": "Pool with a cozy lounge area, ideal for relaxation and gatherings." },
+        "ru": { "title": "Зона отдыха у бассейна", "description": "Бассейн с уютной лаунж-зоной, идеально подходящей для отдыха и встреч." },
+        "de": { "title": "Loungebereich am Pool", "description": "Pool mit gemütlichem Loungebereich, ideal zum Entspannen und für Zusammenkünfte." },
+        "es": { "title": "Zona lounge junto a la piscina", "description": "Piscina con una zona lounge acogedora, ideal para relajarse y reunirse." },
+        "fr": { "title": "Espace lounge près de la piscine", "description": "Piscine avec espace lounge confortable, idéal pour se détendre et se réunir." },
+        "ja": { "title": "プールサイドのラウンジエリア", "description": "リラックスや集まりに最適な、快適なラウンジエリア付きのプールです。" },
+        "ko": { "title": "수영장 옆 라운지 구역", "description": "편안한 휴식과 모임을 위한 아늑한 수영장 라운지 공간입니다." },
+        "ar": { "title": "منطقة استراحة بجانب المسبح", "description": "مسبح مع منطقة استراحة مريحة مثالية للاسترخاء والتجمعات." },
+        "zh": { "title": "泳池休息区", "description": "带有舒适休息区的泳池，非常适合放松和聚会。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_parking.png",
+      "image": "assets/images/pictures/pic_parking.jpg",
+      "position": [-1.677, 1, -10.754],
+      "translations": {
+        "en": { "title": "Parking", "description": "Secure and accessible parking with convenient entry and exit." },
+        "ru": { "title": "Парковка", "description": "Безопасная и удобная парковка с удобным въездом и выездом." },
+        "de": { "title": "Parkplatz", "description": "Sicherer und zugänglicher Parkplatz mit bequemer Ein- und Ausfahrt." },
+        "es": { "title": "Estacionamiento", "description": "Estacionamiento seguro y accesible con entrada y salida convenientes." },
+        "fr": { "title": "Parking", "description": "Parking sécurisé et accessible avec entrées et sorties pratiques." },
+        "ja": { "title": "駐車場", "description": "便利な出入り口付きの安全で使いやすい駐車場です。" },
+        "ko": { "title": "주차장", "description": "편리한 출입이 가능한 안전한 주차 공간입니다." },
+        "ar": { "title": "موقف سيارات", "description": "موقف سيارات آمن وسهل الوصول مع مداخل ومخارج مريحة." },
+        "zh": { "title": "停车场", "description": "安全便捷的停车场，进出方便。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_pool.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [4.323, 1, -3.254],
+      "translations": {
+        "en": { "title": "Swimming Pool", "description": "Calm, turquoise waters are protected by a coral reef, offering a serene and safe environment perfect for swimming and relaxation." },
+        "ru": { "title": "Бассейн", "description": "Спокойные бирюзовые воды, защищенные коралловым рифом, создают безопасную и уютную атмосферу." },
+        "de": { "title": "Schwimmbad", "description": "Ruhiges, türkisfarbenes Wasser, geschützt durch ein Korallenriff, ideal zum Schwimmen und Entspannen." },
+        "es": { "title": "Piscina", "description": "Aguas tranquilas color turquesa protegidas por un arrecife de coral, perfectas para nadar y relajarse." },
+        "fr": { "title": "Piscine", "description": "Eaux turquoise calmes protégées par un récif de corail, idéales pour nager et se détendre." },
+        "ja": { "title": "プール", "description": "サンゴ礁に守られた穏やかなターコイズブルーの水で、安心して泳げる癒しの空間です。" },
+        "ko": { "title": "수영장", "description": "산호초로 보호되는 잔잔한 터쿼이즈 색상의 물로 안전하고 평화로운 환경을 제공합니다." },
+        "ar": { "title": "حمام سباحة", "description": "مياه هادئة بلون فيروزي محمية بشعاب مرجانية، مثالية للسباحة والاسترخاء." },
+        "zh": { "title": "游泳池", "description": "被珊瑚礁保护的平静碧绿色水域，为游泳和放松提供安静安全的环境。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_playground.png",
+      "image": "assets/images/pictures/pic_playground.jpg",
+      "position": [8.323, 1, 4.846],
+      "translations": {
+        "en": { "title": "Children Playground", "description": "Safe and fun playground for kids, with diverse play equipment." },
+        "ru": { "title": "Детская площадка", "description": "Безопасная и увлекательная игровая зона с разнообразным оборудованием для детей." },
+        "de": { "title": "Kinderspielplatz", "description": "Sicherer und unterhaltsamer Spielplatz mit vielfältigen Spielgeräten für Kinder." },
+        "es": { "title": "Área de juegos infantiles", "description": "Área de juegos segura y divertida con diversos equipos para niños." },
+        "fr": { "title": "Aire de jeux pour enfants", "description": "Aire de jeux sûre et amusante avec divers équipements pour les enfants." },
+        "ja": { "title": "子供用遊び場", "description": "多様な遊具が揃った、安全で楽しい子ども向けの遊び場です。" },
+        "ko": { "title": "어린이 놀이터", "description": "다양한 놀이 기구가 있는 안전하고 즐거운 어린이 놀이터입니다." },
+        "ar": { "title": "منطقة ألعاب للأطفال", "description": "ملعب آمن وممتع للأطفال مع معدات لعب متنوعة." },
+        "zh": { "title": "儿童游乐场", "description": "配备多样化设施的安全有趣的儿童游乐区。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_gym.png",
+      "image": "assets/images/pictures/pic_gym.jpg",
+      "position": [-7.677, 1, 1.746],
+      "translations": {
+        "en": { "title": "Outdoor exercise equipment", "description": "An open-air fitness area equipped with machines for physical workouts." },
+        "ru": { "title": "Уличные тренажёры", "description": "Открытая зона фитнеса с оборудованием для тренировок на свежем воздухе." },
+        "de": { "title": "Fitnessgeräte im Freien", "description": "Ein Fitnessbereich im Freien mit Geräten für körperliches Training." },
+        "es": { "title": "Equipamiento de ejercicio al aire libre", "description": "Área de fitness al aire libre con máquinas para entrenamientos físicos." },
+        "fr": { "title": "Équipements de fitness extérieurs", "description": "Zone de fitness en plein air équipée pour les exercices physiques." },
+        "ja": { "title": "屋外トレーニング機器", "description": "フィットネスのための機器を備えた屋外運動エリアです。" },
+        "ko": { "title": "야외 운동 기구", "description": "신체 운동을 위한 장비가 마련된 야외 피트니스 공간입니다." },
+        "ar": { "title": "معدات تمارين خارجية", "description": "منطقة لياقة بدنية في الهواء الطلق مزودة بأجهزة للتمارين." },
+        "zh": { "title": "户外健身器材", "description": "配备锻炼器械的露天健身区。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_playground.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [-6.677, 1, 5.246],
+      "translations": {
+        "en": { "title": "Relax Area", "description": "A cozy outdoor space designed for rest and relaxation." },
+        "ru": { "title": "Зона релаксации", "description": "Уютное место на открытом воздухе, созданное для отдыха." },
+        "de": { "title": "Entspannungsbereich", "description": "Ein gemütlicher Außenbereich zum Ausruhen und Entspannen." },
+        "es": { "title": "Zona de relajación", "description": "Espacio exterior acogedor diseñado para el descanso." },
+        "fr": { "title": "Espace détente", "description": "Espace extérieur confortable conçu pour la relaxation." },
+        "ja": { "title": "リラックスエリア", "description": "休憩とリラックスのために設計された快適な屋外スペースです。" },
+        "ko": { "title": "휴식 공간", "description": "휴식과 이완을 위한 아늑한 야외 공간입니다." },
+        "ar": { "title": "منطقة استرخاء", "description": "مساحة خارجية مريحة مصممة للراحة والاسترخاء." },
+        "zh": { "title": "放松区", "description": "一个为放松和休息而设计的舒适户外空间。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_playground.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [-1.177, 1, 5.246],
+      "translations": {
+        "en": { "title": "Volleyball Spot", "description": "A dedicated court for playing volleyball in the fresh air." },
+        "ru": { "title": "Площадка для волейбола", "description": "Специальная площадка для игры в волейбол на свежем воздухе." },
+        "de": { "title": "Volleyballplatz", "description": "Ein spezielles Spielfeld zum Volleyballspielen an der frischen Luft." },
+        "es": { "title": "Cancha de voleibol", "description": "Cancha dedicada para jugar voleibol al aire libre." },
+        "fr": { "title": "Terrain de volley-ball", "description": "Terrain dédié au volley en plein air." },
+        "ja": { "title": "バレーボール場", "description": "屋外でバレーボールを楽しめる専用コートです。" },
+        "ko": { "title": "배구장", "description": "신선한 공기 속에서 배구를 즐길 수 있는 전용 코트입니다." },
+        "ar": { "title": "ملعب كرة طائرة", "description": "ملعب مخصص للعب كرة الطائرة في الهواء الطلق." },
+        "zh": { "title": "排球场地", "description": "用于户外排球活动的专用场地。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_walkway.png",
+      "image": "assets/images/pictures/pic_playground.jpg",
+      "position": [2.823, 1, 7.246],
+      "translations": {
+        "en": { "title": "Walking Area", "description": "Scenic paths for peaceful walks surrounded by nature." },
+        "ru": { "title": "Пешеходная зона", "description": "Живописные дорожки для прогулок среди природы." },
+        "de": { "title": "Spazierweg", "description": "Malerische Wege für entspannte Spaziergänge inmitten der Natur." },
+        "es": { "title": "Área de caminata", "description": "Senderos escénicos para paseos tranquilos rodeados de naturaleza." },
+        "fr": { "title": "Sentier de promenade", "description": "Chemins pittoresques pour des balades tranquilles en pleine nature." },
+        "ja": { "title": "散歩道", "description": "自然に囲まれた穏やかな散策路です。" },
+        "ko": { "title": "산책로", "description": "자연 속에서 평화롭게 산책할 수 있는 경로입니다." },
+        "ar": { "title": "منطقة مشي", "description": "مسارات طبيعية للمشي الهادئ وسط الطبيعة." },
+        "zh": { "title": "步道", "description": "被大自然环绕的宁静步行路径。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_playground.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [3.323, 1, 4.246],
+      "translations": {
+        "en": { "title": "Fireplace", "description": "A gathering spot with a fireplace for warm and social evenings." },
+        "ru": { "title": "Каминная зона", "description": "Место для встреч у камина, идеально для тёплых и уютных вечеров." },
+        "de": { "title": "Kaminbereich", "description": "Ein Treffpunkt mit Kamin für warme und gesellige Abende." },
+        "es": { "title": "Zona de chimenea", "description": "Espacio para reuniones con chimenea, ideal para noches cálidas y sociales." },
+        "fr": { "title": "Coin cheminée", "description": "Espace de rassemblement avec cheminée pour des soirées chaleureuses." },
+        "ja": { "title": "暖炉エリア", "description": "暖かく社交的な夜に最適な、暖炉付きの集まりスペースです。" },
+        "ko": { "title": "벽난로 공간", "description": "따뜻하고 사교적인 저녁을 위한 벽난로가 있는 모임 장소입니다." },
+        "ar": { "title": "منطقة مدفأة", "description": "مكان تجمع مع مدفأة لأمسيات دافئة واجتماعية." },
+        "zh": { "title": "壁炉区", "description": "设有壁炉的聚会场所，适合温暖的社交夜晚。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_walkway.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [-2.177, 1, -1.754],
+      "translations": {
+        "en": { "title": "Amphitheater", "description": "An open-air venue with seating, perfect for events and performances." },
+        "ru": { "title": "Амфитеатр", "description": "Открытая площадка с сиденьями, идеально подходит для мероприятий и выступлений." },
+        "de": { "title": "Amphitheater", "description": "Ein Freiluft-Veranstaltungsort mit Sitzplätzen – ideal für Events und Aufführungen." },
+        "es": { "title": "Anfiteatro", "description": "Espacio al aire libre con asientos, ideal para eventos y espectáculos." },
+        "fr": { "title": "Amphithéâtre", "description": "Lieu en plein air avec des sièges, parfait pour les événements et les spectacles." },
+        "ja": { "title": "野外劇場", "description": "イベントや公演に最適な座席付きのオープンエア施設です。" },
+        "ko": { "title": "야외 극장", "description": "이벤트와 공연에 적합한 좌석이 마련된 야외 공연장입니다." },
+        "ar": { "title": "مدرج", "description": "مكان مفتوح مع مقاعد مثالي للفعاليات والعروض." },
+        "zh": { "title": "露天剧场", "description": "带座位的露天场所，适合举办活动和表演。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_walkway.png",
+      "image": "assets/images/pictures/pic_playground.jpg",
+      "position": [-0.177, 1, -4.254],
+      "translations": {
+        "en": { "title": "Walking place with resting seats", "description": "A walking path with comfortable benches for resting along the way." },
+        "ru": { "title": "Пешеходная зона с лавочками", "description": "Прогулочная дорожка с удобными скамейками для отдыха." },
+        "de": { "title": "Spazierweg mit Bänken", "description": "Ein Gehweg mit bequemen Sitzbänken zum Ausruhen." },
+        "es": { "title": "Sendero con bancos para descansar", "description": "Camino peatonal con bancos cómodos para descansar en el recorrido." },
+        "fr": { "title": "Sentier avec bancs de repos", "description": "Chemin avec des bancs confortables pour se reposer en chemin." },
+        "ja": { "title": "ベンチ付き散歩道", "description": "途中で休憩できるベンチが設置された散歩道です。" },
+        "ko": { "title": "벤치가 있는 산책로", "description": "길을 따라 편안하게 쉴 수 있는 벤치가 있는 산책로입니다." },
+        "ar": { "title": "مسار مشي مع مقاعد", "description": "مسار للمشي يحتوي على مقاعد مريحة للراحة أثناء الطريق." },
+        "zh": { "title": "带休息座椅的步道", "description": "沿途设有舒适长椅的步行小道，便于休息。" }
+      }
+    },
+    {
+      "icon": "assets/images/icons/ui_reception.png",
+      "image": "assets/images/pictures/pic_longue.jpg",
+      "position": [2.023, 1, -8.254],
+      "translations": {
+        "en": { "title": "Bar and Lobby", "description": "A welcoming space combining a stylish bar and a comfortable lobby for relaxation and social gatherings." },
+        "ru": { "title": "Бар и лобби", "description": "Гостеприимное пространство с баром и зоной отдыха для общения и релаксации." },
+        "de": { "title": "Bar und Lobby", "description": "Ein einladender Bereich mit stilvoller Bar und gemütlicher Lobby für Entspannung und Geselligkeit." },
+        "es": { "title": "Bar y vestíbulo", "description": "Espacio acogedor que combina un bar elegante y un vestíbulo cómodo para relajarse y socializar." },
+        "fr": { "title": "Bar et hall", "description": "Espace accueillant combinant un bar élégant et un hall confortable pour se détendre et socialiser." },
+        "ja": { "title": "バーとロビー", "description": "リラックスや交流に最適な、スタイリッシュなバーと快適なロビーがある空間です。" },
+        "ko": { "title": "바와 로비", "description": "편안한 휴식과 사교를 위한 스타일리시한 바와 로비 공간입니다." },
+        "ar": { "title": "بار وردهة", "description": "مساحة ترحيبية تجمع بين بار أنيق وردهة مريحة للاسترخاء والتواصل الاجتماعي." },
+        "zh": { "title": "酒吧和大堂", "description": "集时尚酒吧和舒适大堂于一体的欢迎空间，适合休闲和社交。" }
+      }
+    }
+  ]
+}

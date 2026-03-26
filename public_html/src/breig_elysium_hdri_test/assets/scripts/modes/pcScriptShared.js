@@ -35,7 +35,7 @@
             return { width: state.width || defaultWidth, height: state.height || defaultHeight };
         },
 
-        // options: { hideSelected(item) => bool, getPortraitOffset(item) => number, activeCheck: bool }
+        // options: { hideSelected(item) => bool, getPortraitOffset(item) => number, activeCheck: bool, transformSuffix: string }
         updateDomPositions(ctx, dataList, options) {
             const camera = ctx.cameraEntity?.camera;
             const rect = ctx.getCanvasRect();
@@ -46,7 +46,7 @@
             const rectTop = rect.top;
             const screenPos = ctx._screenPos;
             const threshold = isFinite(ctx.screenVisibilityThreshold) ? ctx.screenVisibilityThreshold : 0.25;
-            const transformSuffix = ctx.transformSuffix || ' translate(-50%, -50%)';
+            const transformSuffix = options?.transformSuffix ?? (ctx.transformSuffix || ' translate(-50%, -50%)');
 
             for (let i = 0; i < dataList.length; i++) {
                 const item = dataList[i];

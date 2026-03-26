@@ -17,15 +17,32 @@
         };
     };
 
+    const resolveCam = (ctx, row) => {
+        const markerCam = ctx._selectedApartment?.camera;
+        const rowCam = row?.camera;
+        const isPortrait = ctx.isPortrait();
+        const defaultDist = isPortrait ? ctx.cameraPortraitDistance : ctx.cameraLandscapeDistance;
+        const pitch =
+            isFinite(rowCam?.pitch) ? rowCam.pitch :
+            isFinite(markerCam?.pitch) ? markerCam.pitch :
+            isFinite(ctx.cameraPitch) ? ctx.cameraPitch : 30;
+        const yaw =
+            isFinite(rowCam?.yaw) ? rowCam.yaw :
+            isFinite(markerCam?.yaw) ? markerCam.yaw :
+            isFinite(ctx.cameraYaw) ? ctx.cameraYaw : -58;
+        const dist =
+            isFinite(rowCam?.distance) ? rowCam.distance :
+            isFinite(markerCam?.distance) ? markerCam.distance :
+            isFinite(defaultDist) ? defaultDist : 5;
+        return { pitch, yaw, dist };
+    };
+
     const configureCameraLock = (ctx) => {
         const orbit = ctx?.getOrbit?.();
         if (!orbit) return;
 
         const isPortrait = ctx.isPortrait();
-        const dist = isPortrait ? ctx.cameraPortraitDistance : ctx.cameraLandscapeDistance;
-        const pitch = isFinite(ctx.cameraPitch) ? ctx.cameraPitch : orbit.eulers?.x || 30;
-        const baseYaw = isFinite(ctx.cameraYaw) ? ctx.cameraYaw : orbit.eulers?.y || -58;
-        const yaw = baseYaw;
+        const { pitch, yaw, dist } = resolveCam(ctx, null);
 
         orbit.autoRotateMode = 1;
         orbit.setAutoRotateEnabled && orbit.setAutoRotateEnabled(false);
@@ -64,8 +81,7 @@
         if (!ctx?._selectedApartment || floorIndex < 0) return 0;
         const rows = ctx.getCurrentFloorRows();
         if (!rows.length || floorIndex >= rows.length) return 0;
-        const step = isFinite(ctx.floorStepY) ? ctx.floorStepY : 1;
-        return floorIndex * step;
+        return isFinite(rows[floorIndex]?.height) ? rows[floorIndex].height : 0;
     };
 
     const focusCameraForFloor = (ctx, floorIndex) => {
@@ -74,16 +90,27 @@
         if (!orbit || !marker?.worldPos) return;
 
         const isPortrait = ctx.isPortrait();
-        const dist = isPortrait ? ctx.cameraPortraitDistance : ctx.cameraLandscapeDistance;
-        const pitch = isFinite(ctx.cameraPitch) ? ctx.cameraPitch : orbit.eulers?.x || 30;
-        const baseYaw = isFinite(ctx.cameraYaw) ? ctx.cameraYaw : orbit.eulers?.y || -58;
-        const yaw = baseYaw;
+        const rows = ctx.getCurrentFloorRows?.() || [];
+        const row = floorIndex >= 0 && floorIndex < rows.length ? rows[floorIndex] : null;
+
+        const aptIdx = ctx._selectedApartmentIndex || 0;
+        const apt = row?.apartments?.length > 0 ? (row.apartments[aptIdx] || row.apartments[0]) : null;
+        const camSource = apt?.camera ? { camera: apt.camera } : row;
+        const effectiveLook = apt?.look || row?.look || null;
+
+        const { pitch, yaw, dist } = resolveCam(ctx, camSource);
 
         if (!ctx._focusTarget && typeof pc !== 'undefined') ctx._focusTarget = new pc.Vec3();
         if (!ctx._focusTarget) return;
 
-        ctx._focusTarget.copy(marker.worldPos);
-        ctx._focusTarget.y += getFloorYOffset(ctx, floorIndex);
+        if (row) {
+            const lx = effectiveLook && isFinite(effectiveLook[0]) ? effectiveLook[0] : marker.worldPos.x;
+            const ly = isFinite(row.height) ? row.height : marker.worldPos.y;
+            const lz = effectiveLook && isFinite(effectiveLook[1]) ? effectiveLook[1] : marker.worldPos.z;
+            ctx._focusTarget.set(lx, ly, lz);
+        } else {
+            ctx._focusTarget.copy(marker.worldPos);
+        }
 
         orbit.resetInteractionState && orbit.resetInteractionState();
         orbit.inputLocked = true;

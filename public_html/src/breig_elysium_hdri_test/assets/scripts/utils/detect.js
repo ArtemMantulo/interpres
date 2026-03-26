@@ -1,5 +1,6 @@
 const ua = ((navigator.userAgent || navigator.vendor || window.opera || '') + '').toLowerCase();
-const isTouchMac = navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1;
+const platformHint = navigator.userAgentData?.platform || navigator.platform || '';
+const isTouchMac = /mac/i.test(platformHint) && (navigator.maxTouchPoints || 0) > 1;
 
 export function isTablet() {
     return /ipad|tablet/.test(ua) || isTouchMac || (/android/.test(ua) && !/mobile/.test(ua));
