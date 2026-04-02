@@ -184,7 +184,14 @@
                     src="assets/images/pictures/pic_loading.png"
                     alt="Apartment"
                 />
-                <button id="apartments-panel-plan" class="apartment-panel-plan" type="button">Show more info</button>
+                <button
+                    id="apartments-panel-plan"
+                    class="apartment-panel-plan"
+                    type="button"
+                    data-lng="show_more_info"
+                >
+                    Show more info
+                </button>
             </div>
         </div>
         <div id="apartments-info-panel-mobile" aria-hidden="true">
@@ -236,7 +243,7 @@
                         type="button"
                     >
                         <span class="apartments-expanded-tab-icon apartments-expanded-tab-icon-interior" aria-hidden="true"></span>
-                        <span class="apartments-expanded-tab-text">Interior</span>
+                        <span class="apartments-expanded-tab-text" data-lng="interior">Interior</span>
                     </button>
                     <button
                         id="apartments-expanded-tab-view"
@@ -245,26 +252,35 @@
                         type="button"
                     >
                         <span class="apartments-expanded-tab-icon apartments-expanded-tab-icon-view" aria-hidden="true"></span>
-                        <span class="apartments-expanded-tab-text">View</span>
+                        <span class="apartments-expanded-tab-text" data-lng="view">View</span>
                     </button>
                     <button
                         id="apartments-expanded-tab-street"
-                        class="apartments-expanded-tab is-active active"
+                        class="apartments-expanded-tab is-active"
                         data-gallery-type="street"
                         type="button"
                     >
                         <span class="apartments-expanded-tab-icon apartments-expanded-tab-icon-street" aria-hidden="true"></span>
-                        <span class="apartments-expanded-tab-text">Street</span>
+                        <span class="apartments-expanded-tab-text" data-lng="street">Street</span>
                     </button>
                 </div>
 
                 <div class="panel-line apartments-expanded-line"></div>
 
                 <div class="apartments-expanded-gallery-head">
-                    <div id="apartments-expanded-gallery-label" class="apartments-expanded-gallery-title">
-                        Gallery (0)
+                    <div
+                        id="apartments-expanded-gallery-label"
+                        class="apartments-expanded-gallery-title"
+                        data-lng="gallery_label"
+                    >
+                        Gallery
                     </div>
-                    <button id="apartments-expanded-view-all" class="apartments-expanded-view-all" type="button">
+                    <button
+                        id="apartments-expanded-view-all"
+                        class="apartments-expanded-view-all"
+                        type="button"
+                        data-lng="view_all"
+                    >
                         View All
                     </button>
                 </div>
@@ -280,23 +296,22 @@
                 </div>
 
                 <div id="apartments-expanded-thumbs" class="apartments-expanded-thumbs"></div>
-
-                <div class="apartments-expanded-nav">
-                    <button
-                        id="apartments-expanded-prev"
-                        class="apartment-panel-plan apartments-expanded-nav-btn"
-                        type="button"
-                    >
-                        <span class="apartments-expanded-nav-label">Previous</span>
-                    </button>
-                    <button
-                        id="apartments-expanded-next"
-                        class="apartment-panel-plan apartments-expanded-nav-btn"
-                        type="button"
-                    >
-                        <span class="apartments-expanded-nav-label">Next</span>
-                    </button>
-                </div>
+            </div>
+            <div class="apartments-expanded-nav">
+                <button
+                    id="apartments-expanded-prev"
+                    class="apartment-panel-plan apartments-expanded-nav-btn"
+                    type="button"
+                >
+                    <span class="apartments-expanded-nav-label" data-lng="previous">Previous</span>
+                </button>
+                <button
+                    id="apartments-expanded-next"
+                    class="apartment-panel-plan apartments-expanded-nav-btn"
+                    type="button"
+                >
+                    <span class="apartments-expanded-nav-label" data-lng="next">Next</span>
+                </button>
             </div>
         </div>
         <div class="gallery-panel hidden">
@@ -321,6 +336,70 @@
             <div class="glass-panel border-shadow">
                 <div class="amenities-line"></div>
             </div>
+            <div id="ui-screenshot-toggle" class="ui-toggle">
+                <button
+                    id="ui-screenshot"
+                    class="ui-placeholder-toggle-button ui-screenshot-toggle-button"
+                    type="button"
+                    aria-label="Screenshot"
+                    aria-disabled="true"
+                    disabled
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text" data-lng="screenshot">Screenshot</span>
+                </div>
+            </div>
+            <div id="ui-season-toggle" class="ui-toggle">
+                <button
+                    id="ui-season"
+                    class="ui-placeholder-toggle-button ui-season-toggle-button"
+                    type="button"
+                    aria-label="Season"
+                    aria-disabled="true"
+                    disabled
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text" data-lng="season">Season</span>
+                </div>
+            </div>
+            <div id="ui-daytime-toggle" class="ui-toggle">
+                <button
+                    id="ui-daytime"
+                    class="ui-placeholder-toggle-button ui-daytime-toggle-button"
+                    type="button"
+                    aria-label="Daytime"
+                    aria-disabled="true"
+                    disabled
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text" data-lng="daytime">Time of Day</span>
+                </div>
+            </div>
+            <div id="ui-projection-toggle" class="ui-toggle">
+                <button
+                    id="ui-projection"
+                    class="ui-placeholder-toggle-button ui-projection-toggle-button"
+                    type="button"
+                    aria-label="Projection"
+                    aria-disabled="true"
+                    disabled
+                ></button>
+                <div class="ui-toggle-tooltip" aria-hidden="true">
+                    <div class="glass-panel border-shadow">
+                        <div class="amenities-line"></div>
+                    </div>
+                    <span class="ui-toggle-tooltip-text" data-lng="projection">Projection</span>
+                </div>
+            </div>
             <div id="ui-visibility-toggle" class="ui-toggle">
                 <button
                     id="hide-ui"
@@ -333,7 +412,7 @@
                     <div class="glass-panel border-shadow">
                         <div class="amenities-line"></div>
                     </div>
-                    <span class="ui-toggle-tooltip-text">Hide UI</span>
+                    <span class="ui-toggle-tooltip-text" data-lng="hide_ui">Hide UI</span>
                 </div>
             </div>
             <div id="fps-locker" class="ui-toggle">
@@ -348,7 +427,7 @@
                     <div class="glass-panel border-shadow">
                         <div class="amenities-line"></div>
                     </div>
-                    <span class="ui-toggle-tooltip-text">FPS Lock</span>
+                    <span class="ui-toggle-tooltip-text" data-lng="fps_lock">FPS Lock</span>
                 </div>
             </div>
             <div id="quality-toggle" class="ui-toggle hidden">
@@ -363,7 +442,7 @@
                     <div class="glass-panel border-shadow">
                         <div class="amenities-line"></div>
                     </div>
-                    <span class="ui-toggle-tooltip-text">Quality</span>
+                    <span class="ui-toggle-tooltip-text" data-lng="quality">Quality</span>
                 </div>
             </div>
             <div id="sound-toggle" class="ui-toggle">
@@ -378,7 +457,7 @@
                     <div class="glass-panel border-shadow">
                         <div class="amenities-line"></div>
                     </div>
-                    <span class="ui-toggle-tooltip-text">Sound</span>
+                    <span class="ui-toggle-tooltip-text" data-lng="sound">Sound</span>
                 </div>
             </div>
         </div>

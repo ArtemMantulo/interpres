@@ -59,7 +59,7 @@ Gallery.prototype.initialize = function () {
         if (this._trySetup()) this.app.off('ui:ready', this._onUiReady);
     };
     if (this._modeManager?.registerMode) {
-        this._unregisterMode = this._modeManager.registerMode('Gallery', {
+        this._unregisterMode = this._modeManager.registerMode(window.AppModeIds?.GALLERY ?? 'Gallery', {
             enter: () => {
                 if (this.openHandler) this.openHandler();
                 else this._pendingModeEnter = true;
@@ -131,10 +131,11 @@ Gallery.prototype._emitVisibility = function (hidden) {
 
 Gallery.prototype._requestCloseMode = function () {
     if (!this._modeManager || !this._modeManager.setMode) return false;
-    if (this._modeManager.getMode && this._modeManager.getMode() !== 'Gallery') return false;
+    const GALLERY = window.AppModeIds?.GALLERY ?? 'Gallery';
+    if (this._modeManager.getMode && this._modeManager.getMode() !== GALLERY) return false;
 
     const prev = this._modeManager.getPreviousMode ? this._modeManager.getPreviousMode() : null;
-    const fallback = prev && prev !== 'Gallery' ? prev : '0';
+    const fallback = prev && prev !== GALLERY ? prev : (window.AppModeIds?.HOME ?? '0');
     this._modeManager.setMode(fallback, { source: 'galleryClose' });
     return true;
 };
@@ -492,7 +493,7 @@ Gallery.prototype._resetVisual = function () {
 
 Gallery.prototype.onDestroy = function () {
     if (this._onUiReady) this.app.off('ui:ready', this._onUiReady);
-    if (this._unregisterMode) this._unregisterMode();
+    this._unregisterMode?.();
 
     if (this.keyHandler) document.removeEventListener('keydown', this.keyHandler);
 

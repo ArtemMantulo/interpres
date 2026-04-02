@@ -1,9 +1,10 @@
 (function () {
     if (window.ApartmentsFloorShared) return;
+    const isMobileLayout = (ctx) => ctx?.isMobileUiLayout?.() ?? ctx?.isPortrait?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
 
     const syncFloorPanelWidth = (ctx) => {
         if (!ctx.floorPanel) return;
-        if (!ctx.isPortrait()) return;
+        if (!isMobileLayout(ctx)) return;
         ctx.floorPanel.style.removeProperty('--floor-panel-max-width');
         ctx.floorPanel.style.removeProperty('--floor-panel-width');
         ctx.floorPanel.classList.remove('is-overflowing');
@@ -11,7 +12,7 @@
 
     const updateFloorPanelWidth = (ctx) => {
         if (!ctx.floorPanel || !ctx.floorPanelScroll) return;
-        if (!ctx.isPortrait()) return;
+        if (!isMobileLayout(ctx)) return;
         ctx.floorPanel.style.removeProperty('--floor-panel-width');
         ctx.floorPanel.classList.remove('is-overflowing');
     };
@@ -54,7 +55,7 @@
         if (!ctx.floorPanel) return;
         ctx.floorPanel.classList.remove('hidden');
         ctx.floorPanel.setAttribute('aria-hidden', 'false');
-        if (ctx.isPortrait()) {
+        if (isMobileLayout(ctx)) {
             ctx.floorPanel.style.removeProperty('--floor-panel-max-width');
             ctx.floorPanel.style.removeProperty('--floor-panel-width');
             ctx.floorPanel.classList.remove('is-overflowing');
@@ -129,6 +130,7 @@
         const hasRows = rows && rows.length > 0;
         const selected = hasRows ? Math.max(0, Math.min(rows.length - 1, ctx._selectedFloorIndex)) : -1;
         const nodes = ctx._floorPanelNodes || [];
+        const isDesktop = !isMobileLayout(ctx);
 
         let activeNode = null;
         for (let i = 0; i < nodes.length; i++) {
@@ -136,6 +138,7 @@
             const isActive = selected >= 0 && i === selected;
             node.classList.toggle('active', isActive);
             node.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            node.style.zIndex = isDesktop ? (isActive ? '2' : '1') : '';
             if (isActive) activeNode = node;
         }
 

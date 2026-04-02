@@ -1,23 +1,11 @@
 (function () {
     if (window.AmenitiesShared) return;
 
-    const SUPPORTED_LANGS = new Set(['en', 'ru', 'ko', 'zh', 'de', 'fr', 'es', 'ar', 'ja']);
-
-    const resolveLang = (appLang, docEl, navLang) => {
-        if (appLang?.get) return appLang.get();
-
-        const raw = docEl?.getAttribute?.('lang') || navLang || 'en';
-        if (appLang?.normalize) return appLang.normalize(raw);
-
-        const lang = String(raw).split('-')[0].toLowerCase();
-        return SUPPORTED_LANGS.has(lang) ? lang : 'en';
-    };
-
     const parseData = (json, lang) => {
         const source = json?.amenities;
         if (!Array.isArray(source) || !source.length) return [];
 
-        const resolvedLang = SUPPORTED_LANGS.has(lang) ? lang : 'en';
+        const resolvedLang = window.AppLanguage?.normalize?.(lang) ?? 'en';
         const dataList = [];
 
         for (let i = 0; i < source.length; i++) {
@@ -112,7 +100,6 @@
     };
 
     window.AmenitiesShared = {
-        resolveLang,
         parseData,
         updateAmenityTextWidths,
         computeInfoPanelPosition

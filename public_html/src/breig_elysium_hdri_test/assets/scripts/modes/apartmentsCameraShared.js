@@ -1,27 +1,15 @@
 (function () {
     if (window.ApartmentsCameraShared) return;
+    const isMobileLayout = (ctx) => ctx?.isMobileUiLayout?.() ?? ctx?.isPortrait?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
 
-    const getDesktopLookOffset = (ctx, distance, yawDeg) => {
-        const angleDeg = Number(ctx?.desktopYawOffset || 0);
-        if (!isFinite(angleDeg) || Math.abs(angleDeg) < 0.001) return { x: 0, z: 0 };
-
-        const dist = isFinite(distance) ? distance : 0;
-        if (!isFinite(dist) || dist <= 0) return { x: 0, z: 0 };
-
-        const degToRad = typeof pc !== 'undefined' ? pc.math.DEG_TO_RAD : Math.PI / 180;
-        const offset = Math.tan(angleDeg * degToRad) * dist;
-        const yawRad = (isFinite(yawDeg) ? yawDeg : 0) * degToRad;
-        return {
-            x: Math.cos(yawRad) * offset,
-            z: -Math.sin(yawRad) * offset
-        };
-    };
+    const getDesktopLookOffset = (_ctx, _distance, _yawDeg) => ({ x: 0, z: 0 });
+    const getLookVerticalAngle = (ctx) => (isMobileLayout(ctx) ? -3 : 0);
 
     const resolveCam = (ctx, row) => {
         const markerCam = ctx._selectedApartment?.camera;
         const rowCam = row?.camera;
-        const isPortrait = ctx.isPortrait();
-        const defaultDist = isPortrait ? ctx.cameraPortraitDistance : ctx.cameraLandscapeDistance;
+        const mobileLayout = isMobileLayout(ctx);
+        const defaultDist = mobileLayout ? ctx.cameraPortraitDistance : ctx.cameraLandscapeDistance;
         const pitch =
             isFinite(rowCam?.pitch) ? rowCam.pitch :
             isFinite(markerCam?.pitch) ? markerCam.pitch :
@@ -37,11 +25,23 @@
         return { pitch, yaw, dist };
     };
 
+    const getHorizontalRotateLimit = (ctx) => {
+        const limit = Math.abs(Number(ctx?.cameraHorizontalRotateLimit));
+        if (!isFinite(limit) || limit <= 0) return 20;
+        return limit;
+    };
+
+    const applyApartmentViewConstraints = (ctx, orbit, pitch, yaw) => {
+        orbit.inputLocked = false;
+        orbit.setPitchLock && orbit.setPitchLock(pitch);
+        orbit.setYawConstraint && orbit.setYawConstraint(yaw, getHorizontalRotateLimit(ctx));
+    };
+
     const configureCameraLock = (ctx) => {
         const orbit = ctx?.getOrbit?.();
         if (!orbit) return;
 
-        const isPortrait = ctx.isPortrait();
+        const mobileLayout = isMobileLayout(ctx);
         const { pitch, yaw, dist } = resolveCam(ctx, null);
 
         orbit.autoRotateMode = 1;
@@ -49,16 +49,16 @@
         orbit.autoRotateEnabled = false;
         orbit.resetInteractionState && orbit.resetInteractionState();
 
-        orbit.inputLocked = true;
+        applyApartmentViewConstraints(ctx, orbit, pitch, yaw);
         if (orbit.setLookAtOffset) {
-            if (isPortrait) {
+            if (mobileLayout) {
                 orbit.setLookAtOffset(0, 0, 0);
             } else {
                 const lookOffset = getDesktopLookOffset(ctx, dist, yaw);
                 orbit.setLookAtOffset(lookOffset.x, 0, lookOffset.z);
             }
         }
-        orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(0);
+        orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(getLookVerticalAngle(ctx));
         orbit.setDistanceLimits && orbit.setDistanceLimits(dist, dist);
         orbit.distanceTarget = dist;
 
@@ -72,6 +72,9 @@
         const orbit = ctx?.getOrbit?.();
         if (!orbit) return;
         orbit.inputLocked = false;
+        orbit.clearDistanceLock && orbit.clearDistanceLock();
+        orbit.clearYawConstraint && orbit.clearYawConstraint();
+        orbit.clearPitchLock && orbit.clearPitchLock();
         orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
         orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(0);
         orbit.adjustDistanceForOrientation && orbit.adjustDistanceForOrientation();
@@ -89,7 +92,7 @@
         const marker = ctx?._selectedApartment;
         if (!orbit || !marker?.worldPos) return;
 
-        const isPortrait = ctx.isPortrait();
+        const mobileLayout = isMobileLayout(ctx);
         const rows = ctx.getCurrentFloorRows?.() || [];
         const row = floorIndex >= 0 && floorIndex < rows.length ? rows[floorIndex] : null;
 
@@ -113,7 +116,7 @@
         }
 
         orbit.resetInteractionState && orbit.resetInteractionState();
-        orbit.inputLocked = true;
+        applyApartmentViewConstraints(ctx, orbit, pitch, yaw);
         orbit.setAutoRotateEnabled && orbit.setAutoRotateEnabled(false);
         orbit.autoRotateEnabled = false;
         orbit.autoRotateMode = 1;
@@ -123,14 +126,14 @@
         if (orbit.eulersTarget) orbit.eulersTarget.set(pitch, yaw);
 
         if (orbit.setLookAtOffset) {
-            if (isPortrait) {
+            if (mobileLayout) {
                 orbit.setLookAtOffset(0, 0, 0);
             } else {
                 const lookOffset = getDesktopLookOffset(ctx, dist, yaw);
                 orbit.setLookAtOffset(lookOffset.x, 0, lookOffset.z);
             }
         }
-        orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(0);
+        orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(getLookVerticalAngle(ctx));
         orbit.focusOn && orbit.focusOn(ctx._focusTarget);
 
         ctx._forceDomUpdate = true;

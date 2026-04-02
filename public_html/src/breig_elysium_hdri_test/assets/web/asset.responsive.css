@@ -1,291 +1,4 @@
-@media screen and (max-height: 480px) and (orientation: landscape),
-    screen and (max-width: 812px) and (orientation: landscape),
-    screen and (max-aspect-ratio: 4/3) and (orientation: landscape) {
-    :root {
-        --ui-bottom: var(--ui-bottom-sm);
-    }
-
-    .panel-container {
-        gap: 8px;
-    }
-
-    .border-shadow {
-        border: 1px solid rgb(136, 136, 136);
-        filter: none;
-    }
-
-    .mode-panel {
-        top: 10px;
-        height: 35px;
-        padding: 1px 0;
-    }
-    .mode-panel .panel-container {
-        height: 28px;
-        gap: 3px;
-        padding: 0 6px 0 3px;
-    }
-    .mode-panel > [data-mode='0'] {
-        margin-left: 17px;
-    }
-    .mode-panel .button {
-        font-size: 10px;
-        padding: 7px 11px;
-        border-radius: 999px;
-        transition: color 0.3s ease;
-    }
-    .mode-panel .icon-image.button {
-        border-radius: 0;
-        padding: 0;
-    }
-    .mode-panel .border-shadow {
-        border: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        filter: none;
-        border-radius: 100px;
-    }
-    .floor-panel-item {
-        width: 28px;
-        height: 28px;
-        font-size: 11px;
-    }
-    .floor-panel-item-number {
-        width: 28px;
-    }
-    .floor-panel-item:hover,
-    .floor-panel-item:focus-visible,
-    .floor-panel-item.active {
-        width: 60px;
-    }
-    .icon-image {
-        height: 14px;
-        width: 57px;
-        margin: 7px 8px;
-    }
-
-    .button {
-        padding: 8px;
-        font-size: 12px;
-        border-radius: 4px;
-        transition: none;
-    }
-
-    #ui-toggles {
-        left: -4px;
-        gap: 6px;
-        padding: 6px;
-    }
-    #ui-toggles .glass-panel.border-shadow,
-    #ui-toggles .amenities-line {
-        border-radius: 0 16px 16px 0;
-    }
-    .sound-toggle-button,
-    .visibility-toggle-button,
-    .quality-toggle-button,
-    .fpslock-toggle-button {
-        width: 28px;
-        height: 28px;
-        background-size: 14px 14px;
-    }
-    .setting-label {
-        font-size: 10px;
-    }
-
-    .amenities {
-        height: 32px;
-        transition: none;
-        --amenities-text-max-width: calc(100vw - 40px);
-    }
-    .amenities .panel-container {
-        gap: 0;
-        padding: 0;
-    }
-    .amenities-icon {
-        width: 16px;
-        height: 16px;
-        padding: 8px;
-    }
-    .amenities-text {
-        font-size: 14px;
-        padding-right: 0;
-    }
-    .amenities:hover:not(.selected-for-info) .panel-container,
-    .amenities.expanded .panel-container,
-    .amenities:focus-visible:not(.selected-for-info) .panel-container {
-        gap: 0px;
-        padding: 0 4px 0 0;
-    }
-    .amenities:hover:not(.selected-for-info) .amenities-text,
-    .amenities.expanded .amenities-text,
-    .amenities:focus-visible:not(.selected-for-info) .amenities-text {
-        max-width: var(--amenities-text-max-width);
-        padding-right: 4px;
-    }
-    .amenities-line,
-    .mode-panel .amenities-line {
-        padding: 1px;
-    }
-
-    #amenities-info-panel {
-        width: 210px;
-        top: auto;
-        bottom: 10px;
-        left: auto;
-        right: 40px;
-        transform: none;
-    }
-    #amenities-info-panel .panel-image {
-        height: 90px;
-    }
-    #amenities-info-panel .panel-title {
-        font-size: 14px;
-    }
-    #amenities-info-panel .panel-description {
-        font-size: 10px;
-    }
-    .amenities-info-panel-nav {
-        height: 165px;
-    }
-
-    .gallery-panel {
-        grid-template-rows: 40px 1fr 50px;
-    }
-    .gallery-close {
-        background-size: 18px 18px;
-    }
-    .gallery-thumbnails {
-        justify-content: center;
-        scroll-snap-type: x mandatory;
-        gap: 6px;
-    }
-    .thumbnail {
-        scroll-snap-align: start;
-        height: 70%;
-    }
-
-    /* ── Small landscape: apartment pin & info panel overrides ──────── */
-    .apartment-pin {
-        height: 28px;
-        min-width: 28px;
-    }
-    .apartment-pin .panel-container {
-        min-width: 28px;
-        padding: 0 4px 0 0;
-    }
-    .apartment-pin-icon {
-        width: 14px;
-        height: 14px;
-        padding: 7px;
-    }
-    .apartment-pin-text {
-        font-size: 11px;
-        padding-right: 6px;
-    }
-
-    #apartments-info-panel,
-    .apartments-info-panel-clone {
-        width: 160px;
-    }
-    #apartments-info-panel > .glass-panel.border-shadow,
-    .apartments-info-panel-clone > .glass-panel.border-shadow {
-        border-radius: 12px;
-        clip-path: inset(0 100% 0 0 round 12px);
-    }
-    #apartments-info-panel .amenities-line,
-    .apartments-info-panel-clone .amenities-line {
-        border-radius: 12px;
-    }
-    #apartments-info-panel .panel-container,
-    .apartments-info-panel-clone .panel-container {
-        gap: 6px;
-        padding: 8px;
-        clip-path: inset(0 100% 0 0 round 12px);
-    }
-    #apartments-info-panel.visible > .glass-panel.border-shadow,
-    .apartments-info-panel-clone.visible > .glass-panel.border-shadow {
-        clip-path: inset(0 0 0 0 round 12px);
-    }
-    #apartments-info-panel.visible .panel-container,
-    .apartments-info-panel-clone.visible .panel-container {
-        clip-path: inset(0 0 0 0 round 12px);
-    }
-    #apartments-info-panel .apartment-panel-close,
-    .apartments-info-panel-clone .apartment-panel-close {
-        top: 6px;
-        right: 6px;
-        width: 14px;
-        height: 14px;
-        background-size: 6px 6px;
-    }
-    #apartments-info-panel .apartments-info-panel-nav {
-        top: 25px;
-        bottom: 25px;
-        width: 14px;
-    }
-    #apartments-info-panel .apartments-info-panel-nav-prev {
-        left: -13px;
-        border-radius: 8px 0 0 8px;
-    }
-    #apartments-info-panel .apartments-info-panel-nav-next {
-        right: -13px;
-        border-radius: 0 8px 8px 0;
-    }
-    #apartments-info-panel .apartments-info-panel-nav-prev .glass-panel.border-shadow {
-        border-radius: 8px 0 0 8px;
-    }
-    #apartments-info-panel .apartments-info-panel-nav-next .glass-panel.border-shadow {
-        border-radius: 0 8px 8px 0;
-    }
-    #apartments-info-panel .apartments-info-panel-nav-arrow {
-        width: 20px;
-        height: 20px;
-    }
-    #apartments-info-panel .apartment-panel-title,
-    .apartments-info-panel-clone .apartment-panel-title {
-        padding-right: 22px;
-        font-size: 8px;
-    }
-    #apartments-info-panel .apartment-panel-description,
-    .apartments-info-panel-clone .apartment-panel-description {
-        font-size: 6px;
-    }
-    #apartments-info-panel .apartment-panel-image,
-    .apartments-info-panel-clone .apartment-panel-image {
-        height: 75px;
-        border-radius: 8px;
-    }
-    #apartments-info-panel .apartment-panel-data,
-    .apartments-info-panel-clone .apartment-panel-data {
-        font-size: 6px;
-        gap: 4px;
-    }
-    #apartments-info-panel .apartment-bed-icon,
-    .apartments-info-panel-clone .apartment-bed-icon {
-        width: 8px;
-        height: 8px;
-    }
-    #apartments-info-panel .apartment-panel-separator,
-    .apartments-info-panel-clone .apartment-panel-separator {
-        height: 8px;
-    }
-    #apartments-info-panel .apartment-panel-plan,
-    .apartments-info-panel-clone .apartment-panel-plan {
-        height: 20px;
-        font-size: 7px;
-        line-height: 10px;
-    }
-    #apartments-panel-plan {
-        gap: 2px;
-    }
-    #apartments-panel-plan::after {
-        width: 12px;
-        height: 12px;
-        flex: 0 0 12px;
-    }
-}
-
-@media screen and (max-height: 812px) and (orientation: portrait),
-    screen and (max-width: 480px) and (orientation: portrait),
-    screen and (max-aspect-ratio: 3/4) and (orientation: portrait) {
+@media screen and (pointer: coarse) and (max-width: 767px) {
     :root {
         --ui-bottom: var(--ui-bottom-sm);
     }
@@ -491,20 +204,20 @@
         left: 50%;
         right: auto;
         top: auto;
-        bottom: var(--ui-bottom);
+        bottom: 15px;
         transform: translateX(-50%);
         flex-direction: row;
     }
     #ui-toggles .glass-panel.border-shadow,
     #ui-toggles .amenities-line {
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
     }
     #ui-toggles .glass-panel.border-shadow {
         border: 0px;
     }
     #ui-toggles .amenities-line {
         padding: 1px;
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
         background: linear-gradient(
             155deg,
             rgba(255, 255, 255, 0.4) 0%,
@@ -513,6 +226,10 @@
             rgba(255, 255, 255, 0.4) 100%
         )
         top left / 100% 100% no-repeat;
+    }
+
+    #debug-stats {
+        bottom: 80px;
     }
 
     .amenities {
@@ -591,22 +308,30 @@
     }
 
     #amenities-info-panel {
-        width: 210px;
+        width: 284px;
         top: 74px;
         left: 50%;
         transform: translateX(-50%);
     }
     #amenities-info-panel .panel-image {
-        height: 90px;
+        height: 120px;
     }
     #amenities-info-panel .panel-title {
         font-size: 14px;
     }
     #amenities-info-panel .panel-description {
-        font-size: 10px;
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+    #amenities-info-panel .panel-close {
+        width: 28px;
+        height: 28px;
+        top: 10px;
+        right: 10px;
     }
     .amenities-info-panel-nav {
         height: 165px;
     }
 }
+
 

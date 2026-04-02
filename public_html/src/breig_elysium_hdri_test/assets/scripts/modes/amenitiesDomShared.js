@@ -94,10 +94,14 @@
     };
 
     const updateDomPositions = (ctx) => {
-        const isPortrait = window.innerHeight > window.innerWidth;
+        const isPortrait = ctx.isPhoneLayout?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
         const portraitOffsetYBase = isPortrait && isFinite(ctx.portraitScreenOffsetY) ? ctx.portraitScreenOffsetY : 0;
+        const lerpRaw = Number(ctx.domPositionLerp);
+        const positionLerp = isFinite(lerpRaw) ? Math.max(0.05, Math.min(1, lerpRaw)) : 0.22;
         window.PcScriptShared.updateDomPositions(ctx, ctx.amenitiesData, {
-            getPortraitOffset: (item) => (item === ctx._selectedAmenityData ? portraitOffsetYBase : 0)
+            getPortraitOffset: (item) => (item === ctx._selectedAmenityData ? portraitOffsetYBase : 0),
+            transformSuffix: ctx.getDomTransformSuffix ? ctx.getDomTransformSuffix() : (ctx.transformSuffix || ' translate(-50%, -50%)'),
+            positionLerp
         });
     };
 

@@ -1,8 +1,8 @@
 (function () {
     if (window.AmenitiesModeShared) return;
 
-    const MODE_HOME = '0';
-    const MODE_AMENITIES = '2';
+    const MODE_HOME = window.AppModeIds?.HOME ?? '0';
+    const MODE_AMENITIES = window.AppModeIds?.AMENITIES ?? '2';
 
     const setMode = (ctx, modeStr, options) => {
         const opts = options || {};

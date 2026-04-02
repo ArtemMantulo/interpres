@@ -96,7 +96,7 @@ HomeMode.prototype.initialize = function () {
     };
 
     if (this._modeManager?.registerMode) {
-        this._unregisterMode = this._modeManager.registerMode('0', {
+        this._unregisterMode = this._modeManager.registerMode(window.AppModeIds?.HOME ?? '0', {
             enter: () => this._setModeActive(true),
             exit: () => this._setModeActive(false)
         });
@@ -114,9 +114,10 @@ HomeMode.prototype.initialize = function () {
 };
 
 HomeMode.prototype.getInitialMode = function () {
-    if (this._modeManager?.getMode) return this._modeManager.getMode() === '0';
-    const mode = document.querySelector('.mode-panel .button.active')?.dataset?.mode || '0';
-    return mode === '0';
+    const HOME = window.AppModeIds?.HOME ?? '0';
+    if (this._modeManager?.getMode) return this._modeManager.getMode() === HOME;
+    const mode = document.querySelector('.mode-panel .button.active')?.dataset?.mode || HOME;
+    return mode === HOME;
 };
 
 HomeMode.prototype.getOrbit = function () {
@@ -250,7 +251,7 @@ HomeMode.prototype.prepareMarkerTexture = function (texture) {
     texture.addressU = pc.ADDRESS_CLAMP_TO_EDGE;
     texture.addressV = pc.ADDRESS_CLAMP_TO_EDGE;
     texture.anisotropy = 8;
-    if (texture.upload) texture.upload();
+    texture.upload?.();
     this._markerTexturePrepared = true;
 };
 
@@ -408,7 +409,7 @@ HomeMode.prototype.update = function (dt) {
 };
 
 HomeMode.prototype.onDestroy = function () {
-    if (this._unregisterMode) this._unregisterMode();
+    this._unregisterMode?.();
 
     if (this._canvas) {
         this._canvas.removeEventListener('pointerdown', this._onCanvasPointerDown);

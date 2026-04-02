@@ -53,7 +53,7 @@
       "image": "assets/images/pictures/pic_longue.jpg",
       "position": [4.323, 1, -3.254],
       "translations": {
-        "en": { "title": "Swimming Pool", "description": "Calm, turquoise waters are protected by a coral reef, offering a serene and safe environment perfect for swimming and relaxation." },
+        "en": { "title": "Swimming Pool", "description": "Calm turquoise waters, reef-protected, perfect for safe swimming and relaxation." },
         "ru": { "title": "Бассейн", "description": "Спокойные бирюзовые воды, защищенные коралловым рифом, создают безопасную и уютную атмосферу." },
         "de": { "title": "Schwimmbad", "description": "Ruhiges, türkisfarbenes Wasser, geschützt durch ein Korallenriff, ideal zum Schwimmen und Entspannen." },
         "es": { "title": "Piscina", "description": "Aguas tranquilas color turquesa protegidas por un arrecife de coral, perfectas para nadar y relajarse." },
@@ -197,7 +197,7 @@
       "image": "assets/images/pictures/pic_longue.jpg",
       "position": [2.023, 1, -8.254],
       "translations": {
-        "en": { "title": "Bar and Lobby", "description": "A welcoming space combining a stylish bar and a comfortable lobby for relaxation and social gatherings." },
+        "en": { "title": "Bar and Lobby", "description": "A welcoming bar-lobby space for relaxation and social gatherings." },
         "ru": { "title": "Бар и лобби", "description": "Гостеприимное пространство с баром и зоной отдыха для общения и релаксации." },
         "de": { "title": "Bar und Lobby", "description": "Ein einladender Bereich mit stilvoller Bar und gemütlicher Lobby für Entspannung und Geselligkeit." },
         "es": { "title": "Bar y vestíbulo", "description": "Espacio acogedor que combina un bar elegante y un vestíbulo cómodo para relajarse y socializar." },

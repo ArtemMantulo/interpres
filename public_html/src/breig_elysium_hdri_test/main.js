@@ -35,7 +35,8 @@ import {
     FPS_LOCKER_SETTINGS,
     APP_SCRIPT_SPECS,
     MODE_DEFINITIONS,
-    MODE_MANAGER_SETTINGS
+    MODE_MANAGER_SETTINGS,
+    MODE_IDS
 } from './assets/scripts/config.js';
 
 const canvas = document.getElementById('application-canvas');
@@ -69,6 +70,7 @@ const modeManager = createModeManager(app, {
 });
 const unbindModeButtons = modeManager.bindModeButtons();
 window.AppModeManager = modeManager;
+window.AppModeIds = MODE_IDS;
 onAppDestroy(() => {
     unbindModeButtons?.();
     modeManager.destroy();

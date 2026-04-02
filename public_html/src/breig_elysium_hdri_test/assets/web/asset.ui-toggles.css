@@ -113,7 +113,8 @@
 .sound-toggle-button,
 .visibility-toggle-button,
 .quality-toggle-button,
-.fpslock-toggle-button {
+.fpslock-toggle-button,
+.ui-placeholder-toggle-button {
     display: block;
     position: relative;
     z-index: 2;
@@ -129,7 +130,7 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     transition: background-color 0.2s ease;
 }
 
@@ -197,7 +198,7 @@
     position: absolute;
     inset: 0;
     cursor: pointer;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(255, 255, 255, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.22);
     transition:
@@ -213,7 +214,7 @@
     height: 26px;
     left: 2px;
     top: 2px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(255, 255, 255, 0.92);
     transition: transform 180ms ease;
 }
@@ -276,4 +277,46 @@
     .switch input:checked + .slider::before {
         transform: translateX(24px);
     }
+}
+
+.ui-placeholder-toggle-button {
+    color: var(--text-secondary);
+    background: none !important;
+    cursor: default;
+    opacity: 1;
+}
+
+.ui-placeholder-toggle-button::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+    background-color: currentColor;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+.ui-screenshot-toggle-button::before {
+    -webkit-mask-image: url('../../assets/images/icons/ui_screenshot.png');
+    mask-image: url('../../assets/images/icons/ui_screenshot.png');
+}
+
+.ui-season-toggle-button::before {
+    -webkit-mask-image: url('../../assets/images/icons/ui_season.png');
+    mask-image: url('../../assets/images/icons/ui_season.png');
+}
+
+.ui-daytime-toggle-button::before {
+    -webkit-mask-image: url('../../assets/images/icons/ui_daytime.png');
+    mask-image: url('../../assets/images/icons/ui_daytime.png');
+}
+
+.ui-projection-toggle-button::before {
+    -webkit-mask-image: url('../../assets/images/icons/ui_projection.png');
+    mask-image: url('../../assets/images/icons/ui_projection.png');
 }

@@ -1,7 +1,7 @@
 (function () {
     if (window.ApartmentsPanelShared) return;
 
-    const isMobileLayout = (ctx) => !!ctx?.isPortrait?.();
+    const isMobileLayout = (ctx) => ctx?.isMobileUiLayout?.() ?? ctx?.isPortrait?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
 
     const getSelectedFloorRow = (ctx) => {
         const rows = ctx.getCurrentFloorRows();
@@ -103,7 +103,32 @@
             }
 
             card.dataset.index = String(i);
+            let pressTimer = 0;
+            const clearPressed = () => {
+                if (pressTimer) {
+                    clearTimeout(pressTimer);
+                    pressTimer = 0;
+                }
+                card.classList.remove('is-pressed');
+            };
+            const releasePressed = () => {
+                if (!window.AppDetect?.isTouchDevice?.()) return;
+                if (pressTimer) clearTimeout(pressTimer);
+                pressTimer = setTimeout(() => {
+                    card.classList.remove('is-pressed');
+                    pressTimer = 0;
+                }, 80);
+            };
+            card.addEventListener('pointerdown', () => {
+                if (!window.AppDetect?.isTouchDevice?.()) return;
+                clearPressed();
+                card.classList.add('is-pressed');
+            });
+            card.addEventListener('pointerup', releasePressed);
+            card.addEventListener('pointercancel', releasePressed);
+            card.addEventListener('lostpointercapture', releasePressed);
             card.addEventListener('click', (event) => {
+                clearPressed();
                 const trigger = event.target?.closest?.('.apartments-mobile-card-plan');
                 const nextIndex = Number(card.dataset.index);
                 if (!Number.isFinite(nextIndex)) return;
@@ -157,14 +182,18 @@
         if (!apts || apts.length < 2) return;
         const total = apts.length;
         const direction = step < 0 ? -1 : 1;
-        let nextIdx = (ctx._selectedApartmentIndex || 0) + direction;
+        const prevIdx = ctx._selectedApartmentIndex || 0;
+        let nextIdx = prevIdx + direction;
         if (nextIdx < 0) nextIdx = total - 1;
         else if (nextIdx >= total) nextIdx = 0;
+        if (nextIdx !== prevIdx) {
+            ctx.beginFloorHeightTransition?.(prevIdx, nextIdx);
+        }
         ctx._selectedApartmentIndex = nextIdx;
         const apt = apts[nextIdx];
         ctx.applyPanelContent(ctx._selectedApartment, { ...row, ...apt });
-        ctx.triggerInfoPanelSwapAnimation();
         ctx.focusCameraForFloor(floorIndex);
+        ctx.scheduleInfoPanelReposition?.();
         if (ctx.isPlanPanelOpen?.()) ctx.updatePlanPanelContent?.();
     };
 
@@ -175,6 +204,7 @@
         ctx._selectedApartment = null;
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
+        ctx.clearFloorHeightTransition?.();
         ctx.updateFloorPanelVisibility();
     };
 
@@ -194,6 +224,7 @@
         if (ctx._selectedApartment?.dom && ctx._selectedApartment.dom !== entry.dom) {
             ctx._selectedApartment.dom.classList.remove('selected-for-info');
         }
+        ctx.clearFloorHeightTransition?.();
         entry.dom.classList.add('selected-for-info');
         ctx._selectedApartment = entry;
         ctx._selectedFloorIndex = -1;
@@ -230,11 +261,13 @@
         const next = Math.max(0, Math.min(rows.length - 1, index | 0));
         ctx._selectedFloorIndex = next;
         ctx._selectedApartmentIndex = 0;
+        ctx.clearFloorHeightTransition?.();
 
         const row = rows[next];
         ctx.applyPanelContent(ctx._selectedApartment, row);
         ctx.openInfoPanel();
         ctx.focusCameraForFloor(next);
+        ctx.scheduleInfoPanelReposition?.();
         ctx.updateFloorPanelSelection(true);
         ctx.updateFloorPanelVisibility();
         ctx.updateFloorPanelWidth();
@@ -248,6 +281,7 @@
                 ctx.infoPanel.classList.remove('visible');
                 ctx.infoPanel.classList.remove('is-content-swapping');
             }
+            ctx.endInfoPanelPlacement?.();
             if (ctx.mobilePanelEl) {
                 ctx.mobilePanelEl.classList.add('visible');
                 ctx.mobilePanelEl.setAttribute('aria-hidden', 'false');
@@ -260,12 +294,17 @@
         }
 
         if (!ctx.infoPanel) return;
-        ctx.markInfoPanelSizeDirty();
-        ctx.updateInfoPanelPosition();
+        ctx.beginInfoPanelPlacement?.();
         ctx.infoPanel.classList.add('visible');
+        if (ctx.scheduleInfoPanelReposition) ctx.scheduleInfoPanelReposition();
+        else {
+            ctx.markInfoPanelSizeDirty();
+            ctx.updateInfoPanelPosition();
+        }
         ctx.updateFloorPanelVisibility();
         ctx.updateFloorPanelPosition();
         updateInfoPanelNavState(ctx);
+        ctx._forceDomUpdate = true;
     };
 
     const closeInfoPanel = (ctx) => {
@@ -273,6 +312,7 @@
         ctx.closePlanPanel?.({ keepInfoHidden: true });
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('visible');
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('is-content-swapping');
+        ctx.endInfoPanelPlacement?.();
         if (ctx.mobilePanelEl) {
             ctx.mobilePanelEl.classList.remove('visible');
             ctx.mobilePanelEl.setAttribute('aria-hidden', 'true');
@@ -287,9 +327,10 @@
         ctx._selectedApartment = null;
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
+        ctx.clearFloorHeightTransition?.();
         ctx.clearFloorPanelItems();
         ctx.hideFloorPanel();
-        ctx.releaseCameraLock();
+        ctx.centerCameraToApartmentsHome?.();
         updateInfoPanelNavState(ctx);
     };
 

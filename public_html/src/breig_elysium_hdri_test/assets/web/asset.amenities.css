@@ -10,7 +10,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 10px 16px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(0, 0, 0, 0.5);
     color: white;
     font-size: 14px;
@@ -36,7 +36,7 @@
     justify-content: center;
     align-items: center;
     z-index: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     will-change: transform;
     cursor: pointer;
 }
@@ -55,21 +55,21 @@
 
 .amenities .glass-panel {
     background-color: rgba(28, 28, 28, 0.4);
-    -webkit-backdrop-filter: blur(68px);
-    backdrop-filter: blur(68px);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
     z-index: 0;
 }
 
 .amenities .border-shadow {
     border: none;
     filter: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
 }
 
 .amenities-line {
     position: absolute;
     inset: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     pointer-events: none;
     z-index: 3;
     padding: 1px;
@@ -127,7 +127,7 @@
 
 .amenities .amenities-line {
     padding: 1px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--gradient-line);
 }
 

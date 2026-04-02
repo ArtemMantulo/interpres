@@ -1,5 +1,6 @@
 (function () {
     if (window.ApartmentsSwipeShared) return;
+    const isMobileLayout = (ctx) => ctx?.isMobileUiLayout?.() ?? ctx?.isPortrait?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
 
     const onPanelSwipePointerDown = (ctx, e) => {
         beginSwipeTracking(ctx, e, ctx.infoPanel);
@@ -14,7 +15,7 @@
     const beginSwipeTracking = (ctx, e, captureEl) => {
         if (!ctx._active || !ctx.infoPanel?.classList.contains('visible')) return;
         if (e.button !== undefined && e.button !== 0) return;
-        if (!ctx.isPortrait()) return;
+        if (!isMobileLayout(ctx)) return;
         if (ctx._isFloorAnimating) return;
         if (!ctx._selectedApartment) return;
 
@@ -96,7 +97,7 @@
         const currentIndex = ctx._selectedFloorIndex < 0 ? 0 : ctx._selectedFloorIndex;
         const direction = ctx._swipeDirection;
         const canCommit =
-            ctx.isPortrait() &&
+            isMobileLayout(ctx) &&
             !ctx._isFloorAnimating &&
             rows &&
             rows.length > 1 &&

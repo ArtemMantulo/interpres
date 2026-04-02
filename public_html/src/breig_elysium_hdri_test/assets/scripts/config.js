@@ -62,6 +62,13 @@ export const AMENITIES_SETTINGS = {
     transformSuffix: ' translate(-50%, -50%)'
 };
 
+export const MODE_IDS = {
+    HOME: '0',
+    APARTMENTS: '1',
+    AMENITIES: '2',
+    GALLERY: 'Gallery'
+};
+
 export const MODE_DEFINITIONS = [
     { id: '0', label: 'home' },
     { id: '1', label: 'apartments' },

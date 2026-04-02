@@ -1,6 +1,6 @@
 var AmenitiesMode = pc.createScript('amenitiesMode');
-const MODE_HOME = '0';
-const MODE_AMENITIES = '2';
+const MODE_HOME = window.AppModeIds?.HOME ?? '0';
+const MODE_AMENITIES = window.AppModeIds?.AMENITIES ?? '2';
 
 AmenitiesMode.attributes.add('dataUrl', { type: 'string', default: 'assets/data/amenities/dataAmenities.json' });
 AmenitiesMode.attributes.add('fpsLockerState', { type: 'json' });
@@ -9,10 +9,11 @@ AmenitiesMode.attributes.add('screenVisibilityThreshold', { type: 'number', defa
 AmenitiesMode.attributes.add('transformSuffix', { type: 'string', default: ' translate(-50%, -50%)' });
 AmenitiesMode.attributes.add('infoPanelOffset', { type: 'number', default: 36 });
 AmenitiesMode.attributes.add('infoPanelViewportMargin', { type: 'number', default: 12 });
-AmenitiesMode.attributes.add('portraitLookUpDegrees', { type: 'number', default: 0 });
+AmenitiesMode.attributes.add('portraitLookUpDegrees', { type: 'number', default: 4 });
 AmenitiesMode.attributes.add('lookBelowDegrees', { type: 'number', default: 9 });
 AmenitiesMode.attributes.add('portraitLookBelowDegrees', { type: 'number', default: 5 });
 AmenitiesMode.attributes.add('portraitScreenOffsetY', { type: 'number', default: 30 });
+AmenitiesMode.attributes.add('domPositionLerp', { type: 'number', default: 0.22 });
 
 AmenitiesMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
@@ -86,11 +87,12 @@ AmenitiesMode.prototype.initialize = function () {
         this.markInfoPanelSizeDirty();
         const orbit = this.getOrbit();
         if (orbit && orbit.setLookAtVerticalAngle) {
-            const lookBelowDeg = isFinite(this.lookBelowDegrees) ? this.lookBelowDegrees : 7;
-            const portraitLookBelowDeg = isFinite(this.portraitLookBelowDegrees) ? this.portraitLookBelowDegrees : 5;
-            const isPortrait = window.innerHeight > window.innerWidth;
+            const isPortrait = this.isPhoneLayout();
             const shouldOffset = this.currentMode === MODE_AMENITIES && !!this._selectedAmenityData;
-            orbit.setLookAtVerticalAngle(shouldOffset ? -(isPortrait ? portraitLookBelowDeg : lookBelowDeg) : 0);
+            const portraitLookBelowDeg = isFinite(this.portraitLookBelowDegrees) ? this.portraitLookBelowDegrees : 5;
+            const portraitLookUpDeg = isFinite(this.portraitLookUpDegrees) ? this.portraitLookUpDegrees : 4;
+            const portraitVerticalAngle = -portraitLookBelowDeg + portraitLookUpDeg;
+            orbit.setLookAtVerticalAngle(shouldOffset && isPortrait ? portraitVerticalAngle : 0);
             orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
         }
         this.scheduleAmenityTextWidthUpdate();
@@ -181,18 +183,7 @@ AmenitiesMode.prototype.getDomShared = function () {
 };
 
 AmenitiesMode.prototype.getLang = function () {
-    const shared = this.getShared();
-    if (shared?.resolveLang) {
-        return shared.resolveLang(window.AppLanguage, document.documentElement, navigator.language);
-    }
-
-    const appLang = window.AppLanguage;
-    if (appLang?.get) return appLang.get();
-
-    const raw = document.documentElement.getAttribute('lang') || navigator.language || 'en';
-    if (appLang?.normalize) return appLang.normalize(raw);
-    const lang = String(raw).split('-')[0].toLowerCase();
-    return lang || 'en';
+    return window.AppLanguage?.get?.() ?? 'en';
 };
 
 
@@ -215,6 +206,15 @@ AmenitiesMode.prototype.markInfoPanelSizeDirty = function () {
 
 AmenitiesMode.prototype.getInfoPanelSize = function () {
     return window.PcScriptShared.getInfoPanelSize(this, 300, 200);
+};
+
+AmenitiesMode.prototype.getDomTransformSuffix = function () {
+    const base = this.transformSuffix || ' translate(-50%, -50%)';
+    return base;
+};
+
+AmenitiesMode.prototype.isPhoneLayout = function () {
+    return window.AppDetect?.isPortraitMobile?.() ?? false;
 };
 
 AmenitiesMode.prototype.setMode = function (modeStr, options) {
@@ -320,12 +320,12 @@ AmenitiesMode.prototype.clearAmenities = function () {
 
 AmenitiesMode.prototype.onDestroy = function () {
     const orbit = this.getOrbit();
-    orbit && orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
-    orbit && orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(0);
+    orbit?.setLookAtOffset?.(0, 0, 0);
+    orbit?.setLookAtVerticalAngle?.(0);
 
     this.unbindDomEvents();
     this.clearAmenities();
-    if (this._infoPanelResizeObserver) this._infoPanelResizeObserver.disconnect();
+    this._infoPanelResizeObserver?.disconnect();
 
     this._onAmenityKeyDown = null;
 

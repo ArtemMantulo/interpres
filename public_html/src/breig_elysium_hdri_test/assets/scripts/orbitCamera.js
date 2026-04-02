@@ -76,6 +76,12 @@ OrbitCamera.prototype.initialize = function () {
 
     this.inputLocked = false;
     this.savedAutoRotateEnabled = true;
+    this.yawConstraintEnabled = false;
+    this.yawConstraintCenter = 0;
+    this.yawConstraintRange = 180;
+    this.pitchLockEnabled = false;
+    this.pitchLockValue = 0;
+    this.distanceLockStrict = false;
 
     this.onGalleryOpen = function () {
         this.savedAutoRotateEnabled = this.autoRotateEnabled;
@@ -106,7 +112,7 @@ OrbitCamera.prototype.initialize = function () {
 };
 
 OrbitCamera.prototype.isPortrait = function () {
-    return window.innerHeight > window.innerWidth;
+    return window.AppDetect?.isPortraitMobile?.() ?? false;
 };
 
 OrbitCamera.prototype.syncFromEntity = function () {
@@ -162,6 +168,8 @@ OrbitCamera.prototype.resetToInitial = function () {
     }
     this.setLookAtOffset(0, 0, 0);
     this.setLookAtVerticalAngle(0);
+    this.clearYawConstraint();
+    this.clearPitchLock();
     this.lastInputTime = performance.now();
 };
 
@@ -174,9 +182,11 @@ OrbitCamera.prototype.resetInteractionState = function () {
 };
 
 OrbitCamera.prototype.applyDistanceProfile = function (desired, min, max) {
+    this.distanceLockStrict = false;
     this.minDistance = min;
     this.maxDistance = max;
     this.distanceTarget = pc.math.clamp(desired, min, max);
+    this.distance = pc.math.clamp(this.distance, min, max);
 };
 
 OrbitCamera.prototype.bindInput = function () {
@@ -233,16 +243,40 @@ OrbitCamera.prototype.onMouseMove = function (e) {
 
     const s = this.rotationSpeed * this.mouseRotationSensitivity;
 
-    this.eulersTarget.x = pc.math.clamp(
-        this.eulersTarget.x + e.dy * s,
-        this.minPitch,
-        this.maxPitch
-    );
+    if (!this.pitchLockEnabled) {
+        this.eulersTarget.x = pc.math.clamp(
+            this.eulersTarget.x + e.dy * s,
+            this.minPitch,
+            this.maxPitch
+        );
+    }
     this.eulersTarget.y -= e.dx * s;
+    if (this.yawConstraintEnabled) {
+        this.eulersTarget.y = this.clampYawToConstraint(this.eulersTarget.y);
+    }
 };
 
 OrbitCamera.prototype.onMouseWheel = function (e) {
     if (this.inputLocked) return;
+    const evt = e?.event || null;
+    const nowTs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const blockUntil = Number(window.__apartmentsThumbsWheelBlockUntil || 0);
+    if (nowTs < blockUntil) {
+        evt?.preventDefault?.();
+        return;
+    }
+
+    const target = evt?.target;
+    if (target && typeof target.closest === 'function') {
+        const inThumbs = target.closest(
+            '#apartments-expanded-thumbs, .apartments-expanded-thumbs, #apartments-expanded-mobile-slider, .apartments-expanded-mobile-slider'
+        );
+        if (inThumbs) {
+            evt?.preventDefault?.();
+            return;
+        }
+    }
+
     this.lastInputTime = performance.now();
 
     this.distanceTarget = pc.math.clamp(
@@ -307,12 +341,17 @@ OrbitCamera.prototype.onTouchMove = function (e) {
         const dx = t.x - this.lastTouchPosition.x;
         const dy = t.y - this.lastTouchPosition.y;
 
-        this.eulersTarget.x = pc.math.clamp(
-            this.eulersTarget.x + dy * this.touchRotationSensitivity,
-            this.minPitch,
-            this.maxPitch
-        );
+        if (!this.pitchLockEnabled) {
+            this.eulersTarget.x = pc.math.clamp(
+                this.eulersTarget.x + dy * this.touchRotationSensitivity,
+                this.minPitch,
+                this.maxPitch
+            );
+        }
         this.eulersTarget.y -= dx * this.touchRotationSensitivity;
+        if (this.yawConstraintEnabled) {
+            this.eulersTarget.y = this.clampYawToConstraint(this.eulersTarget.y);
+        }
         this.lastTouchPosition.set(t.x, t.y);
     }
 };
@@ -369,11 +408,13 @@ OrbitCamera.prototype.update = function (dt) {
 
 OrbitCamera.prototype.updateRotationAndZoom = function () {
     const a = this.smoothAlpha;
+    this.applyInteractionConstraints();
     this.eulers.x += (this.eulersTarget.x - this.eulers.x) * a;
     this.eulers.y = this.lerpAngle(this.eulers.y, this.eulersTarget.y, a);
     this.distance += (this.distanceTarget - this.distance) * a;
     this.lookAtOffset.lerp(this.lookAtOffset, this.lookAtOffsetTarget, a);
     this.lookAtVerticalAngleDeg += (this.lookAtVerticalAngleTarget - this.lookAtVerticalAngleDeg) * a;
+    this.applyInteractionConstraints();
 };
 
 OrbitCamera.prototype.updatePosition = function () {
@@ -430,6 +471,14 @@ OrbitCamera.prototype.setLookAtVerticalAngle = function (deg) {
 };
 
 OrbitCamera.prototype.adjustDistanceForOrientation = function () {
+    if (this.distanceLockStrict) {
+        const lockMin = this.minDistance;
+        const lockMax = this.maxDistance;
+        this.distanceTarget = pc.math.clamp(this.distanceTarget, lockMin, lockMax);
+        this.distance = pc.math.clamp(this.distance, lockMin, lockMax);
+        return;
+    }
+
     if (this.isPortrait())
         this.applyDistanceProfile(
             this.portraitDistance,
@@ -458,12 +507,68 @@ OrbitCamera.prototype.lookAtPointSmoothly = function (point) {
     let pitch = Math.asin(dir.y) * pc.math.RAD_TO_DEG;
 
     pitch = pc.math.clamp(pitch, this.minPitch, this.maxPitch);
+    if (this.pitchLockEnabled) pitch = this.pitchLockValue;
 
     const cy = this.eulers.y;
     while (yaw - cy > 180) yaw -= 360;
     while (yaw - cy < -180) yaw += 360;
+    yaw = this.clampYawToConstraint(yaw);
 
     this.eulersTarget.set(pitch, yaw);
+};
+
+OrbitCamera.prototype.normalizeAngle = function (deg) {
+    return ((((deg % 360) + 540) % 360) - 180);
+};
+
+OrbitCamera.prototype.clampYawToConstraint = function (yaw) {
+    if (!this.yawConstraintEnabled) return yaw;
+    const delta = this.normalizeAngle(yaw - this.yawConstraintCenter);
+    const clamped = pc.math.clamp(delta, -this.yawConstraintRange, this.yawConstraintRange);
+    return this.yawConstraintCenter + clamped;
+};
+
+OrbitCamera.prototype.applyInteractionConstraints = function () {
+    if (this.pitchLockEnabled) {
+        this.eulersTarget.x = this.pitchLockValue;
+    }
+    if (this.yawConstraintEnabled) {
+        this.eulersTarget.y = this.clampYawToConstraint(this.eulersTarget.y);
+    }
+};
+
+OrbitCamera.prototype.setYawConstraint = function (centerDeg, rangeDeg) {
+    const center = Number(centerDeg);
+    const range = Math.abs(Number(rangeDeg));
+    if (!isFinite(center) || !isFinite(range) || range <= 0) {
+        this.clearYawConstraint();
+        return;
+    }
+    this.yawConstraintEnabled = true;
+    this.yawConstraintCenter = center;
+    this.yawConstraintRange = range;
+    this.applyInteractionConstraints();
+};
+
+OrbitCamera.prototype.clearYawConstraint = function () {
+    this.yawConstraintEnabled = false;
+    this.yawConstraintCenter = 0;
+    this.yawConstraintRange = 180;
+};
+
+OrbitCamera.prototype.setPitchLock = function (pitchDeg) {
+    const pitch = Number(pitchDeg);
+    if (!isFinite(pitch)) {
+        this.clearPitchLock();
+        return;
+    }
+    this.pitchLockEnabled = true;
+    this.pitchLockValue = pitch;
+    this.applyInteractionConstraints();
+};
+
+OrbitCamera.prototype.clearPitchLock = function () {
+    this.pitchLockEnabled = false;
 };
 
 OrbitCamera.prototype.lerpAngle = function (a, b, t) {
@@ -474,7 +579,13 @@ OrbitCamera.prototype.lerpAngle = function (a, b, t) {
 OrbitCamera.prototype.setDistanceLimits = function (min, max) {
     this.minDistance = min;
     this.maxDistance = max;
+    this.distanceLockStrict = Math.abs((Number(max) || 0) - (Number(min) || 0)) <= 1e-6;
     this.distanceTarget = pc.math.clamp(this.distanceTarget, min, max);
+    this.distance = pc.math.clamp(this.distance, min, max);
+};
+
+OrbitCamera.prototype.clearDistanceLock = function () {
+    this.distanceLockStrict = false;
 };
 
 OrbitCamera.prototype.setAmenitiesDistanceByOrientation = function () {
@@ -510,6 +621,8 @@ OrbitCamera.prototype.onDestroy = function () {
     this._initialEulers = null;
     this.lookAtOffset = null;
     this.lookAtVerticalAngleDeg = 0;
+    this.yawConstraintEnabled = false;
+    this.pitchLockEnabled = false;
     this._lookAtTarget = null;
     this._lookDir = null;
     this._lookRight = null;

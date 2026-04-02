@@ -44,12 +44,12 @@
     height: 40px;
     padding: 0;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background-color: var(--glass-bg-dark);
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    color: rgba(255, 255, 255, 0.96);
+    color: var(--text-primary);
     font-family: 'Inter', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -93,7 +93,7 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
-    color: rgba(255, 255, 255, 0.96);
+    color: var(--text-primary);
     transition:
         opacity 0.2s ease,
         transform 0.24s ease;
@@ -153,7 +153,7 @@
     justify-content: center;
     align-items: center;
     z-index: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     will-change: transform;
     cursor: pointer;
 }
@@ -168,12 +168,12 @@
 .apartment-pin .border-shadow {
     border: none;
     filter: none;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
 }
 
 .apartment-pin .amenities-line {
     padding: 1px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--gradient-line);
 }
 

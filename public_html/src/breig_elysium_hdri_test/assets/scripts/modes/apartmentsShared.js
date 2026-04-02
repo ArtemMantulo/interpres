@@ -1,7 +1,6 @@
 (function () {
     if (window.ApartmentsShared) return;
 
-    const SUPPORTED_LANGS = new Set(['en', 'ru', 'ko', 'zh', 'de', 'fr', 'es', 'ar', 'ja']);
     const normalizeImageArray = (value) => {
         if (!value) return [];
         if (Array.isArray(value)) {
@@ -15,10 +14,40 @@
         const src = String(value || '').trim();
         return src ? [src] : [];
     };
+    const normalizeYawHeights = (value) => {
+        if (!Array.isArray(value) || value.length < 2) return null;
+        const left = parseFloat(value[0]);
+        const right = parseFloat(value[1]);
+        return isFinite(left) && isFinite(right) ? [left, right] : null;
+    };
+    const normalizeFloorHeightsByYaw = (value) => {
+        if (!Array.isArray(value) || !value.length) return null;
+        const out = [];
+        let hasValid = false;
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            let left = NaN;
+            let right = NaN;
+            if (Array.isArray(item) && item.length >= 2) {
+                left = parseFloat(item[0]);
+                right = parseFloat(item[1]);
+            } else if (item && typeof item === 'object') {
+                left = parseFloat(item.left ?? item.l ?? item.minus20);
+                right = parseFloat(item.right ?? item.r ?? item.plus20);
+            }
+            if (isFinite(left) && isFinite(right)) {
+                out.push([left, right]);
+                hasValid = true;
+            } else {
+                out.push(null);
+            }
+        }
+        return hasValid ? out : null;
+    };
 
     const parseData = (json, lang) => {
         const items = Array.isArray(json) ? json : [json];
-        const resolvedLang = SUPPORTED_LANGS.has(lang) ? lang : 'en';
+        const resolvedLang = window.AppLanguage?.normalize?.(lang) ?? 'en';
         const out = [];
 
         for (let i = 0; i < items.length; i++) {
@@ -55,6 +84,17 @@
                     const planList = normalizeImageArray(
                         aptItem.planImage || aptItem.plan_image || aptItem.plan
                     );
+                    const floorHeightByYaw = normalizeYawHeights(
+                        aptItem.floorHeightByYaw ||
+                        aptItem.floorHeightYaw20 ||
+                        aptItem.floorHeightLR ||
+                        aptItem.floorHeightLr
+                    );
+                    const floorHeightsByYaw = normalizeFloorHeightsByYaw(
+                        aptItem.floorHeightsByYaw ||
+                        aptItem.floorHeightsYaw20 ||
+                        aptItem.floorHeightsLR
+                    );
                     return {
                         name: String(aptT.name || '').trim(),
                         area: String(aptItem.area || '').trim(),
@@ -69,7 +109,9 @@
                         view: aptItem.view || null,
                         street: aptItem.street || null,
                         look: Array.isArray(aptItem.look) && aptItem.look.length >= 2 ? aptItem.look : null,
-                        camera: aptItem.camera || null
+                        camera: aptItem.camera || null,
+                        floorHeightByYaw,
+                        floorHeightsByYaw
                     };
                 });
 
@@ -92,7 +134,9 @@
                     view: apt0.view || null,
                     street: apt0.street || null,
                     look: apt0.look || null,
-                    camera: apt0.camera || null
+                    camera: apt0.camera || null,
+                    floorHeightByYaw: apt0.floorHeightByYaw || null,
+                    floorHeightsByYaw: apt0.floorHeightsByYaw || null
                 });
             }
 

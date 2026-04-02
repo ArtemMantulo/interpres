@@ -10,9 +10,19 @@ export function isMobile() {
     return /iphone|ipod/.test(ua) || (/android/.test(ua) && /mobile/.test(ua)) || isTablet();
 }
 
+export function isTouchDevice() {
+    return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+}
+
+export function isPortraitMobile() {
+    return window.innerWidth < 768 && isTouchDevice();
+}
+
 if (typeof window !== 'undefined') {
     const api = window.AppDetect || {};
     api.isTablet = isTablet;
     api.isMobile = isMobile;
+    api.isTouchDevice = isTouchDevice;
+    api.isPortraitMobile = isPortraitMobile;
     window.AppDetect = api;
 }

@@ -159,7 +159,7 @@
     const focusCameraOn = (ctx, targetPosition) => {
         const orbit = ctx.getOrbit();
         if (!orbit) return;
-        const isPortrait = window.innerHeight > window.innerWidth;
+        const isPortrait = ctx.isPhoneLayout?.() ?? window.AppDetect?.isPortraitMobile?.() ?? false;
 
         const focusTarget = ctx._focusTarget;
         focusTarget.copy(targetPosition);
@@ -170,29 +170,16 @@
         orbit.focusOn && orbit.focusOn(focusTarget);
         orbit.lookAtPointSmoothly && orbit.lookAtPointSmoothly(focusTarget);
 
-        const lookBelowDegrees = isFinite(ctx.lookBelowDegrees) ? ctx.lookBelowDegrees : 7;
-        const portraitLookBelowDegrees = isFinite(ctx.portraitLookBelowDegrees) ? ctx.portraitLookBelowDegrees : 5;
-        if (orbit.setLookAtVerticalAngle) {
-            orbit.setLookAtVerticalAngle(-(isPortrait ? portraitLookBelowDegrees : lookBelowDegrees));
-            orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
-        } else if (orbit.setLookAtOffset) {
-            const distance =
-                isFinite(orbit.distanceTarget) && orbit.distanceTarget > 0
-                    ? orbit.distanceTarget
-                    : isFinite(orbit.distance) && orbit.distance > 0
-                        ? orbit.distance
-                        : 0;
-            const lookAtOffsetY = isPortrait || distance <= 0
-                ? 0
-                : -Math.tan(lookBelowDegrees * pc.math.DEG_TO_RAD) * distance;
-            orbit.setLookAtOffset(0, lookAtOffsetY, 0);
-        } else if (orbit.eulersTarget && !isPortrait) {
-            orbit.eulersTarget.x = pc.math.clamp(
-                orbit.eulersTarget.x + lookBelowDegrees,
-                isFinite(orbit.minPitch) ? orbit.minPitch : -89,
-                isFinite(orbit.maxPitch) ? orbit.maxPitch : 89
-            );
+        if (isPortrait) {
+            const portraitLookBelowDegrees = isFinite(ctx.portraitLookBelowDegrees) ? ctx.portraitLookBelowDegrees : 5;
+            const portraitLookUpDegrees = isFinite(ctx.portraitLookUpDegrees) ? ctx.portraitLookUpDegrees : 4;
+            if (orbit.setLookAtVerticalAngle) {
+                orbit.setLookAtVerticalAngle(-portraitLookBelowDegrees + portraitLookUpDegrees);
+            }
+        } else {
+            if (orbit.setLookAtVerticalAngle) orbit.setLookAtVerticalAngle(0);
         }
+        orbit.setLookAtOffset && orbit.setLookAtOffset(0, 0, 0);
     };
 
     const updateInfoPanelPosition = () => {

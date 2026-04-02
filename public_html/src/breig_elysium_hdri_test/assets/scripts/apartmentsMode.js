@@ -1,6 +1,6 @@
 var ApartmentsMode = pc.createScript('apartmentsMode');
 
-const APARTMENTS_MODE_ID = '1';
+const APARTMENTS_MODE_ID = window.AppModeIds?.APARTMENTS ?? '1';
 
 ApartmentsMode.attributes.add('dataUrl', {
     type: 'string',
@@ -12,11 +12,17 @@ ApartmentsMode.attributes.add('panelViewportMargin', { type: 'number', default: 
 ApartmentsMode.attributes.add('swipeThreshold', { type: 'number', default: 24 });
 ApartmentsMode.attributes.add('cameraPitch', { type: 'number', default: 30 });
 ApartmentsMode.attributes.add('cameraYaw', { type: 'number', default: -58 });
-ApartmentsMode.attributes.add('desktopYawOffset', { type: 'number', default: 5 });
+ApartmentsMode.attributes.add('desktopYawOffset', { type: 'number', default: 0 });
+ApartmentsMode.attributes.add('cameraHorizontalRotateLimit', { type: 'number', default: 20 });
 ApartmentsMode.attributes.add('cameraLandscapeDistance', { type: 'number', default: 5 });
 ApartmentsMode.attributes.add('cameraPortraitDistance', { type: 'number', default: 5 });
 ApartmentsMode.attributes.add('mobileFloorCenterOffset', { type: 'number', default: 50 });
 ApartmentsMode.attributes.add('mobileFloorLeftOffset', { type: 'number', default: 10 });
+ApartmentsMode.attributes.add('floorPositionLerp', { type: 'number', default: 0.14 });
+ApartmentsMode.attributes.add('floorHeightTransitionDurationMs', { type: 'number', default: 700 });
+ApartmentsMode.attributes.add('landscapeFloorHeightScale', { type: 'number', default: 0.9 });
+ApartmentsMode.attributes.add('landscapeFloorHeightScaleLeft', { type: 'number', default: 0.9 });
+ApartmentsMode.attributes.add('landscapeFloorHeightScaleRight', { type: 'number', default: 1.15 });
 
 ApartmentsMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
@@ -97,6 +103,7 @@ ApartmentsMode.prototype.initialize = function () {
     this._floorItemsData = [];
 
     this._forceDomUpdate = true;
+    this._floorHeightTransition = null;
 
     this._swipeTracking = false;
     this._swipePointerId = null;
@@ -111,6 +118,9 @@ ApartmentsMode.prototype.initialize = function () {
     this._floorPanelClone = null;
     this._panelSwapAnimTimer = 0;
     this._planPanelCloseTimer = 0;
+    this._infoPanelRepositionTimer = 0;
+    this._infoPanelPlacementTimer = 0;
+    this._planNavPressTimers = new Map();
 
     this._onContainerClick = this.onContainerClick.bind(this);
     this._onContainerKeyDown = this.onContainerKeyDown.bind(this);
@@ -132,11 +142,37 @@ ApartmentsMode.prototype.initialize = function () {
     };
     this._onPlanPrevClick = (e) => {
         e.preventDefault();
+        this.clearPlanNavPressedState?.(e.currentTarget);
+        if (window.AppDetect?.isTouchDevice?.()) {
+            e.currentTarget?.blur?.();
+        }
         this.navigatePlanSelection(-1);
     };
     this._onPlanNextClick = (e) => {
         e.preventDefault();
+        this.clearPlanNavPressedState?.(e.currentTarget);
+        if (window.AppDetect?.isTouchDevice?.()) {
+            e.currentTarget?.blur?.();
+        }
         this.navigatePlanSelection(1);
+    };
+    this._onPlanNavPointerDown = (e) => {
+        if (!window.AppDetect?.isTouchDevice?.()) return;
+        const btn = e.currentTarget;
+        if (!btn) return;
+        this.clearPlanNavPressedTimer(btn);
+        btn.classList.add('is-pressed');
+    };
+    this._onPlanNavPointerUp = (e) => {
+        if (!window.AppDetect?.isTouchDevice?.()) return;
+        const btn = e.currentTarget;
+        if (!btn) return;
+        this.clearPlanNavPressedTimer(btn);
+        const timer = setTimeout(() => {
+            btn.classList.remove('is-pressed');
+            this._planNavPressTimers.delete(btn);
+        }, 80);
+        this._planNavPressTimers.set(btn, timer);
     };
     this._onPlanVisitClick = (e) => {
         e.preventDefault();
@@ -164,10 +200,14 @@ ApartmentsMode.prototype.initialize = function () {
     this._onExpandedThumbsWheel = (e) => {
         const thumbs = this.expandedThumbs;
         if (!thumbs) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        const nowTs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        window.__apartmentsThumbsWheelBlockUntil = nowTs + 160;
         if (thumbs.scrollWidth <= thumbs.clientWidth) return;
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         if (!Number.isFinite(delta) || Math.abs(delta) < 0.01) return;
-        e.preventDefault();
         thumbs.scrollBy({ left: delta, behavior: 'smooth' });
     };
     this._onFloorPanelClick = this.onFloorPanelClick.bind(this);
@@ -208,9 +248,13 @@ ApartmentsMode.prototype.initialize = function () {
         this.updateInfoPanelPosition();
         this.updateFloorPanelPosition();
         this.updateInfoPanelNavState();
+        this.updatePlanPanelLandscapeHeight();
+        if (this._active && this.infoPanel?.classList.contains('visible')) {
+            this.scheduleInfoPanelReposition();
+        }
     };
     this._onModeChangeFallback = (mode) => {
-        const next = String(mode ?? '0');
+        const next = String(mode ?? (window.AppModeIds?.HOME ?? '0'));
         if (next === APARTMENTS_MODE_ID) this.enterMode();
         else this.exitMode();
     };
@@ -255,6 +299,22 @@ ApartmentsMode.prototype.bindEvents = function () {
     this.planCloseDesktop && this.planCloseDesktop.addEventListener('click', this._onPlanCloseClick);
     this.planPrevDesktop && this.planPrevDesktop.addEventListener('click', this._onPlanPrevClick);
     this.planNextDesktop && this.planNextDesktop.addEventListener('click', this._onPlanNextClick);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.addEventListener('pointerdown', this._onPlanNavPointerDown);
+    this.planNextDesktop &&
+        this.planNextDesktop.addEventListener('pointerdown', this._onPlanNavPointerDown);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.addEventListener('pointerup', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.addEventListener('pointerup', this._onPlanNavPointerUp);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.addEventListener('pointercancel', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.addEventListener('pointercancel', this._onPlanNavPointerUp);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.addEventListener('lostpointercapture', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.addEventListener('lostpointercapture', this._onPlanNavPointerUp);
     this.expandedViewAll && this.expandedViewAll.addEventListener('click', this._onExpandedViewAllClick);
     this.expandedThumbs && this.expandedThumbs.addEventListener('click', this._onExpandedThumbClick);
     this.expandedThumbs &&
@@ -298,6 +358,22 @@ ApartmentsMode.prototype.unbindEvents = function () {
     this.planCloseDesktop && this.planCloseDesktop.removeEventListener('click', this._onPlanCloseClick);
     this.planPrevDesktop && this.planPrevDesktop.removeEventListener('click', this._onPlanPrevClick);
     this.planNextDesktop && this.planNextDesktop.removeEventListener('click', this._onPlanNextClick);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.removeEventListener('pointerdown', this._onPlanNavPointerDown);
+    this.planNextDesktop &&
+        this.planNextDesktop.removeEventListener('pointerdown', this._onPlanNavPointerDown);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.removeEventListener('pointerup', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.removeEventListener('pointerup', this._onPlanNavPointerUp);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.removeEventListener('pointercancel', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.removeEventListener('pointercancel', this._onPlanNavPointerUp);
+    this.planPrevDesktop &&
+        this.planPrevDesktop.removeEventListener('lostpointercapture', this._onPlanNavPointerUp);
+    this.planNextDesktop &&
+        this.planNextDesktop.removeEventListener('lostpointercapture', this._onPlanNavPointerUp);
     this.expandedViewAll && this.expandedViewAll.removeEventListener('click', this._onExpandedViewAllClick);
     this.expandedThumbs && this.expandedThumbs.removeEventListener('click', this._onExpandedThumbClick);
     this.expandedThumbs &&
@@ -323,11 +399,27 @@ ApartmentsMode.prototype.unbindEvents = function () {
 
     window.removeEventListener('resize', this._onViewportDirty);
     window.removeEventListener('scroll', this._onViewportDirty);
+
+    this.clearPlanNavPressedState(this.planPrevDesktop);
+    this.clearPlanNavPressedState(this.planNextDesktop);
 };
 
 ApartmentsMode.prototype.getInitialMode = function () {
     if (this._modeManager?.getMode) return this._modeManager.getMode();
-    return document.querySelector('.mode-panel .button.active')?.dataset?.mode || '0';
+    return document.querySelector('.mode-panel .button.active')?.dataset?.mode || (window.AppModeIds?.HOME ?? '0');
+};
+
+ApartmentsMode.prototype.clearPlanNavPressedTimer = function (btn) {
+    if (!btn || !this._planNavPressTimers) return;
+    const timer = this._planNavPressTimers.get(btn);
+    if (timer) clearTimeout(timer);
+    this._planNavPressTimers.delete(btn);
+};
+
+ApartmentsMode.prototype.clearPlanNavPressedState = function (btn) {
+    if (!btn) return;
+    this.clearPlanNavPressedTimer(btn);
+    btn.classList.remove('is-pressed');
 };
 
 ApartmentsMode.prototype.getShared = function () {
@@ -382,18 +474,45 @@ ApartmentsMode.prototype.resolveHomeTarget = function () {
 };
 
 ApartmentsMode.prototype.isPortrait = function () {
-    return window.innerHeight > window.innerWidth;
+    return this.isMobileUiLayout();
 };
 
-ApartmentsMode.prototype.isSmallLandscape = function () {
-    if (this.isPortrait()) return false;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    return h <= 480 || w <= 812 || (w / h <= 4 / 3);
+ApartmentsMode.prototype.isMobileUiLayout = function () {
+    return window.AppDetect?.isPortraitMobile?.() ?? false;
+};
+
+
+ApartmentsMode.prototype.getLandscapeUiScale = function () {
+    return 1;
+};
+
+ApartmentsMode.prototype.getDomTransformSuffix = function () {
+    const base = this.transformSuffix || ' translate(-50%, -50%)';
+    const scale = this.getLandscapeUiScale();
+    if (scale >= 0.999) return base;
+    return `${base} scale(${scale})`;
+};
+
+ApartmentsMode.prototype.beginInfoPanelPlacement = function () {
+    if (!this.infoPanel) return;
+    if (this._infoPanelPlacementTimer) {
+        clearTimeout(this._infoPanelPlacementTimer);
+        this._infoPanelPlacementTimer = 0;
+    }
+    this.infoPanel.classList.add('is-placing');
+};
+
+ApartmentsMode.prototype.endInfoPanelPlacement = function () {
+    if (!this.infoPanel) return;
+    this.infoPanel.classList.remove('is-placing');
+    if (this._infoPanelPlacementTimer) {
+        clearTimeout(this._infoPanelPlacementTimer);
+        this._infoPanelPlacementTimer = 0;
+    }
 };
 
 ApartmentsMode.prototype.isInfoPanelOpen = function () {
-    if (this.isPortrait()) {
+    if (this.isMobileUiLayout()) {
         return !!(this.mobilePanelEl?.classList.contains('visible') && this._selectedApartment);
     }
     return !!(this.infoPanel?.classList.contains('visible') && this._selectedApartment);
@@ -404,13 +523,14 @@ ApartmentsMode.prototype.syncInfoPanelsForViewport = function () {
 
     const hasSelection = !!this._selectedApartment;
     const planOpen = this.isPlanPanelOpen();
-    const portrait = this.isPortrait();
+    const mobileLayout = this.isMobileUiLayout();
 
     if (!hasSelection || planOpen) {
         if (this.infoPanel) {
             this.infoPanel.classList.remove('visible');
             this.infoPanel.classList.remove('is-content-swapping');
         }
+        this.endInfoPanelPlacement();
         if (this.mobilePanelEl) {
             this.mobilePanelEl.classList.remove('visible');
             this.mobilePanelEl.setAttribute('aria-hidden', 'true');
@@ -426,11 +546,12 @@ ApartmentsMode.prototype.syncInfoPanelsForViewport = function () {
     const row = this.getSelectedFloorRow();
     this.applyPanelContent(this._selectedApartment, row);
 
-    if (portrait) {
+    if (mobileLayout) {
         if (this.infoPanel) {
             this.infoPanel.classList.remove('visible');
             this.infoPanel.classList.remove('is-content-swapping');
         }
+        this.endInfoPanelPlacement();
         if (this.mobilePanelEl) {
             this.mobilePanelEl.classList.add('visible');
             this.mobilePanelEl.setAttribute('aria-hidden', 'false');
@@ -441,9 +562,9 @@ ApartmentsMode.prototype.syncInfoPanelsForViewport = function () {
             this.mobilePanelEl.setAttribute('aria-hidden', 'true');
         }
         if (this.infoPanel) {
-            this.markInfoPanelSizeDirty();
-            this.updateInfoPanelPosition();
+            this.beginInfoPanelPlacement();
             this.infoPanel.classList.add('visible');
+            this.scheduleInfoPanelReposition();
         }
     }
 
@@ -468,8 +589,148 @@ ApartmentsMode.prototype.getInfoPanelSize = function () {
     return window.PcScriptShared.getInfoPanelSize(this, 320, 220);
 };
 
+ApartmentsMode.prototype.updatePlanPanelLandscapeHeight = function () {
+    if (!this.planPanel) return;
+    this.planPanel.style.removeProperty('height');
+    this.planPanel.style.removeProperty('min-height');
+    this.planPanel.style.removeProperty('max-height');
+};
+
+ApartmentsMode.prototype.clearFloorHeightTransition = function () {
+    this._floorHeightTransition = null;
+};
+
+ApartmentsMode.prototype._getFloorHeightsSnapshot = function (apartmentIndex, options) {
+    const marker = this._selectedApartment;
+    const rows = this.getCurrentFloorRows?.() || [];
+    if (!marker?.worldPos || !rows.length) return null;
+
+    const selectedIndex = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
+    const selectedRow = rows[selectedIndex] || null;
+    const aptIndexRaw = Number.isFinite(apartmentIndex) ? apartmentIndex : this._selectedApartmentIndex;
+    const aptIndex = Math.max(0, aptIndexRaw | 0);
+
+    const getApartmentForRow = (row, rowApartmentIndex) => {
+        const apartments = Array.isArray(row?.apartments) ? row.apartments : null;
+        if (!apartments || !apartments.length) return null;
+        const idx = Math.max(0, Math.min(apartments.length - 1, rowApartmentIndex | 0));
+        return apartments[idx] || apartments[0] || null;
+    };
+    const pickFinite = (values, fallback) => {
+        for (let i = 0; i < values.length; i++) {
+            const v = Number(values[i]);
+            if (isFinite(v)) return v;
+        }
+        return fallback;
+    };
+    const normalizeAngle = (deg) => ((((deg % 360) + 540) % 360) - 180);
+    const interpolatePair = (pair, t) => {
+        if (Array.isArray(pair) && pair.length >= 2) {
+            const left = Number(pair[0]);
+            const right = Number(pair[1]);
+            if (isFinite(left) && isFinite(right)) return left + (right - left) * t;
+        }
+        return NaN;
+    };
+
+    const selectedApt = getApartmentForRow(selectedRow, aptIndex);
+    const yawRange = Math.max(0.001, Math.abs(Number(this.cameraHorizontalRotateLimit || 20)));
+    const baseYaw = pickFinite(
+        [
+            selectedApt?.camera?.yaw,
+            selectedRow?.camera?.yaw,
+            marker?.camera?.yaw,
+            this.cameraYaw
+        ],
+        0
+    );
+    const orbit = this.getOrbit?.();
+    const forcedYaw = Number(options?.currentYaw);
+    const currentYaw = isFinite(forcedYaw)
+        ? forcedYaw
+        : pickFinite([orbit?.eulers?.y, orbit?.eulersTarget?.y], baseYaw);
+    const yawDelta = normalizeAngle(currentYaw - baseYaw);
+    const yawT = Math.max(0, Math.min(1, (yawDelta + yawRange) / (yawRange * 2)));
+
+    const selectedFloorPairs = selectedApt?.floorHeightsByYaw;
+    const resolveFloorHeight = (row, rowIndex) => {
+        const apt = getApartmentForRow(row, aptIndex);
+
+        if (Array.isArray(selectedFloorPairs) && rowIndex >= 0 && rowIndex < selectedFloorPairs.length) {
+            const h = interpolatePair(selectedFloorPairs[rowIndex], yawT);
+            if (isFinite(h)) return h;
+        }
+        if (Array.isArray(apt?.floorHeightsByYaw) && rowIndex >= 0 && rowIndex < apt.floorHeightsByYaw.length) {
+            const h = interpolatePair(apt.floorHeightsByYaw[rowIndex], yawT);
+            if (isFinite(h)) return h;
+        }
+
+        const rowPair = interpolatePair(apt?.floorHeightByYaw, yawT);
+        if (isFinite(rowPair)) return rowPair;
+
+        return isFinite(row?.height) ? row.height : marker.worldPos.y;
+    };
+
+    const rowHeights = new Array(rows.length);
+    for (let i = 0; i < rows.length; i++) {
+        rowHeights[i] = resolveFloorHeight(rows[i], i);
+    }
+    const selectedHeight = isFinite(rowHeights[selectedIndex])
+        ? rowHeights[selectedIndex]
+        : resolveFloorHeight(selectedRow, selectedIndex);
+
+    return { selectedHeight, rowHeights };
+};
+
+ApartmentsMode.prototype.beginFloorHeightTransition = function (_fromApartmentIndex, toApartmentIndex) {
+    if (this.isMobileUiLayout()) {
+        this.clearFloorHeightTransition();
+        return;
+    }
+
+    // Capture 'to' at the destination apartment's own camera yaw so the end state
+    // matches where the camera will settle, avoiding a wave after the transition.
+    const rows = this.getCurrentFloorRows?.() || [];
+    const selFloorIdx = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
+    const selRow = rows[selFloorIdx] || null;
+    const toAptIdx = Math.max(0, toApartmentIndex | 0);
+    const toApt = Array.isArray(selRow?.apartments) ? (selRow.apartments[toAptIdx] || null) : null;
+    const marker = this._selectedApartment;
+    const destYaw = isFinite(toApt?.camera?.yaw) ? toApt.camera.yaw
+        : isFinite(selRow?.camera?.yaw) ? selRow.camera.yaw
+        : isFinite(marker?.camera?.yaw) ? marker.camera.yaw
+        : isFinite(this.cameraYaw) ? this.cameraYaw
+        : null;
+    const toSnap = this._getFloorHeightsSnapshot(toAptIdx,
+        destYaw !== null ? { currentYaw: destYaw } : undefined
+    );
+    if (!toSnap) {
+        this.clearFloorHeightTransition();
+        return;
+    }
+
+    const durationRaw = Number(this.floorHeightTransitionDurationMs);
+    const duration = Math.max(120, isFinite(durationRaw) ? durationRaw : 700);
+    // fromOffsets is null; it will be initialized lazily on the first render frame
+    // using the actual item.lastY values and the then-current pixelsPerUnit.
+    // This avoids any jump caused by focusCameraForFloor changing the camera orbit
+    // target between this call and the first rendered frame.
+    this._floorHeightTransition = {
+        startTs: null,
+        durationMs: duration,
+        fromOffsets: null,
+        toApartmentIndex: toAptIdx,
+        to: toSnap
+    };
+    this._forceDomUpdate = true;
+    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
+        this.app.renderNextFrame = true;
+    }
+};
+
 
 ApartmentsMode.prototype.hideAllApartmentUi = function () {
+    this.clearFloorHeightTransition();
     for (let i = 0; i < this.apartmentsData.length; i++) {
         const item = this.apartmentsData[i];
         if (item?.style) item.style.display = 'none';
@@ -479,40 +740,56 @@ ApartmentsMode.prototype.hideAllApartmentUi = function () {
             item.lastY = NaN;
         }
     }
-    if (this.infoPanel) this.infoPanel.classList.remove('visible');
+    this.infoPanel?.classList.remove('visible');
+    this.endInfoPanelPlacement();
     if (this.mobilePanelEl) {
         this.mobilePanelEl.classList.remove('visible');
         this.mobilePanelEl.setAttribute('aria-hidden', 'true');
     }
-    if (this.mobilePanelScroll) this.mobilePanelScroll.replaceChildren();
+    this.mobilePanelScroll?.replaceChildren();
     this.closePlanPanel({ keepInfoHidden: true });
     this.updateInfoPanelNavState();
     this.hideFloorPanel();
+};
+
+ApartmentsMode.prototype.centerCameraToApartmentsHome = function () {
+    this.releaseCameraLock();
+    const orbit = this.getOrbit();
+    if (!orbit) return;
+
+    orbit.autoRotateMode = 1;
+    orbit.setLookAtOffset?.(0, 0, 0);
+    orbit.setLookAtVerticalAngle?.(0);
+    orbit.setAutoRotateEnabled?.(false);
+    orbit.autoRotateEnabled = false;
+    orbit.resetInteractionState?.();
+    if (this._homeTarget) orbit.focusOn?.(this._homeTarget);
+
+    this._forceDomUpdate = true;
+    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
+        this.app.renderNextFrame = true;
+    }
 };
 
 ApartmentsMode.prototype.enterMode = function (ctx) {
     this._active = true;
     const isRepeat = !!ctx?.meta?.repeat;
     if (isRepeat && this.isInfoPanelOpen()) this.closeInfoPanel();
-    this.releaseCameraLock();
-    const orbit = this.getOrbit();
-    if (orbit) {
-        orbit.autoRotateMode = 1;
-        orbit.setAutoRotateEnabled && orbit.setAutoRotateEnabled(false);
-        orbit.autoRotateEnabled = false;
-    }
+    this.centerCameraToApartmentsHome();
     this.ensureMainDataLoaded();
     this._forceDomUpdate = true;
     this._rectDirty = true;
     this.syncFloorPanelWidth();
     this.updateFloorPanelVisibility();
     this.updateDomPositions();
+    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) this.app.renderNextFrame = true;
 };
 
 ApartmentsMode.prototype.exitMode = function () {
     if (!this._active) return;
     this._active = false;
     this._selectionToken++;
+    this.clearFloorHeightTransition();
     this.cancelFloorAnimation();
     this.releaseCameraLock();
     this.hideAllApartmentUi();
@@ -529,11 +806,7 @@ ApartmentsMode.prototype.releaseCameraLock = function () {
 };
 
 ApartmentsMode.prototype.getLang = function () {
-    const appLang = window.AppLanguage;
-    if (appLang?.get) return appLang.get();
-    const raw = document.documentElement.getAttribute('lang') || navigator.language || 'en';
-    if (appLang?.normalize) return appLang.normalize(raw);
-    return String(raw).split('-')[0].toLowerCase() || 'en';
+    return window.AppLanguage?.get?.() ?? 'en';
 };
 
 ApartmentsMode.prototype.ensureMainDataLoaded = function () {
@@ -738,7 +1011,6 @@ ApartmentsMode.prototype.cancelFloorAnimation = function () {
 
 ApartmentsMode.prototype.updateInfoPanelPosition = function () {
     if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
-    if (!this._selectedApartment?.worldPos) return;
 
     const margin = isFinite(this.panelViewportMargin) ? this.panelViewportMargin : 12;
     const panelSize = this.getInfoPanelSize();
@@ -756,6 +1028,43 @@ ApartmentsMode.prototype.updateInfoPanelPosition = function () {
     this.infoPanel.style.setProperty('--apartments-panel-x', `${x}px`);
     this.infoPanel.style.setProperty('--apartments-panel-y', `${y}px`);
     this.updateFloorPanelPosition();
+};
+
+ApartmentsMode.prototype.scheduleInfoPanelReposition = function () {
+    if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
+    if (this._infoPanelRepositionTimer) {
+        clearTimeout(this._infoPanelRepositionTimer);
+        this._infoPanelRepositionTimer = 0;
+    }
+    this.markInfoPanelSizeDirty();
+    this.updateInfoPanelPosition();
+
+    if (typeof requestAnimationFrame !== 'function') return;
+    requestAnimationFrame(() => {
+        if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
+        this.markInfoPanelSizeDirty();
+        this.updateInfoPanelPosition();
+        requestAnimationFrame(() => {
+            if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
+            this.markInfoPanelSizeDirty();
+            this.updateInfoPanelPosition();
+            this._forceDomUpdate = true;
+        });
+    });
+
+    this._infoPanelRepositionTimer = setTimeout(() => {
+        this._infoPanelRepositionTimer = 0;
+        if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
+        this.markInfoPanelSizeDirty();
+        this.updateInfoPanelPosition();
+        this._forceDomUpdate = true;
+    }, 140);
+
+    this._infoPanelPlacementTimer = setTimeout(() => {
+        this._infoPanelPlacementTimer = 0;
+        if (!this.infoPanel) return;
+        this.infoPanel.classList.remove('is-placing');
+    }, 220);
 };
 
 ApartmentsMode.prototype.updateDomPositions = function () {
@@ -778,7 +1087,8 @@ ApartmentsMode.prototype.updateDomPositions = function () {
     if (this.apartmentsData.length) {
         window.PcScriptShared.updateDomPositions(this, this.apartmentsData, {
             activeCheck: true,
-            hideSelected: panelOpen ? (item) => item === this._selectedApartment : null
+            hideSelected: panelOpen ? (item) => item === this._selectedApartment : null,
+            transformSuffix: this.getDomTransformSuffix()
         });
     }
 
@@ -790,30 +1100,50 @@ ApartmentsMode.prototype.updateDomPositions = function () {
     }
 };
 
-ApartmentsMode.prototype._applyFloorItemPositions = function (fixedX, anchorTransform, getY) {
+ApartmentsMode.prototype._applyFloorItemPositions = function (fixedX, anchorTransform, getY, options) {
     const threshold = isFinite(this.screenVisibilityThreshold) ? this.screenVisibilityThreshold : 0.25;
+    const easeRaw = Number(options?.ease);
+    const ease = isFinite(easeRaw) ? Math.max(0.01, Math.min(1, easeRaw)) : 1;
+    let hasPending = false;
 
     for (let i = 0; i < this._floorItemsData.length; i++) {
         const item = this._floorItemsData[i];
         if (!item) continue;
 
-        const y = getY(item, i);
-        if (y === null) continue;
+        const targetY = getY(item, i);
+        if (targetY === null) continue;
 
         const needsReveal = !item.visible;
         if (needsReveal) { item.lastX = NaN; item.lastY = NaN; }
 
-        const dx = isNaN(item.lastX) ? Infinity : Math.abs(fixedX - item.lastX);
-        const dy = isNaN(item.lastY) ? Infinity : Math.abs(y - item.lastY);
+        const canSmooth = !needsReveal && ease < 0.999 && isFinite(item.lastX) && isFinite(item.lastY);
+        const nextX = canSmooth ? item.lastX + (fixedX - item.lastX) * ease : fixedX;
+        const nextY = canSmooth ? item.lastY + (targetY - item.lastY) * ease : targetY;
+
+        const dx = isNaN(item.lastX) ? Infinity : Math.abs(nextX - item.lastX);
+        const dy = isNaN(item.lastY) ? Infinity : Math.abs(nextY - item.lastY);
         if (dx > threshold || dy > threshold) {
-            item.style.transform = `translate3d(${fixedX}px, ${y}px, 0)${anchorTransform}`;
-            item.lastX = fixedX;
-            item.lastY = y;
+            item.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)${anchorTransform}`;
+            item.lastX = nextX;
+            item.lastY = nextY;
+        }
+
+        if (canSmooth) {
+            const remainX = Math.abs(fixedX - nextX);
+            const remainY = Math.abs(targetY - nextY);
+            if (remainX > threshold || remainY > threshold) hasPending = true;
         }
 
         if (needsReveal) {
             item.visible = true;
             item.style.display = 'block';
+        }
+    }
+
+    if (hasPending) {
+        this._forceDomUpdate = true;
+        if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
+            this.app.renderNextFrame = true;
         }
     }
 };
@@ -822,29 +1152,50 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
     if (!this._floorItemsData?.length) return;
 
     const total = this._floorItemsData.length;
+    const landscapeScale = this.getLandscapeUiScale();
+    const shouldScaleFloors = !this.isMobileUiLayout() && landscapeScale < 0.999;
+    const floorScaleSuffix = shouldScaleFloors ? ` scale(${landscapeScale})` : '';
+    const clampScale = (value, fallback) => {
+        const n = Number(value);
+        if (!isFinite(n)) return fallback;
+        return Math.max(0.05, Math.min(1.5, n));
+    };
+    const pickFinite = (values, fallback) => {
+        for (let i = 0; i < values.length; i++) {
+            const v = Number(values[i]);
+            if (isFinite(v)) return v;
+        }
+        return fallback;
+    };
+    const normalizeAngle = (deg) => ((((deg % 360) + 540) % 360) - 180);
+    const baseLandscapeHeightScale = shouldScaleFloors
+        ? clampScale(this.landscapeFloorHeightScale, landscapeScale)
+        : 1;
+    let landscapeHeightScale = baseLandscapeHeightScale;
+    const panelSize = this.getInfoPanelSize();
+    const panelWidth = panelSize.width || 320;
+    const floorGap = 52 * landscapeScale;
+    const panelRect =
+        this.infoPanel && this.infoPanel.classList.contains('visible')
+            ? this.infoPanel.getBoundingClientRect()
+            : null;
+    const panelLeftFromRect =
+        panelRect && Number.isFinite(panelRect.left) ? panelRect.left : NaN;
+    const panelLeftFallback = window.innerWidth * 0.5 - panelWidth * 0.5;
+    const panelLeft = Number.isFinite(panelLeftFromRect) ? panelLeftFromRect : panelLeftFallback;
 
-    if (this.isPortrait()) {
+    if (this.isMobileUiLayout()) {
         const fixedX = isFinite(this.mobileFloorLeftOffset) ? this.mobileFloorLeftOffset : 10;
         const stepY = 50;
         const centerOffsetY = isFinite(this.mobileFloorCenterOffset) ? this.mobileFloorCenterOffset : 50;
         const listHeight = Math.max(0, (total - 1) * stepY);
         const startY = window.innerHeight * 0.5 - listHeight * 0.5 - centerOffsetY;
 
-        this._applyFloorItemPositions(fixedX, ' translate(0, -50%)', (_item, i) =>
-            startY + (total - 1 - i) * stepY
-        );
-        return;
-    }
-
-    if (this.isSmallLandscape()) {
-        const panelWidth = (this.getInfoPanelSize().width || 320);
-        const fixedX = window.innerWidth * 0.5 - panelWidth * 0.5 - 23;
-        const stepY = 34;
-        const listHeight = Math.max(0, (total - 1) * stepY);
-        const startY = window.innerHeight * 0.5 - listHeight * 0.5;
-
-        this._applyFloorItemPositions(fixedX, ' translate(-100%, -50%)', (_item, i) =>
-            startY + (total - 1 - i) * stepY
+        this._applyFloorItemPositions(
+            fixedX,
+            ' translate(0, -50%)',
+            (_item, i) => startY + (total - 1 - i) * stepY,
+            { ease: 1 }
         );
         return;
     }
@@ -857,13 +1208,46 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
     const marker = this._selectedApartment;
     if (!marker?.worldPos) return;
 
-    const panelWidth = (this.getInfoPanelSize().width || 320);
-    const fixedX = window.innerWidth * 0.5 - panelWidth * 0.5 - 52;
+    const fixedX = panelLeft - floorGap;
 
-    const selectedIndex = Math.max(0, this._selectedFloorIndex);
-    const selectedItem = this._floorItemsData[selectedIndex];
-    const anchorPos = selectedItem?.worldPos || marker.worldPos;
+    const rows = this.getCurrentFloorRows?.() || [];
+    if (!rows.length) return;
+    const selectedIndex = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
+    const selectedApartmentIndex = Math.max(0, this._selectedApartmentIndex | 0);
 
+    if (shouldScaleFloors) {
+        const selectedRow = rows[selectedIndex] || null;
+        const apartments = Array.isArray(selectedRow?.apartments) ? selectedRow.apartments : [];
+        const selectedApartment = apartments[selectedApartmentIndex] || apartments[0] || null;
+        const baseYaw = pickFinite(
+            [
+                selectedApartment?.camera?.yaw,
+                selectedRow?.camera?.yaw,
+                this._selectedApartment?.camera?.yaw,
+                this.cameraYaw
+            ],
+            0
+        );
+        const orbit = this.getOrbit?.();
+        const currentYaw = pickFinite([orbit?.eulers?.y, orbit?.eulersTarget?.y], baseYaw);
+        const yawDelta = normalizeAngle(currentYaw - baseYaw);
+        const yawRange = Math.max(0.001, Math.abs(Number(this.cameraHorizontalRotateLimit || 20)));
+        const yawMix = Math.max(0, Math.min(1, Math.abs(yawDelta) / yawRange));
+        const leftScale = clampScale(this.landscapeFloorHeightScaleLeft, baseLandscapeHeightScale);
+        const rightScale = clampScale(this.landscapeFloorHeightScaleRight, baseLandscapeHeightScale);
+        const sideScale = yawDelta < 0 ? leftScale : rightScale;
+        landscapeHeightScale = baseLandscapeHeightScale + (sideScale - baseLandscapeHeightScale) * yawMix;
+    }
+
+    const baseSnapshot = this._getFloorHeightsSnapshot(selectedApartmentIndex);
+    if (!baseSnapshot) return;
+
+    const selectedHeight = Number(baseSnapshot.selectedHeight);
+    if (!isFinite(selectedHeight)) return;
+
+    // Compute anchor and pixelsPerUnit BEFORE any transition blend,
+    // so fromOffsets can be lazily initialised from item.lastY in the same scale.
+    const anchorPos = new pc.Vec3(marker.worldPos.x, selectedHeight, marker.worldPos.z);
     camera.worldToScreen(anchorPos, this._screenPos);
     if (!this._active || this._screenPos.z <= 0 ||
         !Number.isFinite(this._screenPos.x) || !Number.isFinite(this._screenPos.y)) {
@@ -878,14 +1262,80 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
         return;
     }
 
+    const panelCenterY = window.innerHeight * 0.5;
     const anchorScreenY = rect.top + this._screenPos.y;
     this._tempVec.set(anchorPos.x, anchorPos.y + 1.0, anchorPos.z);
     camera.worldToScreen(this._tempVec, this._screenPos);
     const pixelsPerUnit = anchorScreenY - (rect.top + this._screenPos.y);
-    const panelCenterY = window.innerHeight * 0.5;
+    if (!Number.isFinite(pixelsPerUnit) || Math.abs(pixelsPerUnit) < 1e-4) return;
 
-    this._applyFloorItemPositions(fixedX, ' translate(-100%, -50%)', (item) =>
-        item.worldPos ? panelCenterY + (anchorPos.y - item.worldPos.y) * pixelsPerUnit : null
+    let rowHeights = baseSnapshot.rowHeights;
+
+    const transition = this._floorHeightTransition;
+    if (transition) {
+        let justInitialized = false;
+        // Lazy init: capture fromOffsets on the first rendered frame after navigation.
+        // At this point focusCameraForFloor has already changed orbit focus, so
+        // pixelsPerUnit already reflects the new camera state - no jump.
+        if (!transition.fromOffsets) {
+            const offsets = new Array(rows.length);
+            for (let i = 0; i < rows.length; i++) {
+                const item = this._floorItemsData[i];
+                if (i === selectedIndex || !item || !isFinite(item.lastY)) {
+                    offsets[i] = 0;
+                } else {
+                    offsets[i] = (Number(item.lastY) - panelCenterY) / (pixelsPerUnit * landscapeHeightScale);
+                }
+            }
+            transition.fromOffsets = offsets;
+            transition.startTs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+            justInitialized = true;
+        }
+
+        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        const duration = Math.max(1, Number(transition.durationMs) || 1);
+        const tRaw = justInitialized
+            ? 0
+            : Math.max(0, Math.min(1, (now - Number(transition.startTs)) / duration));
+        const t = tRaw * tRaw * (3 - 2 * tRaw);
+
+        const toSelH = Number(transition.to.selectedHeight);
+        const toHeights = Array.isArray(transition.to.rowHeights) ? transition.to.rowHeights : [];
+        const fromOffsets = transition.fromOffsets;
+        const blendedHeights = new Array(rows.length);
+        for (let i = 0; i < rows.length; i++) {
+            if (i === selectedIndex) { blendedHeights[i] = selectedHeight; continue; }
+            const fromOff = Number(fromOffsets[i]);
+            const toOff = isFinite(toSelH) && isFinite(Number(toHeights[i])) ? toSelH - Number(toHeights[i]) : NaN;
+            if (isFinite(fromOff) && isFinite(toOff)) blendedHeights[i] = selectedHeight - (fromOff + (toOff - fromOff) * t);
+            else if (isFinite(toOff))   blendedHeights[i] = selectedHeight - toOff;
+            else if (isFinite(fromOff)) blendedHeights[i] = selectedHeight - fromOff;
+            else blendedHeights[i] = Number(rowHeights[i]);
+        }
+        rowHeights = blendedHeights;
+
+        if (tRaw >= 0.999) this._floorHeightTransition = null;
+        else {
+            this._forceDomUpdate = true;
+            if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
+                this.app.renderNextFrame = true;
+            }
+        }
+    }
+
+    const floorLerp = this._floorHeightTransition
+        ? 1
+        : Math.max(0.05, Math.min(1, Number(this.floorPositionLerp ?? 0.14)));
+    this._applyFloorItemPositions(
+        fixedX,
+        ` translate(-100%, -50%)${floorScaleSuffix}`,
+        (_item, i) => {
+            if (i === selectedIndex) return panelCenterY;
+            const rowHeight = Number(rowHeights[i]);
+            if (!isFinite(rowHeight)) return null;
+            return panelCenterY + (selectedHeight - rowHeight) * pixelsPerUnit * landscapeHeightScale;
+        },
+        { ease: floorLerp }
     );
 };
 
@@ -1090,12 +1540,22 @@ ApartmentsMode.prototype.updatePlanPanelContent = function () {
     if (this.planImage) this.planImage.alt = `${unitName} gallery image`;
 
     this.updateExpandedTabState(activeType);
-    if (this.expandedGalleryLabel) this.expandedGalleryLabel.textContent = `Gallery (${activeImages.length})`;
+    if (this.expandedGalleryLabel) {
+        const galleryLabel = window.AppLanguage?.getText?.(
+            'gallery_label',
+            'Gallery'
+        ) ?? 'Gallery';
+        this.expandedGalleryLabel.textContent = `${galleryLabel} (${activeImages.length})`;
+    }
     this.renderExpandedThumbs(activeImages, this._expandedGalleryIndex);
     this.renderExpandedMobileSlider(activeImages);
     this.updateExpandedGalleryVisuals();
 
     this.updatePlanPanelNavState();
+    this.updatePlanPanelLandscapeHeight();
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => this.updatePlanPanelLandscapeHeight());
+    }
 };
 
 ApartmentsMode.prototype.openPlanPanel = function () {
@@ -1105,6 +1565,14 @@ ApartmentsMode.prototype.openPlanPanel = function () {
         clearTimeout(this._planPanelCloseTimer);
         this._planPanelCloseTimer = 0;
     }
+    if (this._planNavPressTimers?.size) {
+        this._planNavPressTimers.forEach((timer) => clearTimeout(timer));
+        this._planNavPressTimers.clear();
+    }
+    if (this._infoPanelRepositionTimer) {
+        clearTimeout(this._infoPanelRepositionTimer);
+        this._infoPanelRepositionTimer = 0;
+    }
     this._expandedGalleryType = this._expandedGalleryType || 'street';
     this._expandedGalleryIndex = 0;
     this.updatePlanPanelContent();
@@ -1112,12 +1580,17 @@ ApartmentsMode.prototype.openPlanPanel = function () {
         this.infoPanel.classList.remove('visible');
         this.infoPanel.classList.remove('is-content-swapping');
     }
+    this.endInfoPanelPlacement();
     if (this.mobilePanelEl) {
         this.mobilePanelEl.classList.remove('visible');
         this.mobilePanelEl.setAttribute('aria-hidden', 'true');
     }
     this.planPanel.classList.add('visible');
     this.planPanel.setAttribute('aria-hidden', 'false');
+    this.updatePlanPanelLandscapeHeight();
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => this.updatePlanPanelLandscapeHeight());
+    }
     this.updateInfoPanelNavState();
     this.updateFloorPanelVisibility();
     this._forceDomUpdate = true;
@@ -1204,12 +1677,12 @@ ApartmentsMode.prototype.onDestroy = function () {
         this._planPanelCloseTimer = 0;
     }
 
-    if (this._unregisterMode) this._unregisterMode();
+    this._unregisterMode?.();
     if (this._fallbackModeHandlerBound) this.app.off('mode:change', this._onModeChangeFallback, this);
 
     this.unbindEvents();
     this.hideAllApartmentUi();
-    if (this._infoPanelResizeObserver) this._infoPanelResizeObserver.disconnect();
+    this._infoPanelResizeObserver?.disconnect();
 
     this.cameraEntity = null;
     this.apartmentsContainer = null;
@@ -1289,6 +1762,7 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._onScreenSwipePointerDown = null;
     this._onPanelSwipePointerMove = null;
     this._onPanelSwipePointerUp = null;
+    this._floorHeightTransition = null;
     this._panelSwapAnimTimer = 0;
     this._planPanelCloseTimer = 0;
     this._infoPanelResizeObserver = null;
@@ -1297,6 +1771,8 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._expandedGalleryType = 'street';
     this._expandedGalleryImages = null;
     this._expandedGalleryIndex = 0;
+    this._planNavPressTimers = null;
     this.cancelFloorAnimation = null;
     this._onModeChangeFallback = null;
 };
+

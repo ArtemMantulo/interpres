@@ -30,6 +30,10 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
     const qualityToggleWrap = document.getElementById('quality-toggle');
     const soundToggle = document.getElementById('sound');
     const soundToggleWrap = document.getElementById('sound-toggle');
+    const screenshotToggleWrap = document.getElementById('ui-screenshot-toggle');
+    const seasonToggleWrap = document.getElementById('ui-season-toggle');
+    const daytimeToggleWrap = document.getElementById('ui-daytime-toggle');
+    const projectionToggleWrap = document.getElementById('ui-projection-toggle');
     const fpsLockerWrap = document.getElementById('fps-locker');
 
     // Elements hidden when UI is toggled off.
@@ -47,7 +51,11 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
         document.getElementById('apartments-plan-panel'),
         fpsLockerWrap,
         qualityToggleWrap,
-        soundToggleWrap
+        soundToggleWrap,
+        screenshotToggleWrap,
+        seasonToggleWrap,
+        daytimeToggleWrap,
+        projectionToggleWrap
     ];
 
     // Debug-stats independent toggle — bottom-left corner tap zone
@@ -123,6 +131,10 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
         soundToggle.addEventListener('click', onSoundToggleClick);
         bindEvents(soundToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
     }
+    bindEvents(screenshotToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+    bindEvents(seasonToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+    bindEvents(daytimeToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+    bindEvents(projectionToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
     if (typeof onAppDestroy === 'function') {
         onAppDestroy(() => {
             if (hideUiToggle) {
@@ -137,6 +149,10 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
                 soundToggle.removeEventListener('click', onSoundToggleClick);
                 unbindEvents(soundToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
             }
+            unbindEvents(screenshotToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+            unbindEvents(seasonToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+            unbindEvents(daytimeToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+            unbindEvents(projectionToggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
         });
     }
 

@@ -1,7 +1,4 @@
-const PORTRAIT_MODE_PANEL_MEDIA =
-    '(max-height: 812px) and (orientation: portrait), ' +
-    '(max-width: 480px) and (orientation: portrait), ' +
-    '(max-aspect-ratio: 3/4) and (orientation: portrait)';
+const PORTRAIT_MODE_PANEL_MEDIA = '(pointer: coarse) and (max-width: 767px)';
 
 export function setupPortraitModePanelScroll(app, registerDestroy) {
     const container = document.querySelector('.mode-panel .panel-container');

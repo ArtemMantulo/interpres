@@ -35,7 +35,13 @@
             return { width: state.width || defaultWidth, height: state.height || defaultHeight };
         },
 
-        // options: { hideSelected(item) => bool, getPortraitOffset(item) => number, activeCheck: bool, transformSuffix: string }
+        // options: {
+        //   hideSelected(item) => bool,
+        //   getPortraitOffset(item) => number,
+        //   activeCheck: bool,
+        //   transformSuffix: string,
+        //   positionLerp: number (0..1), where 1 = no smoothing
+        // }
         updateDomPositions(ctx, dataList, options) {
             const camera = ctx.cameraEntity?.camera;
             const rect = ctx.getCanvasRect();
@@ -47,6 +53,9 @@
             const screenPos = ctx._screenPos;
             const threshold = isFinite(ctx.screenVisibilityThreshold) ? ctx.screenVisibilityThreshold : 0.25;
             const transformSuffix = options?.transformSuffix ?? (ctx.transformSuffix || ' translate(-50%, -50%)');
+            const lerpRaw = Number(options?.positionLerp);
+            const positionLerp = isFinite(lerpRaw) ? Math.max(0.01, Math.min(1, lerpRaw)) : 1;
+            let hasPending = false;
 
             for (let i = 0; i < dataList.length; i++) {
                 const item = dataList[i];
@@ -88,18 +97,34 @@
 
                 if (needsReveal) { item.lastX = NaN; item.lastY = NaN; }
 
-                const dx = isNaN(item.lastX) ? Infinity : Math.abs(x - item.lastX);
-                const dy = isNaN(item.lastY) ? Infinity : Math.abs(y - item.lastY);
+                const canSmooth = !needsReveal && positionLerp < 0.999 && isFinite(item.lastX) && isFinite(item.lastY);
+                const nextX = canSmooth ? item.lastX + (x - item.lastX) * positionLerp : x;
+                const nextY = canSmooth ? item.lastY + (y - item.lastY) * positionLerp : y;
+                const dx = isNaN(item.lastX) ? Infinity : Math.abs(nextX - item.lastX);
+                const dy = isNaN(item.lastY) ? Infinity : Math.abs(nextY - item.lastY);
 
                 if (dx > threshold || dy > threshold) {
-                    style.transform = `translate3d(${x}px, ${y}px, 0)${transformSuffix}`;
-                    item.lastX = x;
-                    item.lastY = y;
+                    style.transform = `translate3d(${nextX}px, ${nextY}px, 0)${transformSuffix}`;
+                    item.lastX = nextX;
+                    item.lastY = nextY;
+                }
+
+                if (canSmooth) {
+                    const remainX = Math.abs(x - nextX);
+                    const remainY = Math.abs(y - nextY);
+                    if (remainX > threshold || remainY > threshold) hasPending = true;
                 }
 
                 if (needsReveal) {
                     item.visible = true;
                     style.display = 'block';
+                }
+            }
+
+            if (hasPending) {
+                ctx._forceDomUpdate = true;
+                if (ctx.app && !ctx.app.autoRender && 'renderNextFrame' in ctx.app) {
+                    ctx.app.renderNextFrame = true;
                 }
             }
 
