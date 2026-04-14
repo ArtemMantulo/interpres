@@ -24,6 +24,9 @@
                     "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
                     "look": [7.6, -4.95],
                     "camera": { "pitch": 30, "yaw": -57  },
+                    "visual": "assets/models/apartments/Apt1_1_1.glb",
+                    "visual_position": [8.77, -0.5, -5.42],
+                    "visual_rotation": [0, -56, 0],
                     "floorHeightsByYaw": [[-0.75, -0.75], [-0.2, 0.25], [0.4, 0.75], [0.9, 1.2]],
                     "translations": {
                         "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
@@ -43,6 +46,9 @@
                     "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
                     "look": [8, -2.95],
                     "camera": { "pitch": 30, "yaw": -97 },
+                    "visual": "assets/models/apartments/Apt1_1_2.glb",
+                    "visual_position": [9.19, -0.5, -3.25],
+                    "visual_rotation": [0, -96, 0],
                     "floorHeightsByYaw": [[-0.75, -0.75], [-0.325, 0.3], [0.2, 0.85], [0.75, 1.35]],
                     "translations": {
                         "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
@@ -62,6 +68,9 @@
                     "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
                     "look": [8.55, -0.4],
                     "camera": { "pitch": 30, "yaw": -60 },
+                    "visual": "assets/models/apartments/Apt1_1_3.glb",
+                    "visual_position": [9.73, -0.5, -1.23],
+                    "visual_rotation": [0, -56, 0],
                     "floorHeightsByYaw": [[-0.75, -0.75], [-0.1, 1], [0.5, 1.45], [1, 1.9]],
                     "translations": {
                         "en": { "name": "Apartments 3", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
@@ -81,6 +90,9 @@
                     "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
                     "look": [10.65, 1.25],
                     "camera": { "pitch": 30, "yaw": -12 },
+                    "visual": "assets/models/apartments/Apt1_1_4.glb",
+                    "visual_position": [11.63, -0.5, 0.2],
+                    "visual_rotation": [0, -16, 0],
                     "floorHeightsByYaw": [[-0.75, -0.75], [0.25, 1.35], [0.8, 1.85], [1.3, 2.35]],
                     "translations": {
                         "en": { "name": "Apartments 4", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
@@ -100,6 +112,9 @@
                     "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
                     "look": [12.25, 2.65],
                     "camera": { "pitch": 30, "yaw": -59 },
+                    "visual": "assets/models/apartments/Apt1_1_5.glb",
+                    "visual_position": [13.45, -0.5, 1.87],
+                    "visual_rotation": [0, -56, 0],
                     "floorHeightsByYaw": [[-0.75, -0.75], [-0.35, 0.45], [0.15, 0.95], [0.65, 1.45]],
                     "translations": {
                         "en": { "name": "Apartments 5", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },

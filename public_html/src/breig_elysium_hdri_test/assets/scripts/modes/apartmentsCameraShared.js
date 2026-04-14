@@ -59,7 +59,7 @@
             }
         }
         orbit.setLookAtVerticalAngle && orbit.setLookAtVerticalAngle(getLookVerticalAngle(ctx));
-        orbit.setDistanceLimits && orbit.setDistanceLimits(dist, dist);
+        orbit.setDistanceLimits && orbit.setDistanceLimits(dist, dist, false);
         orbit.distanceTarget = dist;
 
         if (orbit.eulersTarget) orbit.eulersTarget.set(pitch, yaw);
@@ -121,7 +121,7 @@
         orbit.autoRotateEnabled = false;
         orbit.autoRotateMode = 1;
 
-        orbit.setDistanceLimits && orbit.setDistanceLimits(dist, dist);
+        orbit.setDistanceLimits && orbit.setDistanceLimits(dist, dist, false);
         orbit.distanceTarget = dist;
         if (orbit.eulersTarget) orbit.eulersTarget.set(pitch, yaw);
 

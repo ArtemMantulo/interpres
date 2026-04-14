@@ -1,7 +1,7 @@
 const ORIGINAL_RENDER = Symbol('fpslocker:originalRender');
 
 export function createFpsLocker(app, options = {}) {
-    const { toggleElementId = 'fps30', cappedFps = 30, shouldRender = null } = options;
+    const { toggleElementId = 'fps30', cappedFps = 30, shouldRender = null, renderGate = null } = options;
 
     const state = {
         active: false,
@@ -9,7 +9,9 @@ export function createFpsLocker(app, options = {}) {
         frameMs: 1000 / Math.max(1, cappedFps),
         nextTime: 0,
         rafId: 0,
-        renderFrameCounter: 0
+        renderFrameCounter: 0,
+        renderTicket: 0,
+        consumedRenderTicket: 0
     };
 
     const toggleEl = toggleElementId ? document.getElementById(toggleElementId) : null;
@@ -24,11 +26,15 @@ export function createFpsLocker(app, options = {}) {
             state.fps = cappedFps;
             state.frameMs = 1000 / Math.max(1, cappedFps);
             state.nextTime = performance.now() + state.frameMs;
+            state.renderTicket = 0;
+            state.consumedRenderTicket = 0;
 
             if (!document.hidden) state.rafId = requestAnimationFrame(loop);
         } else {
             if (state.rafId) cancelAnimationFrame(state.rafId);
             state.rafId = 0;
+            state.renderTicket = 0;
+            state.consumedRenderTicket = 0;
         }
 
         if (toggleEl) {
@@ -53,6 +59,7 @@ export function createFpsLocker(app, options = {}) {
 
         const allow = typeof shouldRender === 'function' ? shouldRender() : true;
         if (allow) {
+            state.renderTicket++;
             if ('renderNextFrame' in app) app.renderNextFrame = true;
             else app.render();
         }
@@ -67,6 +74,12 @@ export function createFpsLocker(app, options = {}) {
     if (!app[ORIGINAL_RENDER]) {
         app[ORIGINAL_RENDER] = app.render.bind(app);
         app.render = function () {
+            const allowedByGate = typeof renderGate === 'function' ? !!renderGate() : true;
+            if (!allowedByGate) return;
+            if (state.active) {
+                if (state.consumedRenderTicket >= state.renderTicket) return;
+                state.consumedRenderTicket = state.renderTicket;
+            }
             state.renderFrameCounter++;
             return app[ORIGINAL_RENDER]();
         };

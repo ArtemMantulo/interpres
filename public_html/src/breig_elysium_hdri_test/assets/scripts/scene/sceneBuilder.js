@@ -10,7 +10,7 @@ import {
     AMENITIES_SETTINGS
 } from '../config.js';
 import { setGsplatBudgetCompat } from '../utils/functions.js';
-import { ensureWaterLayer } from './environment.js';
+import { ensureApartmentsLayer, ensureWaterLayer } from './environment.js';
 
 export function applyRevealSettings(r) {
     const s = REVEAL_SETTINGS;
@@ -62,10 +62,13 @@ export function createScene(app, { assets, fpsLockerState, shouldRender }) {
     });
 
     const waterLayer = ensureWaterLayer(app);
+    const apartmentsLayer = ensureApartmentsLayer(app);
     if (cameraEntity.camera) {
         const waterLayerId = waterLayer?.id;
+        const apartmentsLayerId = apartmentsLayer?.id;
         const layers = [pc.LAYERID_SKYBOX, pc.LAYERID_WORLD];
         if (waterLayerId !== undefined) layers.push(waterLayerId);
+        if (apartmentsLayerId !== undefined) layers.push(apartmentsLayerId);
         cameraEntity.camera.layers = layers;
     }
     cameraEntity.addComponent('script');
@@ -149,5 +152,11 @@ export function createScene(app, { assets, fpsLockerState, shouldRender }) {
     app.root.addChild(root);
     applySceneGsplatSettings(app);
 
-    return { gsplatComponent: gsplatEntity.gsplat, orbit, reveal, waterMaterial, waterEntityRef };
+    return {
+        gsplatComponent: gsplatEntity.gsplat,
+        orbit,
+        reveal,
+        waterMaterial,
+        waterEntityRef
+    };
 }

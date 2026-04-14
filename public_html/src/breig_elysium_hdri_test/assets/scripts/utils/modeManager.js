@@ -1,10 +1,4 @@
-const ACTIVATE_KEYS = new Set(['Enter', ' ']);
-
-const isActivateKey = (e) => {
-    if (!e) return false;
-    if (ACTIVATE_KEYS.has(e.key)) return true;
-    return e.key === 'Spacebar';
-};
+const isActivateKey = (e) => window.UiKeys?.isActivateKey?.(e) ?? false;
 
 export function createModeManager(app, options = {}) {
     const {
@@ -85,15 +79,6 @@ export function createModeManager(app, options = {}) {
         if (nextController?.enter) nextController.enter({ fromMode: prev, toMode: next, app, meta });
 
         notify(next, prev, meta.source);
-        return true;
-    };
-
-    const setModeSilently = (nextMode) => {
-        const next = String(nextMode ?? '');
-        if (!next || state.mode === next) return false;
-        state.prevMode = state.mode;
-        state.mode = next;
-        updateButtons();
         return true;
     };
 
@@ -187,7 +172,6 @@ export function createModeManager(app, options = {}) {
         getMode,
         getPreviousMode,
         setMode,
-        setModeSilently,
         restorePreviousMode,
         subscribe,
         registerMode,

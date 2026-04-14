@@ -301,6 +301,7 @@
     overflow-y: hidden;
     gap: 10px;
     padding-left: 16px;
+    padding-right: 16px;
     width: 100%;
     align-items: center;
     scrollbar-width: none;
@@ -493,6 +494,7 @@
     align-items: normal;
     direction: ltr;
     text-align: left;
+    overflow-x: hidden;
 }
 
 #apartments-expanded-title {
@@ -880,6 +882,9 @@
         max-height: calc(100vh - 84px - 58px);
         max-height: calc(100dvh - 84px - 58px);
         overflow-y: auto;
+        overflow-x: hidden;
+        touch-action: pan-y;
+        overscroll-behavior-x: none;
         height: auto;
         scrollbar-width: none;
         -ms-overflow-style: none;

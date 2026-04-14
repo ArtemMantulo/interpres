@@ -14,6 +14,29 @@ export function ensureWaterLayer(app) {
     return layer;
 }
 
+export function ensureApartmentsLayer(app) {
+    const layers = app.scene.layers;
+    let layer = layers.getLayerByName ? layers.getLayerByName('apartments') : null;
+    if (!layer) {
+        layer = new pc.Layer({ name: 'apartments' });
+        const list = layers.layerList || layers.layers || layers._layers || [];
+        const insertIdx = Array.isArray(list) ? list.length : 0;
+        if (layers.insert) layers.insert(layer, insertIdx);
+        else if (layers.addLayer) layers.addLayer(layer);
+        else if (Array.isArray(list)) list.splice(insertIdx, 0, layer);
+    }
+
+    // Keep overlays above world while preserving proper per-pixel depth inside this layer.
+    layer.clearColorBuffer = false;
+    layer.clearDepthBuffer = true;
+    layer.clearStencilBuffer = false;
+    if (typeof pc !== 'undefined' && pc.SORTMODE_FRONT2BACK !== undefined) {
+        layer.transparentSortMode = pc.SORTMODE_FRONT2BACK;
+    }
+
+    return layer;
+}
+
 export function fadeInWater(app, waterMaterial, waterEntityRef, duration = 1000) {
     if (!waterMaterial) return;
     if (waterEntityRef) waterEntityRef.enabled = true;

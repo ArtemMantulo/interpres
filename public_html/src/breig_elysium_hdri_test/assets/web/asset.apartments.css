@@ -119,21 +119,22 @@
     pointer-events: none;
 }
 
-.floor-panel-item:hover,
+.floor-panel-item:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
 .floor-panel-item:focus-visible,
 .floor-panel-item.active {
     width: 80px;
     background-color: rgba(36, 36, 36, 0.48);
 }
 
-.floor-panel-item:hover .floor-panel-item-label,
 .floor-panel-item:focus-visible .floor-panel-item-label,
 .floor-panel-item.active .floor-panel-item-label {
     opacity: 1;
     transform: translateX(0);
 }
 
-.floor-panel-item:hover .floor-panel-item-number,
 .floor-panel-item:focus-visible .floor-panel-item-number,
 .floor-panel-item.active .floor-panel-item-number {
     opacity: 0;

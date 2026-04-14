@@ -576,12 +576,14 @@ OrbitCamera.prototype.lerpAngle = function (a, b, t) {
     return a + d * t;
 };
 
-OrbitCamera.prototype.setDistanceLimits = function (min, max) {
+OrbitCamera.prototype.setDistanceLimits = function (min, max, snapCurrent = true) {
     this.minDistance = min;
     this.maxDistance = max;
     this.distanceLockStrict = Math.abs((Number(max) || 0) - (Number(min) || 0)) <= 1e-6;
     this.distanceTarget = pc.math.clamp(this.distanceTarget, min, max);
-    this.distance = pc.math.clamp(this.distance, min, max);
+    if (snapCurrent) {
+        this.distance = pc.math.clamp(this.distance, min, max);
+    }
 };
 
 OrbitCamera.prototype.clearDistanceLock = function () {

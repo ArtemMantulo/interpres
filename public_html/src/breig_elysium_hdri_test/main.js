@@ -26,6 +26,7 @@ import { setupUiToggles } from './assets/scripts/ui/uiToggles.js';
 import { setupPortraitModePanelScroll } from './assets/scripts/ui/portraitModePanel.js';
 import { fadeInWater, applySkyboxInfinite } from './assets/scripts/scene/environment.js';
 import { createScene, applyStartSettings } from './assets/scripts/scene/sceneBuilder.js';
+import { createApartmentOverlayPulse } from './assets/scripts/modes/apartmentOverlayPulse.js';
 import {
     GSPLATS_ON_SCREEN_THRESHOLD,
     ASSET_PROGRESS_WEIGHT,
@@ -105,12 +106,16 @@ let waterMaterial = null;
 let waterEntityRef = null;
 let ambientAudio = null;
 
+const overlayPulse = createApartmentOverlayPulse(app, { getOrbit: () => orbit });
+onAppDestroy(() => overlayPulse.destroy());
+
 const shouldRender = () => {
     if (pageHidden) return false;
     if (gateActive) return true;
     if (warmupFrames > 0) { warmupFrames--; return true; }
     if (reveal && reveal.enabled) return true;
     if (appState.homeMarkerActive) return true;
+    if (overlayPulse.isActive()) return true;
     if (!orbit) return true;
     return orbit.movedThisFrame || orbit.isUserInteracting();
 };
@@ -118,7 +123,8 @@ const shouldRender = () => {
 const fpsLocker = createFpsLocker(app, {
     toggleElementId: FPS_LOCKER_SETTINGS.toggleElementId,
     cappedFps: FPS_LOCKER_SETTINGS.cappedFps,
-    shouldRender
+    shouldRender,
+    renderGate: overlayPulse.renderGate
 });
 onAppDestroy(() => fpsLocker?.destroy?.());
 
@@ -235,8 +241,10 @@ async function startApp() {
             warmupFrames = RENDER_SETTINGS.warmupFrames;
 
             const onUpdate = () => {
-                if (!shouldRender()) return;
+                overlayPulse.update();
+
                 if (fpsLocker.state.active) return;
+                if (!shouldRender()) return;
                 if ('renderNextFrame' in app) app.renderNextFrame = true;
                 else app.render();
             };

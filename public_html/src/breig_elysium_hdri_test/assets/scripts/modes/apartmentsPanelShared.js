@@ -56,6 +56,7 @@
         ctx._selectedApartmentIndex = nextIndex;
         syncMobileCardSelection(ctx, nextIndex);
         scrollMobileCardIntoView(ctx, nextIndex);
+        ctx.syncSelectedVisualOverlay?.();
 
         if (focusCamera) ctx.focusCameraForFloor(ctx._selectedFloorIndex);
         if (ctx.isPlanPanelOpen?.()) ctx.updatePlanPanelContent?.();
@@ -192,6 +193,7 @@
         ctx._selectedApartmentIndex = nextIdx;
         const apt = apts[nextIdx];
         ctx.applyPanelContent(ctx._selectedApartment, { ...row, ...apt });
+        ctx.syncSelectedVisualOverlay?.();
         ctx.focusCameraForFloor(floorIndex);
         ctx.scheduleInfoPanelReposition?.();
         if (ctx.isPlanPanelOpen?.()) ctx.updatePlanPanelContent?.();
@@ -204,6 +206,7 @@
         ctx._selectedApartment = null;
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
+        ctx.clearSelectedVisualOverlay?.();
         ctx.clearFloorHeightTransition?.();
         ctx.updateFloorPanelVisibility();
     };
@@ -236,6 +239,7 @@
         if (!rows.length) {
             ctx.applyPanelContent(entry, null);
             ctx.openInfoPanel();
+            ctx.syncSelectedVisualOverlay?.();
             ctx.focusCameraForFloor(-1);
             ctx.updateFloorPanelVisibility();
             if (shouldAnimatePanelSwap) ctx.triggerInfoPanelSwapAnimation();
@@ -252,6 +256,7 @@
             ctx._selectedFloorIndex = -1;
             ctx.applyPanelContent(ctx._selectedApartment, null);
             ctx.openInfoPanel();
+            ctx.syncSelectedVisualOverlay?.();
             ctx.focusCameraForFloor(-1);
             ctx.updateFloorPanelSelection(false);
             ctx.updateFloorPanelVisibility();
@@ -266,6 +271,7 @@
         const row = rows[next];
         ctx.applyPanelContent(ctx._selectedApartment, row);
         ctx.openInfoPanel();
+        ctx.syncSelectedVisualOverlay?.();
         ctx.focusCameraForFloor(next);
         ctx.scheduleInfoPanelReposition?.();
         ctx.updateFloorPanelSelection(true);
@@ -327,6 +333,7 @@
         ctx._selectedApartment = null;
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
+        ctx.clearSelectedVisualOverlay?.();
         ctx.clearFloorHeightTransition?.();
         ctx.clearFloorPanelItems();
         ctx.hideFloorPanel();

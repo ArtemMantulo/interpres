@@ -44,6 +44,13 @@
         }
         return hasValid ? out : null;
     };
+    const normalizeVec3 = (value) => {
+        if (!Array.isArray(value) || value.length < 3) return null;
+        const x = parseFloat(value[0]);
+        const y = parseFloat(value[1]);
+        const z = parseFloat(value[2]);
+        return isFinite(x) && isFinite(y) && isFinite(z) ? [x, y, z] : null;
+    };
 
     const parseData = (json, lang) => {
         const items = Array.isArray(json) ? json : [json];
@@ -95,6 +102,9 @@
                         aptItem.floorHeightsYaw20 ||
                         aptItem.floorHeightsLR
                     );
+                    const visual = String(aptItem.visual || '').trim();
+                    const visualPosition = normalizeVec3(aptItem.visual_position ?? aptItem.visualPosition);
+                    const visualRotation = normalizeVec3(aptItem.visual_rotation ?? aptItem.visualRotation);
                     return {
                         name: String(aptT.name || '').trim(),
                         area: String(aptItem.area || '').trim(),
@@ -108,6 +118,9 @@
                         interior: aptItem.interior || null,
                         view: aptItem.view || null,
                         street: aptItem.street || null,
+                        visual: visual || '',
+                        visualPosition,
+                        visualRotation,
                         look: Array.isArray(aptItem.look) && aptItem.look.length >= 2 ? aptItem.look : null,
                         camera: aptItem.camera || null,
                         floorHeightByYaw,
@@ -133,6 +146,9 @@
                     interior: apt0.interior || null,
                     view: apt0.view || null,
                     street: apt0.street || null,
+                    visual: apt0.visual || '',
+                    visualPosition: apt0.visualPosition || null,
+                    visualRotation: apt0.visualRotation || null,
                     look: apt0.look || null,
                     camera: apt0.camera || null,
                     floorHeightByYaw: apt0.floorHeightByYaw || null,

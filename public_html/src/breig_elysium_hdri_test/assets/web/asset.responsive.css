@@ -229,9 +229,12 @@
     }
 
     #debug-stats {
-        bottom: 80px;
+        bottom: 160px;
     }
 
+    #debug-stats-trigger {
+        bottom: 160px;
+    }
     .amenities {
         height: 40px;
         --amenities-text-max-width: calc(100vw - 40px);
@@ -333,5 +336,3 @@
         height: 165px;
     }
 }
-
-

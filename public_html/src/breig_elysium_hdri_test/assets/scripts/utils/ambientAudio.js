@@ -65,12 +65,6 @@ export function createAmbientAudio(audioPath, { volume = 0.3, loop = true, fadeI
         fadeOut(fadeDuration);
     }
 
-    function setVolume(vol) {
-        const newVolume = Math.max(0, Math.min(1, vol));
-        currentVolume = newVolume;
-        audio.volume = newVolume;
-    }
-
     function destroy() {
         if (fadeInterval) clearInterval(fadeInterval);
         audio.pause();
@@ -80,7 +74,6 @@ export function createAmbientAudio(audioPath, { volume = 0.3, loop = true, fadeI
     return {
         play,
         stop,
-        setVolume,
         destroy,
         get audio() { return audio; }
     };

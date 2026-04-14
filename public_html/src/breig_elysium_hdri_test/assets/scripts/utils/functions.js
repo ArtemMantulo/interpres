@@ -1,7 +1,7 @@
 export const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export const clamp01 = (value) => {
-    if (!isFinite(value) || isNaN(value)) return 0;
+    if (!isFinite(value)) return 0;
     return value < 0 ? 0 : value > 1 ? 1 : value;
 };
 
