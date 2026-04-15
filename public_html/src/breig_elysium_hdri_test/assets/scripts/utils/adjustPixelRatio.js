@@ -1,4 +1,4 @@
-var AdjustPixelRatio = pc.createScript('adjustPixelRatio');
+const AdjustPixelRatio = pc.createScript('adjustPixelRatio');
 
 AdjustPixelRatio.attributes.add('scaleMobile', { type: 'number', default: 0.6 });
 AdjustPixelRatio.attributes.add('scalePC', { type: 'number', default: 1 });

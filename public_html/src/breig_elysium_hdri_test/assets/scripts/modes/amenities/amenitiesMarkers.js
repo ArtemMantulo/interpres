@@ -21,7 +21,10 @@
         }
 
         fetch(url)
-            .then((r) => r.json())
+            .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+                return r.json();
+            })
             .then(process)
             .catch((err) => {
                 if (token !== ctx._dataLoadToken) return;
@@ -90,7 +93,7 @@
         ctx._forceDomUpdate = true;
         updateDomPositions(ctx);
 
-        if (ctx.app && !ctx.app.autoRender && 'renderNextFrame' in ctx.app) ctx.app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(ctx.app);
     };
 
     const updateDomPositions = (ctx) => {

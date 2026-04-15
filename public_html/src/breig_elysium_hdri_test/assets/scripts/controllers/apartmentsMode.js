@@ -1,68 +1,4 @@
-const APARTMENTS_OUTLINE_LAYER_NAME = 'apartments-outline-mask';
-const APARTMENTS_OUTLINE_RT_NAME = 'ApartmentOutlineMaskRT';
-const APARTMENTS_OUTLINE_THICKNESS_DESKTOP = 2;
-const APARTMENTS_OUTLINE_THICKNESS_MOBILE = 2;
-
-class ApartmentsOutlineEffect extends pc.PostEffect {
-    constructor(graphicsDevice, thickness) {
-        super(graphicsDevice);
-        const kernel = Math.max(1, Math.min(10, Math.round(thickness || 1)));
-        const fragment = `
-            #define THICKNESS ${kernel}
-            uniform float uWidth;
-            uniform float uHeight;
-            uniform vec4 uOutlineCol;
-            uniform sampler2D uColorBuffer;
-            uniform sampler2D uOutlineTex;
-            varying vec2 vUv0;
-            float maskValue(vec4 c) {
-                return c.r;
-            }
-            void main(void) {
-                vec4 baseColor = texture2D(uColorBuffer, vUv0);
-                float center = maskValue(texture2D(uOutlineTex, vUv0));
-                float outline = 0.0;
-                if (center < 0.01) {
-                    for (int x = -THICKNESS; x <= THICKNESS; x++) {
-                        for (int y = -THICKNESS; y <= THICKNESS; y++) {
-                            vec2 offset = vec2(float(x) / uWidth, float(y) / uHeight);
-                            float sampleMask = maskValue(texture2D(uOutlineTex, vUv0 + offset));
-                            outline = max(outline, step(0.01, sampleMask));
-                        }
-                    }
-                }
-                gl_FragColor = mix(baseColor, uOutlineCol, outline * uOutlineCol.a);
-            }
-        `;
-        this.shader = pc.ShaderUtils.createShader(graphicsDevice, {
-            uniqueName: `ApartmentsOutlineShader${kernel}`,
-            attributes: { aPosition: pc.SEMANTIC_POSITION },
-            vertexGLSL: pc.PostEffect.quadVertexShader,
-            fragmentGLSL: fragment
-        });
-        this.color = new pc.Color(0.25, 0.95, 0.35, 0.9);
-        this.texture = null;
-        this._outlineColorData = new Float32Array(4);
-    }
-
-    render(inputTarget, outputTarget, rect) {
-        const scope = this.device.scope;
-        this._outlineColorData[0] = this.color.r;
-        this._outlineColorData[1] = this.color.g;
-        this._outlineColorData[2] = this.color.b;
-        this._outlineColorData[3] = this.color.a;
-        const maskW = this.texture?.width || inputTarget.width;
-        const maskH = this.texture?.height || inputTarget.height;
-        scope.resolve('uWidth').setValue(maskW);
-        scope.resolve('uHeight').setValue(maskH);
-        scope.resolve('uOutlineCol').setValue(this._outlineColorData);
-        scope.resolve('uColorBuffer').setValue(inputTarget.colorBuffer);
-        scope.resolve('uOutlineTex').setValue(this.texture);
-        this.drawQuad(outputTarget, this.shader, rect);
-    }
-}
-
-var ApartmentsMode = pc.createScript('apartmentsMode');
+const ApartmentsMode = pc.createScript('apartmentsMode');
 
 const APARTMENTS_MODE_ID = window.AppModeIds?.APARTMENTS ?? '1';
 
@@ -144,6 +80,8 @@ ApartmentsMode.prototype.initialize = function () {
     this._floorShared = window.ApartmentsFloorShared || null;
     this._panelShared = window.ApartmentsPanelShared || null;
     this._swipeShared = window.ApartmentsSwipeShared || null;
+    this._visualShared = window.ApartmentsVisualShared || null;
+    this._expandedShared = window.ApartmentsExpandedShared || null;
     this._unregisterMode = null;
     this._fallbackModeHandlerBound = false;
 
@@ -199,6 +137,8 @@ ApartmentsMode.prototype.initialize = function () {
     this._infoPanelRepositionTimer = 0;
     this._infoPanelPlacementTimer = 0;
     this._planNavPressTimers = new Map();
+    this._mobileCenterSyncRaf = 0;
+    this._onMobileCenterScrollSync = null;
 
     this._onContainerClick = this.onContainerClick.bind(this);
     this._onContainerKeyDown = this.onContainerKeyDown.bind(this);
@@ -539,6 +479,20 @@ ApartmentsMode.prototype.getPanelShared = function () {
     return this._panelShared;
 };
 
+ApartmentsMode.prototype.getVisualShared = function () {
+    if (!this._visualShared && window.ApartmentsVisualShared) {
+        this._visualShared = window.ApartmentsVisualShared;
+    }
+    return this._visualShared;
+};
+
+ApartmentsMode.prototype.getExpandedShared = function () {
+    if (!this._expandedShared && window.ApartmentsExpandedShared) {
+        this._expandedShared = window.ApartmentsExpandedShared;
+    }
+    return this._expandedShared;
+};
+
 ApartmentsMode.prototype.getOrbit = function () {
     return window.PcScriptShared.getOrbit(this);
 };
@@ -802,9 +756,7 @@ ApartmentsMode.prototype.beginFloorHeightTransition = function (_fromApartmentIn
         to: toSnap
     };
     this._forceDomUpdate = true;
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
-        this.app.renderNextFrame = true;
-    }
+    window.PcScriptShared?.requestRenderFrame?.(this.app);
 };
 
 
@@ -846,9 +798,7 @@ ApartmentsMode.prototype.centerCameraToApartmentsHome = function () {
     if (this._homeTarget) orbit.focusOn?.(this._homeTarget);
 
     this._forceDomUpdate = true;
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
-        this.app.renderNextFrame = true;
-    }
+    window.PcScriptShared?.requestRenderFrame?.(this.app);
 };
 
 ApartmentsMode.prototype.enterMode = function (ctx) {
@@ -862,7 +812,7 @@ ApartmentsMode.prototype.enterMode = function (ctx) {
     this.syncFloorPanelWidth();
     this.updateFloorPanelVisibility();
     this.updateDomPositions();
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) this.app.renderNextFrame = true;
+    window.PcScriptShared?.requestRenderFrame?.(this.app);
 };
 
 ApartmentsMode.prototype.exitMode = function () {
@@ -1125,34 +1075,31 @@ ApartmentsMode.prototype.scheduleInfoPanelReposition = function () {
         clearTimeout(this._infoPanelRepositionTimer);
         this._infoPanelRepositionTimer = 0;
     }
-    this.markInfoPanelSizeDirty();
-    this.updateInfoPanelPosition();
 
-    if (typeof requestAnimationFrame !== 'function') return;
-    requestAnimationFrame(() => {
-        if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
+    const recalc = () => {
+        if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return false;
         this.markInfoPanelSizeDirty();
         this.updateInfoPanelPosition();
+        return true;
+    };
+
+    recalc();
+
+    if (typeof requestAnimationFrame === 'function') {
         requestAnimationFrame(() => {
-            if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
-            this.markInfoPanelSizeDirty();
-            this.updateInfoPanelPosition();
-            this._forceDomUpdate = true;
+            if (!recalc()) return;
+            requestAnimationFrame(() => { if (recalc()) this._forceDomUpdate = true; });
         });
-    });
+    }
 
     this._infoPanelRepositionTimer = setTimeout(() => {
         this._infoPanelRepositionTimer = 0;
-        if (!this.infoPanel || !this.infoPanel.classList.contains('visible')) return;
-        this.markInfoPanelSizeDirty();
-        this.updateInfoPanelPosition();
-        this._forceDomUpdate = true;
+        if (recalc()) this._forceDomUpdate = true;
     }, 140);
 
     this._infoPanelPlacementTimer = setTimeout(() => {
         this._infoPanelPlacementTimer = 0;
-        if (!this.infoPanel) return;
-        this.infoPanel.classList.remove('is-placing');
+        if (this.infoPanel) this.infoPanel.classList.remove('is-placing');
     }, 220);
 };
 
@@ -1231,9 +1178,7 @@ ApartmentsMode.prototype._applyFloorItemPositions = function (fixedX, anchorTran
 
     if (hasPending) {
         this._forceDomUpdate = true;
-        if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
-            this.app.renderNextFrame = true;
-        }
+        window.PcScriptShared?.requestRenderFrame?.(this.app);
     }
 };
 
@@ -1401,9 +1346,7 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
         if (tRaw >= 0.999) this._floorHeightTransition = null;
         else {
             this._forceDomUpdate = true;
-            if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
-                this.app.renderNextFrame = true;
-            }
+            window.PcScriptShared?.requestRenderFrame?.(this.app);
         }
     }
 
@@ -1440,679 +1383,95 @@ ApartmentsMode.prototype.getSelectedApartmentData = function () {
 };
 
 ApartmentsMode.prototype.getOrCreateVisualLayerId = function () {
-    if (isFinite(this._visualLayerId)) return this._visualLayerId;
-    const layers = this.app?.scene?.layers;
-    if (!layers) return NaN;
-
-    const layer = layers.getLayerByName ? layers.getLayerByName('apartments') : null;
-    if (!layer) return NaN;
-
-    this._visualLayerId = layer.id;
-    return this._visualLayerId;
+    return this.getVisualShared()?.getOrCreateVisualLayerId?.(this) ?? NaN;
 };
 
 ApartmentsMode.prototype.getOrCreateVisualOutlineMaskLayerId = function () {
-    if (isFinite(this._visualOutlineMaskLayerId)) return this._visualOutlineMaskLayerId;
-    const layers = this.app?.scene?.layers;
-    if (!layers) return NaN;
-
-    let layer = layers.getLayerByName ? layers.getLayerByName(APARTMENTS_OUTLINE_LAYER_NAME) : null;
-    if (!layer) {
-        layer = new pc.Layer({ name: APARTMENTS_OUTLINE_LAYER_NAME });
-        const list = layers.layerList || layers.layers || layers._layers || [];
-        const insertIdx = Array.isArray(list) ? list.length : 0;
-        if (layers.insert) layers.insert(layer, insertIdx);
-        else if (layers.addLayer) layers.addLayer(layer);
-        else if (Array.isArray(list)) list.splice(insertIdx, 0, layer);
-    }
-
-    layer.clearColorBuffer = true;
-    layer.clearDepthBuffer = true;
-    layer.clearStencilBuffer = false;
-    this._visualOutlineMaskLayer = layer;
-    this._visualOutlineMaskLayerId = layer.id;
-    return this._visualOutlineMaskLayerId;
+    return this.getVisualShared()?.getOrCreateVisualOutlineMaskLayerId?.(this) ?? NaN;
 };
 
 ApartmentsMode.prototype.createVisualOutlineRenderTarget = function () {
-    const device = this.app?.graphicsDevice;
-    if (!device) return null;
-    const width = Math.max(1, device.width | 0);
-    const height = Math.max(1, device.height | 0);
-    const texture = new pc.Texture(device, {
-        name: APARTMENTS_OUTLINE_RT_NAME,
-        width,
-        height,
-        format: pc.PIXELFORMAT_R8,
-        mipmaps: false,
-        minFilter: pc.FILTER_LINEAR,
-        magFilter: pc.FILTER_LINEAR
-    });
-    const rt = new pc.RenderTarget({
-        colorBuffer: texture,
-        depth: true,
-        stencil: false
-    });
-    this._visualOutlineRtTexture = texture;
-    this._visualOutlineRt = rt;
-    return rt;
+    return this.getVisualShared()?.createVisualOutlineRenderTarget?.(this) ?? null;
 };
 
 ApartmentsMode.prototype.destroyVisualOutlineRenderTarget = function () {
-    const rt = this._visualOutlineRt;
-    const texture = this._visualOutlineRtTexture;
-    if (this._visualOutlineRt) {
-        this._visualOutlineRt.destroy();
-        this._visualOutlineRt = null;
-    }
-    if (texture && texture !== rt?.colorBuffer) {
-        texture.destroy();
-    }
-    this._visualOutlineRtTexture = null;
+    this.getVisualShared()?.destroyVisualOutlineRenderTarget?.(this);
 };
 
 ApartmentsMode.prototype.ensureVisualOutlineRenderTargetSize = function () {
-    if (!this._visualOutlineCamera?.camera || !this._visualOutlineEffect) return;
-    const device = this.app?.graphicsDevice;
-    if (!device) return;
-    const nextW = Math.max(1, device.width | 0);
-    const nextH = Math.max(1, device.height | 0);
-    const currentW = this._visualOutlineRtTexture?.width || 0;
-    const currentH = this._visualOutlineRtTexture?.height || 0;
-    if (currentW === nextW && currentH === nextH && this._visualOutlineRt) return;
-
-    this.destroyVisualOutlineRenderTarget();
-    const rt = this.createVisualOutlineRenderTarget();
-    if (!rt) return;
-    this._visualOutlineCamera.camera.renderTarget = rt;
-    this._visualOutlineEffect.texture = rt.colorBuffer;
+    this.getVisualShared()?.ensureVisualOutlineRenderTargetSize?.(this);
 };
 
 ApartmentsMode.prototype.ensureVisualOutlinePipeline = function () {
-    const mainCamera = this.cameraEntity?.camera;
-    if (!mainCamera || !mainCamera.postEffects) return false;
-
-    if (!this._visualOutlineCamera) {
-        const layerId = this.getOrCreateVisualOutlineMaskLayerId();
-        if (!isFinite(layerId)) return false;
-        const rt = this.createVisualOutlineRenderTarget();
-        if (!rt) return false;
-
-        const outlineCameraEntity = new pc.Entity('ApartmentsOutlineCamera');
-        outlineCameraEntity.addComponent('camera', {
-            clearColor: new pc.Color(0, 0, 0, 0),
-            projection: mainCamera.projection,
-            fov: mainCamera.fov,
-            nearClip: mainCamera.nearClip,
-            farClip: mainCamera.farClip,
-            priority: (mainCamera.priority | 0) - 1,
-            layers: [layerId],
-            renderTarget: rt
-        });
-        outlineCameraEntity.enabled = false;
-        this.cameraEntity.addChild(outlineCameraEntity);
-        this._visualOutlineCamera = outlineCameraEntity;
-    }
-
-    if (!this._visualOutlineEffect) {
-        this._visualOutlineEffect = new ApartmentsOutlineEffect(
-            this.app.graphicsDevice,
-            (window.AppDetect?.isMobile?.() ? APARTMENTS_OUTLINE_THICKNESS_MOBILE : APARTMENTS_OUTLINE_THICKNESS_DESKTOP)
-        );
-        this._visualOutlineEffect.texture = this._visualOutlineRt?.colorBuffer || null;
-        this._visualOutlineEffect.color = new pc.Color(0.25, 0.95, 0.35, 0.92);
-    }
-
-    const outlineCamera = this._visualOutlineCamera?.camera;
-    if (outlineCamera) {
-        outlineCamera.projection = mainCamera.projection;
-        outlineCamera.fov = mainCamera.fov;
-        outlineCamera.nearClip = mainCamera.nearClip;
-        outlineCamera.farClip = mainCamera.farClip;
-    }
-
-    this.ensureVisualOutlineRenderTargetSize();
-    return true;
+    return this.getVisualShared()?.ensureVisualOutlinePipeline?.(this) ?? false;
 };
 
 ApartmentsMode.prototype.setVisualOutlineActive = function (active) {
-    if (this._visualOutlineCamera) {
-        this._visualOutlineCamera.enabled = !!active;
-    }
-
-    if (active) {
-        if (this._visualOutlineEffect) {
-            this._visualOutlineEffect.color.a = 0.92;
-        }
-        const mainCamera = this.cameraEntity?.camera;
-        if (
-            !this._visualOutlineEffectAttached &&
-            mainCamera?.postEffects &&
-            this._visualOutlineEffect
-        ) {
-            mainCamera.postEffects.addEffect(this._visualOutlineEffect);
-            this._visualOutlineEffectAttached = true;
-        }
-    } else {
-        const mainCamera = this.cameraEntity?.camera;
-        if (
-            this._visualOutlineEffectAttached &&
-            mainCamera?.postEffects &&
-            this._visualOutlineEffect
-        ) {
-            mainCamera.postEffects.removeEffect(this._visualOutlineEffect);
-            this._visualOutlineEffectAttached = false;
-        }
-        if (this._visualOutlineEffect) {
-            this._visualOutlineEffect.color.a = 0;
-        }
-    }
+    this.getVisualShared()?.setVisualOutlineActive?.(this, active);
 };
 
 ApartmentsMode.prototype.destroyVisualOutlinePipeline = function () {
-    const mainCamera = this.cameraEntity?.camera;
-    if (this._visualOutlineEffectAttached && mainCamera?.postEffects && this._visualOutlineEffect) {
-        mainCamera.postEffects.removeEffect(this._visualOutlineEffect);
-    }
-    this._visualOutlineEffectAttached = false;
-    this._visualOutlineEffect = null;
-
-    if (this._visualOutlineCamera) {
-        if (this._visualOutlineCamera.parent) {
-            this._visualOutlineCamera.parent.removeChild(this._visualOutlineCamera);
-        }
-        this._visualOutlineCamera.destroy();
-        this._visualOutlineCamera = null;
-    }
-
-    this.destroyVisualOutlineRenderTarget();
-    this._visualOutlineMaskLayer = null;
-    this._visualOutlineMaskLayerId = NaN;
+    this.getVisualShared()?.destroyVisualOutlinePipeline?.(this);
 };
 
 ApartmentsMode.prototype.getVisualMaterial = function () {
-    if (this._visualMaterial) return this._visualMaterial;
-    const mat = new pc.StandardMaterial();
-    mat.useLighting = false;
-    mat.useFog = false;
-    mat.useSkybox = false;
-    mat.diffuse = new pc.Color(0.25, 0.95, 0.35);
-    mat.emissive = new pc.Color(0.25, 0.95, 0.35);
-    mat.blendType = pc.BLEND_NORMAL;
-    mat.opacity = 0.7;
-    mat.depthTest = true;
-    mat.depthWrite = true;
-    mat.update();
-    this._visualMaterial = mat;
-    return mat;
+    return this.getVisualShared()?.getVisualMaterial?.(this) ?? null;
 };
 
 ApartmentsMode.prototype.applyVisualStyleToEntity = function (entity, materialOverride) {
-    if (!entity) return;
-    const layerId = this.getOrCreateVisualLayerId();
-    const material = materialOverride || this.getVisualMaterial();
-    const renderers = entity.findComponents('render');
-    renderers.forEach((renderer) => {
-        renderer.meshInstances.forEach((mi) => {
-            mi.material = material;
-        });
-        if (isFinite(layerId)) renderer.layers = [layerId];
-    });
-    if (entity.render && !renderers.includes(entity.render)) {
-        entity.render.meshInstances.forEach((mi) => {
-            mi.material = material;
-        });
-        if (isFinite(layerId)) entity.render.layers = [layerId];
-    }
+    this.getVisualShared()?.applyVisualStyleToEntity?.(this, entity, materialOverride);
 };
 
 ApartmentsMode.prototype.addLayerToEntityRenderers = function (entity, layerId) {
-    if (!entity || !isFinite(layerId)) return;
-    const renderers = entity.findComponents('render');
-    renderers.forEach((renderer) => {
-        const current = Array.isArray(renderer.layers) ? renderer.layers.slice() : [];
-        if (!current.includes(layerId)) renderer.layers = current.concat([layerId]);
-    });
-    if (entity.render && !renderers.includes(entity.render)) {
-        const current = Array.isArray(entity.render.layers) ? entity.render.layers.slice() : [];
-        if (!current.includes(layerId)) entity.render.layers = current.concat([layerId]);
-    }
+    this.getVisualShared()?.addLayerToEntityRenderers?.(this, entity, layerId);
 };
 
 ApartmentsMode.prototype.getOrCreateVisualAsset = function (url) {
-    const src = String(url || '').trim();
-    if (!src) return null;
-    if (this._visualAssetCache.has(src)) return this._visualAssetCache.get(src);
-
-    let asset = this.app.assets.find(src, 'container');
-    if (!asset) {
-        asset = new pc.Asset(`apartment-visual:${src}`, 'container', { url: src });
-        this.app.assets.add(asset);
-    }
-
-    this._visualAssetCache.set(src, asset);
-    return asset;
+    return this.getVisualShared()?.getOrCreateVisualAsset?.(this, url) ?? null;
 };
 
 ApartmentsMode.prototype.loadVisualAsset = function (url, done) {
-    const asset = this.getOrCreateVisualAsset(url);
-    if (!asset) {
-        done?.(null);
-        return;
-    }
-
-    if (asset.resource) {
-        done?.(asset);
-        return;
-    }
-
-    const onLoad = (loadedAsset) => {
-        if (loadedAsset !== asset) return;
-        cleanup();
-        done?.(asset);
-    };
-
-    const onError = (_err, failedAsset) => {
-        if (failedAsset !== asset) return;
-        cleanup();
-        console.warn('Apartment visual load failed:', asset?.file?.url || url);
-        done?.(null);
-    };
-
-    const cleanup = () => {
-        this.app.assets.off('load', onLoad);
-        this.app.assets.off('error', onError);
-    };
-
-    this.app.assets.on('load', onLoad);
-    this.app.assets.on('error', onError);
-    this.app.assets.load(asset);
+    this.getVisualShared()?.loadVisualAsset?.(this, url, done);
 };
 
 ApartmentsMode.prototype.destroyVisualEntity = function () {
-    if (this._visualOutlineEntity) {
-        if (this._visualOutlineEntity.parent) this._visualOutlineEntity.parent.removeChild(this._visualOutlineEntity);
-        this._visualOutlineEntity.destroy();
-        this._visualOutlineEntity = null;
-    }
-    if (!this._visualEntity) return;
-    if (this._visualEntity.parent) this._visualEntity.parent.removeChild(this._visualEntity);
-    this._visualEntity.destroy();
-    this._visualEntity = null;
+    this.getVisualShared()?.destroyVisualEntity?.(this);
 };
 
 ApartmentsMode.prototype.clearSelectedVisualOverlay = function () {
-    this._visualLoadToken++;
-    this._visualActiveKey = '';
-    this.destroyVisualEntity();
-    this.setVisualOutlineActive(false);
-    this.app.fire('apartments:visualMaterial', null);
+    this.getVisualShared()?.clearSelectedVisualOverlay?.(this);
 };
 
 ApartmentsMode.prototype.syncSelectedVisualOverlay = function () {
-    if (!this._active || !this._selectedApartment) {
-        this.clearSelectedVisualOverlay();
-        return;
-    }
-
-    const apt = this.getSelectedApartmentData();
-    const visual = String(apt?.visual || '').trim();
-    const position = apt?.visualPosition;
-    const rotation = apt?.visualRotation;
-
-    const validPosition =
-        Array.isArray(position) &&
-        position.length >= 3 &&
-        isFinite(position[0]) &&
-        isFinite(position[1]) &&
-        isFinite(position[2]);
-    const validRotation =
-        Array.isArray(rotation) &&
-        rotation.length >= 3 &&
-        isFinite(rotation[0]) &&
-        isFinite(rotation[1]) &&
-        isFinite(rotation[2]);
-
-    if (!visual || !validPosition || !validRotation) {
-        this.clearSelectedVisualOverlay();
-        return;
-    }
-
-    if (!this.ensureVisualOutlinePipeline()) {
-        this.clearSelectedVisualOverlay();
-        return;
-    }
-
-    const key = `${visual}|${position[0]},${position[1]},${position[2]}|${rotation[0]},${rotation[1]},${rotation[2]}`;
-    if (key === this._visualActiveKey && this._visualEntity) return;
-
-    const token = ++this._visualLoadToken;
-    this._visualActiveKey = key;
-    this.destroyVisualEntity();
-    this.setVisualOutlineActive(false);
-
-    this.loadVisualAsset(visual, (asset) => {
-        if (token !== this._visualLoadToken) return;
-        if (!asset?.resource) {
-            this.clearSelectedVisualOverlay();
-            return;
-        }
-
-        const entity = asset.resource.instantiateRenderEntity();
-        entity.name = 'ApartmentVisualCurrent';
-        entity.setLocalPosition(position[0], position[1], position[2]);
-        entity.setEulerAngles(rotation[0], rotation[1], rotation[2]);
-        this.applyVisualStyleToEntity(entity, this.getVisualMaterial());
-        const outlineMaskLayerId = this.getOrCreateVisualOutlineMaskLayerId();
-        this.addLayerToEntityRenderers(entity, outlineMaskLayerId);
-
-        this.entity.addChild(entity);
-        this._visualEntity = entity;
-        this.setVisualOutlineActive(true);
-        this.app.fire('apartments:visualMaterial', this.getVisualMaterial());
-
-        this._forceDomUpdate = true;
-        if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app) {
-            this.app.renderNextFrame = true;
-        }
-    });
+    this.getVisualShared()?.syncSelectedVisualOverlay?.(this);
 };
 
 ApartmentsMode.prototype.getPlanImageUrl = function (apartmentData) {
-    return (
-        apartmentData?.planImageUrl ||
-        apartmentData?.planImage ||
-        apartmentData?.imageUrl ||
-        'assets/images/pictures/pic_loading.png'
-    );
-};
-
-ApartmentsMode.prototype.normalizeGalleryImages = function (value) {
-    if (!value) return [];
-    if (typeof value === 'string') {
-        const src = value.trim();
-        return src ? [src] : [];
-    }
-    if (Array.isArray(value)) {
-        const out = [];
-        for (let i = 0; i < value.length; i++) {
-            const item = String(value[i] || '').trim();
-            if (item) out.push(item);
-        }
-        return out;
-    }
-    return [];
-};
-
-ApartmentsMode.prototype.uniqueImageList = function (list) {
-    const source = Array.isArray(list) ? list : [];
-    const out = [];
-    const seen = new Set();
-    for (let i = 0; i < source.length; i++) {
-        const src = String(source[i] || '').trim();
-        if (!src || seen.has(src)) continue;
-        seen.add(src);
-        out.push(src);
-    }
-    return out;
-};
-
-ApartmentsMode.prototype.getExpandedGallerySets = function (apartmentData) {
-    const gallery = apartmentData?.gallery && typeof apartmentData.gallery === 'object'
-        ? apartmentData.gallery
-        : null;
-
-    const fallback = this.uniqueImageList(
-        this.normalizeGalleryImages(apartmentData?.galleryImages)
-            .concat(this.normalizeGalleryImages(apartmentData?.images))
-            .concat(this.normalizeGalleryImages(apartmentData?.imageUrl))
-    );
-
-    const sets = {
-        interior: this.uniqueImageList(
-            this.normalizeGalleryImages(apartmentData?.interiorImages)
-                .concat(this.normalizeGalleryImages(apartmentData?.interior))
-                .concat(this.normalizeGalleryImages(gallery?.interior))
-        ),
-        view: this.uniqueImageList(
-            this.normalizeGalleryImages(apartmentData?.viewImages)
-                .concat(this.normalizeGalleryImages(apartmentData?.view))
-                .concat(this.normalizeGalleryImages(gallery?.view))
-        ),
-        street: this.uniqueImageList(
-            this.normalizeGalleryImages(apartmentData?.streetImages)
-                .concat(this.normalizeGalleryImages(apartmentData?.street))
-                .concat(this.normalizeGalleryImages(gallery?.street))
-        )
-    };
-
-    const fallbackSet = fallback.length ? fallback : ['assets/images/pictures/pic_loading.png'];
-    if (!sets.interior.length) sets.interior = fallbackSet.slice();
-    if (!sets.view.length) sets.view = fallbackSet.slice();
-    if (!sets.street.length) sets.street = fallbackSet.slice();
-    return sets;
-};
-
-ApartmentsMode.prototype.updateExpandedTabState = function (activeType) {
-    if (!this.expandedTabs?.length) return;
-    for (let i = 0; i < this.expandedTabs.length; i++) {
-        const tab = this.expandedTabs[i];
-        const isActive = String(tab.dataset.galleryType || '') === activeType;
-        tab.classList.toggle('is-active', isActive);
-        tab.classList.toggle('active', isActive);
-        tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-    }
-};
-
-ApartmentsMode.prototype.renderExpandedThumbs = function (images, activeIndex) {
-    if (!this.expandedThumbs) return;
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < images.length; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `apartments-expanded-thumb${i === activeIndex ? ' is-active' : ''}`;
-        btn.dataset.galleryIndex = String(i);
-
-        const img = document.createElement('img');
-        img.src = images[i];
-        img.alt = `Gallery ${i + 1}`;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        btn.appendChild(img);
-        fragment.appendChild(btn);
-    }
-    this.expandedThumbs.replaceChildren(fragment);
-};
-
-ApartmentsMode.prototype.renderExpandedMobileSlider = function (images) {
-    if (!this.expandedMobileSlider) return;
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < images.length; i++) {
-        const slide = document.createElement('div');
-        slide.className = 'apartments-expanded-mobile-slide';
-        const img = document.createElement('img');
-        img.src = images[i];
-        img.alt = `Gallery ${i + 1}`;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        slide.appendChild(img);
-        fragment.appendChild(slide);
-    }
-    this.expandedMobileSlider.replaceChildren(fragment);
+    return this.getExpandedShared()?.getPlanImageUrl?.(this, apartmentData) ?? 'assets/images/pictures/pic_loading.png';
 };
 
 ApartmentsMode.prototype.updateExpandedGalleryVisuals = function () {
-    if (!this.planImage || !this._expandedGalleryImages.length) return;
-    const idx = Math.max(0, Math.min(this._expandedGalleryImages.length - 1, this._expandedGalleryIndex | 0));
-    this._expandedGalleryIndex = idx;
-    const src = this._expandedGalleryImages[idx] || 'assets/images/pictures/pic_loading.png';
-    this.planImage.src = src;
-
-    if (this.expandedThumbs) {
-        const thumbs = this.expandedThumbs.querySelectorAll('[data-gallery-index]');
-        for (let i = 0; i < thumbs.length; i++) {
-            thumbs[i].classList.toggle('is-active', i === idx);
-        }
-    }
+    this.getExpandedShared()?.updateExpandedGalleryVisuals?.(this);
 };
 
 ApartmentsMode.prototype.updatePlanPanelNavState = function () {
-    const floorRow = this.getSelectedFloorRow();
-    const aptCount = floorRow?.apartments?.length || 0;
-    const hasNav = aptCount > 1;
-    const setState = (el) => {
-        if (!el) return;
-        el.disabled = !hasNav;
-        el.style.opacity = hasNav ? '1' : '0.45';
-        el.style.pointerEvents = hasNav ? 'auto' : 'none';
-    };
-    setState(this.planPrevDesktop);
-    setState(this.planNextDesktop);
-    setState(this.planPrevMobile);
-    setState(this.planNextMobile);
+    this.getExpandedShared()?.updatePlanPanelNavState?.(this);
 };
 
 ApartmentsMode.prototype.updatePlanPanelContent = function () {
-    if (!this._selectedApartment) return;
-    const apartmentData = this.getSelectedApartmentData();
-    if (!apartmentData) return;
-
-    const markerTitle = this._selectedApartment?.title || 'Apartments';
-    const unitName = apartmentData?.name || markerTitle;
-    const floorWord = window.AppLanguage?.getText?.('floor', 'Floor') ?? 'Floor';
-    const floorLabel = apartmentData?.floorRaw ? `${floorWord} ${apartmentData.floorRaw}` : `${floorWord} -`;
-    const area = apartmentData?.area || '-';
-    const bedrooms = apartmentData?.bedrooms || '-';
-    const availability = apartmentData?.availability || '-';
-    const description = apartmentData?.description || '';
-    const gallerySets = this.getExpandedGallerySets(apartmentData);
-    const activeType = gallerySets[this._expandedGalleryType] ? this._expandedGalleryType : 'street';
-    const activeImages = gallerySets[activeType];
-    this._expandedGalleryType = activeType;
-    this._expandedGalleryImages = activeImages;
-    this._expandedGalleryIndex = Math.max(
-        0,
-        Math.min(activeImages.length - 1, this._expandedGalleryIndex | 0)
-    );
-
-    if (this.planTitle) this.planTitle.textContent = `${unitName}, ${floorLabel}`;
-    if (this.planArea) this.planArea.textContent = area;
-    if (this.planBedrooms) this.planBedrooms.textContent = bedrooms;
-    if (this.planAvailability) this.planAvailability.textContent = availability;
-    if (this.planDescription) this.planDescription.textContent = description;
-    if (this.planImage) this.planImage.alt = `${unitName} gallery image`;
-
-    this.updateExpandedTabState(activeType);
-    if (this.expandedGalleryLabel) {
-        const galleryLabel = window.AppLanguage?.getText?.(
-            'gallery_label',
-            'Gallery'
-        ) ?? 'Gallery';
-        this.expandedGalleryLabel.textContent = `${galleryLabel} (${activeImages.length})`;
-    }
-    this.renderExpandedThumbs(activeImages, this._expandedGalleryIndex);
-    this.renderExpandedMobileSlider(activeImages);
-    this.updateExpandedGalleryVisuals();
-
-    this.updatePlanPanelNavState();
-    this.updatePlanPanelLandscapeHeight();
-    if (typeof requestAnimationFrame === 'function') {
-        requestAnimationFrame(() => this.updatePlanPanelLandscapeHeight());
-    }
+    this.getExpandedShared()?.updatePlanPanelContent?.(this);
 };
 
 ApartmentsMode.prototype.openPlanPanel = function () {
-    if (!this.planPanel || !this._selectedApartment) return;
-    if (!this.getSelectedApartmentData()) return;
-    if (this._planPanelCloseTimer) {
-        clearTimeout(this._planPanelCloseTimer);
-        this._planPanelCloseTimer = 0;
-    }
-    if (this._planNavPressTimers?.size) {
-        this._planNavPressTimers.forEach((timer) => clearTimeout(timer));
-        this._planNavPressTimers.clear();
-    }
-    if (this._infoPanelRepositionTimer) {
-        clearTimeout(this._infoPanelRepositionTimer);
-        this._infoPanelRepositionTimer = 0;
-    }
-    this._expandedGalleryType = this._expandedGalleryType || 'street';
-    this._expandedGalleryIndex = 0;
-    this.updatePlanPanelContent();
-    if (this.infoPanel) {
-        this.infoPanel.classList.remove('visible');
-        this.infoPanel.classList.remove('is-content-swapping');
-    }
-    this.endInfoPanelPlacement();
-    if (this.mobilePanelEl) {
-        this.mobilePanelEl.classList.remove('visible');
-        this.mobilePanelEl.setAttribute('aria-hidden', 'true');
-    }
-    this.planPanel.classList.add('visible');
-    this.planPanel.setAttribute('aria-hidden', 'false');
-    this.updatePlanPanelLandscapeHeight();
-    if (typeof requestAnimationFrame === 'function') {
-        requestAnimationFrame(() => this.updatePlanPanelLandscapeHeight());
-    }
-    this.updateInfoPanelNavState();
-    this.updateFloorPanelVisibility();
-    this._forceDomUpdate = true;
-    this.updateDomPositions();
+    this.getExpandedShared()?.openPlanPanel?.(this);
 };
 
 ApartmentsMode.prototype.closePlanPanel = function (options) {
-    if (!this.planPanel) return;
-    if (this._planPanelCloseTimer) {
-        clearTimeout(this._planPanelCloseTimer);
-        this._planPanelCloseTimer = 0;
-    }
-    this.planPanel.classList.remove('visible');
-    this.planPanel.setAttribute('aria-hidden', 'true');
-    if (options?.keepInfoHidden) {
-        this.updateFloorPanelVisibility();
-        this._forceDomUpdate = true;
-        this.updateDomPositions();
-        return;
-    }
-    if (!this._active || !this._selectedApartment) return;
-    const reopenInfoPanel = () => {
-        if (!this._active || !this._selectedApartment || this.isPlanPanelOpen()) return;
-        this.openInfoPanel();
-        this.updateFloorPanelVisibility();
-        this._forceDomUpdate = true;
-        this.updateDomPositions();
-    };
-    if (this.isPortrait()) {
-        this._planPanelCloseTimer = setTimeout(() => {
-            this._planPanelCloseTimer = 0;
-            reopenInfoPanel();
-        }, 280);
-        return;
-    }
-    reopenInfoPanel();
+    this.getExpandedShared()?.closePlanPanel?.(this, options);
 };
 
 ApartmentsMode.prototype.navigatePlanSelection = function (step) {
-    const floorRow = this.getSelectedFloorRow();
-    const apartments = floorRow?.apartments;
-    if (!apartments || apartments.length < 2) return;
-
-    const direction = step < 0 ? -1 : 1;
-
-    if (this.isPortrait()) {
-        const total = apartments.length;
-        let nextIdx = (this._selectedApartmentIndex || 0) + direction;
-        if (nextIdx < 0) nextIdx = total - 1;
-        else if (nextIdx >= total) nextIdx = 0;
-        this._selectedApartmentIndex = nextIdx;
-        this.applyPanelContent(this._selectedApartment, floorRow);
-        this.syncSelectedVisualOverlay();
-        this.focusCameraForFloor(this._selectedFloorIndex);
-        this.updatePlanPanelContent();
-        return;
-    }
-
-    this.navigateSelectedApartment(direction);
+    this.getExpandedShared()?.navigatePlanSelection?.(this, step);
 };
 
 ApartmentsMode.prototype.postUpdate = function (dt) {
@@ -2146,6 +1505,14 @@ ApartmentsMode.prototype.onDestroy = function () {
 
     this.unbindEvents();
     this.hideAllApartmentUi();
+    if (this.mobilePanelScroll && this._onMobileCenterScrollSync) {
+        this.mobilePanelScroll.removeEventListener('scroll', this._onMobileCenterScrollSync);
+    }
+    if (this._mobileCenterSyncRaf) {
+        cancelAnimationFrame(this._mobileCenterSyncRaf);
+        this._mobileCenterSyncRaf = 0;
+    }
+    this._onMobileCenterScrollSync = null;
     this.destroyVisualOutlinePipeline();
     this._infoPanelResizeObserver?.disconnect();
 
@@ -2200,6 +1567,8 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._floorShared = null;
     this._panelShared = null;
     this._swipeShared = null;
+    this._visualShared = null;
+    this._expandedShared = null;
     this._unregisterMode = null;
     this._visualLayerId = NaN;
     this._visualActiveKey = '';
@@ -2251,6 +1620,8 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._expandedGalleryImages = null;
     this._expandedGalleryIndex = 0;
     this._planNavPressTimers = null;
+    this._mobileCenterSyncRaf = 0;
+    this._onMobileCenterScrollSync = null;
     this.cancelFloorAnimation = null;
     this._onModeChangeFallback = null;
 };

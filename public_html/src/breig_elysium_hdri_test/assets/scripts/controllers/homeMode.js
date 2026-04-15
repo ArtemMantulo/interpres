@@ -1,4 +1,4 @@
-var HomeMode = pc.createScript('homeMode');
+const HomeMode = pc.createScript('homeMode');
 
 HomeMode.attributes.add('planeName', { type: 'string', default: 'Plane' });
 HomeMode.attributes.add('markerTextureUrl', {
@@ -370,38 +370,39 @@ HomeMode.prototype.onHomeCanvasClick = function (clientX, clientY) {
     orbit.focusOn && orbit.focusOn(this._homeClickTarget);
     this.showMarker(hit, normal);
 
-    if (this.app && !this.app.autoRender && 'renderNextFrame' in this.app)
-        this.app.renderNextFrame = true;
+    window.PcScriptShared?.requestRenderFrame?.(this.app);
 };
 
 HomeMode.prototype.update = function (dt) {
     if (!this._markerActive || !this._marker) return;
 
+    // Marker animation phases: grow → settle → hold → bump → shrink
+    const GROW    = 0.3;   // scale 0 → peak
+    const SETTLE  = 0.1;   // scale peak → 1
+    const HOLD    = 1.0;   // hold at scale 1
+    const BUMP    = 0.1;   // scale 1 → peak
+    const SHRINK  = 0.3;   // scale peak → 0
+    const PEAK    = 1.1;   // overshoot multiplier
+    const TOTAL   = GROW + SETTLE + HOLD + BUMP + SHRINK;
+
     this._markerTimer += dt;
     const t = this._markerTimer;
-    const t0 = 0.3;
-    const t1 = 0.1;
-    const t2 = 1;
-    const t3 = 0.1;
-    const t4 = 0.3;
-    const totalDuration = t0 + t1 + t2 + t3 + t4;
 
-    if (t >= totalDuration) {
+    if (t >= TOTAL) {
         this._marker.enabled = false;
         this._markerActive = false;
         this._setHomeMarkerActive(false);
         return;
     }
 
-    const peak = 1.1;
     let factor = 1;
-    if (t < t0) factor = pc.math.lerp(0, peak, t / t0);
-    else if (t < t0 + t1) factor = pc.math.lerp(peak, 1, (t - t0) / t1);
-    else if (t < t0 + t1 + t2) factor = 1;
-    else if (t < t0 + t1 + t2 + t3)
-        factor = pc.math.lerp(1, peak, (t - t0 - t1 - t2) / t3);
+    if (t < GROW) factor = pc.math.lerp(0, PEAK, t / GROW);
+    else if (t < GROW + SETTLE) factor = pc.math.lerp(PEAK, 1, (t - GROW) / SETTLE);
+    else if (t < GROW + SETTLE + HOLD) factor = 1;
+    else if (t < GROW + SETTLE + HOLD + BUMP)
+        factor = pc.math.lerp(1, PEAK, (t - GROW - SETTLE - HOLD) / BUMP);
     else
-        factor = pc.math.lerp(peak, 0, (t - t0 - t1 - t2 - t3) / t4);
+        factor = pc.math.lerp(PEAK, 0, (t - GROW - SETTLE - HOLD - BUMP) / SHRINK);
 
     const base = this._markerScale || this._markerSize || 3;
     const scale = base * factor;

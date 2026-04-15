@@ -79,7 +79,7 @@ export function setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, 
                 !hidden && el.id === 'floor-panel' && el.getAttribute('aria-hidden') === 'true';
             el.classList.toggle('hidden', hidden || forceHidden || keepHiddenByState);
         }
-        if (app && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(app);
     };
 
     const setHideUiState = (hidden) => {

@@ -11,7 +11,7 @@ export function createApartmentOverlayPulse(app, { getOrbit }) {
         renderGateNextMs = 0;
         if (!material) return;
         pulseStartMs = performance.now();
-        if (!document.hidden && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+        if (!document.hidden) window.PcScriptShared?.requestRenderFrame?.(app);
     };
 
     app.on('apartments:visualMaterial', onVisualMaterial);

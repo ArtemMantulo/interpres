@@ -1,4 +1,4 @@
-var OrbitCamera = pc.createScript('orbitCamera');
+const OrbitCamera = pc.createScript('orbitCamera');
 
 OrbitCamera.attributes.add('portraitDistance', { type: 'number', default: 50 });
 OrbitCamera.attributes.add('portraitMinDistance', { type: 'number', default: 10 });

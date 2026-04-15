@@ -3,7 +3,7 @@ import {
     setSplashProgress,
     hideSplash,
     loadAssets
-} from './assets/scripts/loader.js';
+} from './assets/scripts/utils/assetLoader.js';
 import { loadLanguage } from './assets/scripts/utils/language.js';
 import { createAmbientAudio } from './assets/scripts/utils/ambientAudio.js';
 import { isMobile, isTablet } from './assets/scripts/utils/detect.js';
@@ -17,16 +17,16 @@ import {
     getDeviceProfile,
     finalizeStart,
     createSmoothProgress
-} from './assets/scripts/utils/functions.js';
-import { createFpsLocker } from './assets/scripts/utils/fpslocker.js';
-import { createDestroyRegistry } from './assets/scripts/utils/onAppDestroy.js';
+} from './assets/scripts/utils/appHelpers.js';
+import { createFpsLocker } from './assets/scripts/utils/fpsLimiter.js';
+import { createDestroyRegistry } from './assets/scripts/utils/destroyRegistry.js';
 import { createModeManager } from './assets/scripts/utils/modeManager.js';
 import './assets/scripts/ui/uiKeys.js';
 import { setupUiToggles } from './assets/scripts/ui/uiToggles.js';
 import { setupPortraitModePanelScroll } from './assets/scripts/ui/portraitModePanel.js';
-import { fadeInWater, applySkyboxInfinite } from './assets/scripts/scene/environment.js';
-import { createScene, applyStartSettings } from './assets/scripts/scene/sceneBuilder.js';
-import { createApartmentOverlayPulse } from './assets/scripts/modes/apartmentOverlayPulse.js';
+import { fadeInWater, applySkyboxInfinite } from './assets/scripts/scene/layers.js';
+import { createScene, applyStartSettings } from './assets/scripts/scene/createScene.js';
+import { createApartmentOverlayPulse } from './assets/scripts/modes/apartments/apartmentPulse.js';
 import {
     GSPLATS_ON_SCREEN_THRESHOLD,
     ASSET_PROGRESS_WEIGHT,
@@ -82,7 +82,7 @@ setupPortraitModePanelScroll(app, onAppDestroy);
 
 const onHomeMarkerActive = (active) => {
     appState.homeMarkerActive = !!active;
-    if (!document.hidden && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+    if (!document.hidden) window.PcScriptShared?.requestRenderFrame?.(app);
 };
 app.on('home:markerActive', onHomeMarkerActive);
 onAppDestroy(() => app.off('home:markerActive', onHomeMarkerActive));
@@ -148,7 +148,7 @@ const applyQualityProfile = (profile, gsplatComponent) => {
         startLodMin,
         endLodMin: profile.lodSmooth.endLodMin
     });
-    if (!app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+    window.PcScriptShared?.requestRenderFrame?.(app);
 };
 
 const onQualityChange = () => {
@@ -162,7 +162,7 @@ const onSoundChange = (event) => {
     if (event.target.checked) ambientAudio.play();
     else ambientAudio.stop();
     if (event.target) event.target.blur();
-    if (app && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+    window.PcScriptShared?.requestRenderFrame?.(app);
 };
 
 const uiToggles = setupUiToggles({ app, isDesktop, onAppDestroy, onQualityChange, onSoundChange });
@@ -209,6 +209,83 @@ function scheduleUpgradeIfNeeded(profile, gsplatComponent) {
 
 let hasStarted = false;
 
+async function onGsplatsReady(smoothProgress) {
+    gateActive = false;
+    smoothProgress.setNow(1);
+    await delay(200);
+
+    finalizeStart({ reveal, setSplashProgress, hideSplash, loadLanguage });
+    app.fire('ui:ready');
+    syncUiVisibility();
+
+    ambientAudio = createAmbientAudio('./assets/audio/tropical-birds.mp3', {
+        volume: 0.25,
+        loop: true,
+        fadeInDuration: 3000
+    });
+    onAppDestroy(() => { if (ambientAudio) ambientAudio.destroy(); });
+
+    const waterTimerId = window.setTimeout(() => {
+        fadeInWater(app, waterMaterial, waterEntityRef, 2000);
+        window.PcScriptShared?.requestRenderFrame?.(app);
+    }, 5000);
+    onAppDestroy(() => clearTimeout(waterTimerId));
+
+    const skyboxTimerId = window.setTimeout(() => {
+        applySkyboxInfinite(app, assets.hdri_sky);
+        window.PcScriptShared?.requestRenderFrame?.(app);
+    }, 7000);
+    onAppDestroy(() => clearTimeout(skyboxTimerId));
+}
+
+function onAssetsLoaded(smoothProgress) {
+    gateActive = true;
+
+    const result = createScene(app, {
+        assets,
+        fpsLockerState: fpsLocker.state,
+        shouldRender
+    });
+    gsplatRef = result.gsplatComponent;
+    orbit = result.orbit;
+    reveal = result.reveal;
+    waterMaterial = result.waterMaterial;
+    waterEntityRef = result.waterEntityRef;
+    activeProfile = getQualityProfile();
+
+    applyStartSettings(app, gsplatRef);
+
+    app.start();
+    app.autoRender = false;
+    warmupFrames = RENDER_SETTINGS.warmupFrames;
+
+    const onUpdate = () => {
+        overlayPulse.update();
+
+        if (fpsLocker.state.active) return;
+        if (!shouldRender()) return;
+        if ('renderNextFrame' in app) app.renderNextFrame = true;
+        else app.render();
+    };
+    app.on('update', onUpdate);
+    onAppDestroy(() => app.off('update', onUpdate));
+
+    const stopDebugOverlay = createDebugStatsOverlayUpdater(app, {
+        gs: gsplatRef,
+        fpsLockerState: fpsLocker.state
+    });
+    onAppDestroy(() => stopDebugOverlay?.());
+
+    scheduleUpgradeIfNeeded(activeProfile, gsplatRef);
+
+    waitForGsplatsGate(app, {
+        threshold: GSPLATS_ON_SCREEN_THRESHOLD,
+        assetProgressWeight: ASSET_PROGRESS_WEIGHT,
+        onProgress: (p) => smoothProgress.setTarget(p),
+        onReady: () => onGsplatsReady(smoothProgress)
+    });
+}
+
 async function startApp() {
     if (hasStarted) return;
     hasStarted = true;
@@ -219,80 +296,7 @@ async function startApp() {
     loadAssets(
         app,
         assetList,
-        async () => {
-            gateActive = true;
-
-            const result = createScene(app, {
-                assets,
-                fpsLockerState: fpsLocker.state,
-                shouldRender
-            });
-            gsplatRef = result.gsplatComponent;
-            orbit = result.orbit;
-            reveal = result.reveal;
-            waterMaterial = result.waterMaterial;
-            waterEntityRef = result.waterEntityRef;
-            activeProfile = getQualityProfile();
-
-            applyStartSettings(app, gsplatRef);
-
-            app.start();
-            app.autoRender = false;
-            warmupFrames = RENDER_SETTINGS.warmupFrames;
-
-            const onUpdate = () => {
-                overlayPulse.update();
-
-                if (fpsLocker.state.active) return;
-                if (!shouldRender()) return;
-                if ('renderNextFrame' in app) app.renderNextFrame = true;
-                else app.render();
-            };
-            app.on('update', onUpdate);
-            onAppDestroy(() => app.off('update', onUpdate));
-
-            const stopDebugOverlay = createDebugStatsOverlayUpdater(app, {
-                gs: gsplatRef,
-                fpsLockerState: fpsLocker.state
-            });
-            onAppDestroy(() => stopDebugOverlay?.());
-
-            scheduleUpgradeIfNeeded(activeProfile, gsplatRef);
-
-            waitForGsplatsGate(app, {
-                threshold: GSPLATS_ON_SCREEN_THRESHOLD,
-                assetProgressWeight: ASSET_PROGRESS_WEIGHT,
-                onProgress: (p) => smoothProgress.setTarget(p),
-                onReady: async () => {
-                    gateActive = false;
-                    smoothProgress.setNow(1);
-                    await delay(200);
-
-                    finalizeStart({ reveal, setSplashProgress, hideSplash, loadLanguage });
-                    app.fire('ui:ready');
-                    syncUiVisibility();
-
-                    ambientAudio = createAmbientAudio('./assets/audio/tropical-birds.mp3', {
-                        volume: 0.25,
-                        loop: true,
-                        fadeInDuration: 3000
-                    });
-                    onAppDestroy(() => { if (ambientAudio) ambientAudio.destroy(); });
-
-                    const waterTimerId = window.setTimeout(() => {
-                        fadeInWater(app, waterMaterial, waterEntityRef, 2000);
-                        if (!app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
-                    }, 5000);
-                    onAppDestroy(() => clearTimeout(waterTimerId));
-
-                    const skyboxTimerId = window.setTimeout(() => {
-                        applySkyboxInfinite(app, assets.hdri_sky);
-                        if (!app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
-                    }, 7000);
-                    onAppDestroy(() => clearTimeout(skyboxTimerId));
-                }
-            });
-        },
+        () => onAssetsLoaded(smoothProgress),
         (p) => smoothProgress.setTarget(mapAssetProgress(p, ASSET_PROGRESS_WEIGHT))
     );
 }
@@ -304,7 +308,7 @@ const onResize = () => {
     resizeRaf = requestAnimationFrame(() => {
         resizeRaf = 0;
         app.resizeCanvas();
-        if (!app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(app);
     });
 };
 
@@ -321,7 +325,7 @@ const onStartKeyDown = (e) => {
 };
 const onVisibilityChange = () => {
     pageHidden = document.hidden;
-    if (!pageHidden && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+    if (!pageHidden) window.PcScriptShared?.requestRenderFrame?.(app);
 };
 
 window.addEventListener('resize', onResize);

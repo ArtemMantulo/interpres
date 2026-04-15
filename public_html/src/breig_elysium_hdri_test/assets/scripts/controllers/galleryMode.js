@@ -1,4 +1,4 @@
-var Gallery = pc.createScript('gallery');
+const Gallery = pc.createScript('gallery');
 
 Gallery.attributes.add('galleryTextAsset', { type: 'asset', assetType: 'text' });
 Gallery.attributes.add('swipeThreshold', { type: 'number', default: 50 });

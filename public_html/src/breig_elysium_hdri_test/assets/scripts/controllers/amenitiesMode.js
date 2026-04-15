@@ -1,4 +1,4 @@
-var AmenitiesMode = pc.createScript('amenitiesMode');
+const AmenitiesMode = pc.createScript('amenitiesMode');
 const MODE_HOME = window.AppModeIds?.HOME ?? '0';
 const MODE_AMENITIES = window.AppModeIds?.AMENITIES ?? '2';
 

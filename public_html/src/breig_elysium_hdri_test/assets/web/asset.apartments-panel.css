@@ -327,14 +327,8 @@
     padding: 10px;
     box-sizing: border-box;
     border: 1px solid var(--bg-subtle);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-@media (pointer: coarse) {
-    .apartments-mobile-card.is-pressed {
-        background-color: rgba(255, 255, 255, 0.25);
-    }
+    pointer-events: none;
+    user-select: none;
 }
 
 .apartments-mobile-card-image {
@@ -408,6 +402,7 @@
     -webkit-appearance: none;
     appearance: none;
     background-color: var(--bg-subtle);
+    pointer-events: auto;
     cursor: pointer;
     color: transparent;
     font-size: 0;

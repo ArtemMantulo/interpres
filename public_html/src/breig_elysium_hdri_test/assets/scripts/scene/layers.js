@@ -45,7 +45,7 @@ export function fadeInWater(app, waterMaterial, waterEntityRef, duration = 1000)
         const t = Math.min((now - start) / duration, 1);
         waterMaterial.opacity = t;
         waterMaterial.update();
-        if (!app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(app);
         if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);

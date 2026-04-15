@@ -35,29 +35,32 @@
     const updateAmenityTextWidths = (dataList) => {
         if (!dataList || !dataList.length) return;
 
+        // Batch: unhide all hidden elements first (single layout invalidation)
+        const unhidden = [];
         for (let i = 0; i < dataList.length; i++) {
-            const data = dataList[i];
-            const root = data?.dom;
+            const root = dataList[i]?.dom;
             if (!root || !root.isConnected) continue;
-
-            const textEl = root.querySelector('.amenities-text');
-            if (!textEl) continue;
-
-            // If the element is hidden (display:none) we can't measure scrollWidth.
-            // Temporarily make it invisible-but-laid-out to get a real measurement.
-            const wasHidden = root.style.display === 'none';
-            if (wasHidden) {
+            if (root.style.display === 'none') {
                 root.style.visibility = 'hidden';
                 root.style.display = 'block';
+                unhidden.push(root);
             }
+        }
 
+        // Batch read: measure all text widths in a single layout pass
+        for (let i = 0; i < dataList.length; i++) {
+            const root = dataList[i]?.dom;
+            if (!root || !root.isConnected) continue;
+            const textEl = root.querySelector('.amenities-text');
+            if (!textEl) continue;
             const targetWidth = Math.max(1, Math.ceil(textEl.scrollWidth));
             root.style.setProperty('--amenity-text-target-width', `${targetWidth}px`);
+        }
 
-            if (wasHidden) {
-                root.style.display = 'none';
-                root.style.visibility = '';
-            }
+        // Batch write: restore hidden state
+        for (let i = 0; i < unhidden.length; i++) {
+            unhidden[i].style.display = 'none';
+            unhidden[i].style.visibility = '';
         }
     };
 

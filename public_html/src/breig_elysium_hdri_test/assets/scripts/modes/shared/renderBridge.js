@@ -1,7 +1,13 @@
 (function () {
     if (window.PcScriptShared) return;
 
+    function requestRenderFrame(app) {
+        if (app && !app.autoRender && 'renderNextFrame' in app) app.renderNextFrame = true;
+    }
+
     window.PcScriptShared = {
+        requestRenderFrame,
+
         getOrbit(ctx) {
             return ctx.cameraEntity?.script?.orbitCamera || null;
         },
@@ -123,9 +129,7 @@
 
             if (hasPending) {
                 ctx._forceDomUpdate = true;
-                if (ctx.app && !ctx.app.autoRender && 'renderNextFrame' in ctx.app) {
-                    ctx.app.renderNextFrame = true;
-                }
+                requestRenderFrame(ctx.app);
             }
 
             ctx.updateInfoPanelPosition();

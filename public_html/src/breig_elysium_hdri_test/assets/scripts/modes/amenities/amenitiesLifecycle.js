@@ -71,7 +71,7 @@
 
         ctx._forceDomUpdate = true;
         ctx._rectDirty = true;
-        if (ctx.app && !ctx.app.autoRender && 'renderNextFrame' in ctx.app) ctx.app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(ctx.app);
 
         ctx.loadDataFromCsv();
     };

@@ -9,8 +9,8 @@ import {
     GALLERY_SETTINGS,
     AMENITIES_SETTINGS
 } from '../config.js';
-import { setGsplatBudgetCompat } from '../utils/functions.js';
-import { ensureApartmentsLayer, ensureWaterLayer } from './environment.js';
+import { setGsplatBudgetCompat } from '../utils/appHelpers.js';
+import { ensureApartmentsLayer, ensureWaterLayer } from './layers.js';
 
 export function applyRevealSettings(r) {
     const s = REVEAL_SETTINGS;

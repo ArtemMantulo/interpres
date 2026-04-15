@@ -82,25 +82,34 @@ export const MODE_MANAGER_SETTINGS = {
 };
 
 export const APP_SCRIPT_SPECS = [
-    ['pcScriptShared.js', 'assets/scripts/modes/pcScriptShared.js', 1024],
+    // shared utilities (loaded first)
+    ['pcScriptShared.js', 'assets/scripts/modes/shared/renderBridge.js', 1024],
     ['adjustPixelRatio.js', 'assets/scripts/utils/adjustPixelRatio.js', 1024],
-    ['orbitCamera.js', 'assets/scripts/orbitCamera.js', 3 * 1024],
+    ['orbitCamera.js', 'assets/scripts/controllers/orbitCamera.js', 3 * 1024],
+    ['csvShared.js', 'assets/scripts/modes/shared/csvParser.js', 3 * 1024],
+
+    // amenities shared modules
     ['amenitiesUi.js', 'assets/scripts/ui/amenitiesUi.js', 3 * 1024],
-    ['csvShared.js', 'assets/scripts/modes/csvShared.js', 3 * 1024],
-    ['amenitiesShared.js', 'assets/scripts/modes/amenitiesShared.js', 3 * 1024],
-    ['amenitiesModeShared.js', 'assets/scripts/modes/amenitiesModeShared.js', 3 * 1024],
-    ['amenitiesPanelShared.js', 'assets/scripts/modes/amenitiesPanelShared.js', 3 * 1024],
-    ['amenitiesDomShared.js', 'assets/scripts/modes/amenitiesDomShared.js', 3 * 1024],
-    ['apartmentsShared.js', 'assets/scripts/modes/apartmentsShared.js', 3 * 1024],
-    ['apartmentsUiShared.js', 'assets/scripts/modes/apartmentsUiShared.js', 3 * 1024],
-    ['apartmentsCameraShared.js', 'assets/scripts/modes/apartmentsCameraShared.js', 3 * 1024],
-    ['apartmentsFloorShared.js', 'assets/scripts/modes/apartmentsFloorShared.js', 3 * 1024],
-    ['apartmentsPanelShared.js', 'assets/scripts/modes/apartmentsPanelShared.js', 3 * 1024],
-    ['apartmentsSwipeShared.js', 'assets/scripts/modes/apartmentsSwipeShared.js', 3 * 1024],
-    ['homeMode.js', 'assets/scripts/homeMode.js', 3 * 1024],
-    ['apartmentsMode.js', 'assets/scripts/apartmentsMode.js', 3 * 1024],
-    ['amenitiesMode.js', 'assets/scripts/amenitiesMode.js', 3 * 1024],
-    ['gallery.js', 'assets/scripts/gallery.js', 3 * 1024]
+    ['amenitiesShared.js', 'assets/scripts/modes/amenities/amenitiesData.js', 3 * 1024],
+    ['amenitiesModeShared.js', 'assets/scripts/modes/amenities/amenitiesLifecycle.js', 3 * 1024],
+    ['amenitiesPanelShared.js', 'assets/scripts/modes/amenities/amenitiesInfoPanel.js', 3 * 1024],
+    ['amenitiesDomShared.js', 'assets/scripts/modes/amenities/amenitiesMarkers.js', 3 * 1024],
+
+    // apartments shared modules
+    ['apartmentsShared.js', 'assets/scripts/modes/apartments/apartmentsData.js', 3 * 1024],
+    ['apartmentsUiShared.js', 'assets/scripts/modes/apartments/apartmentsUiState.js', 3 * 1024],
+    ['apartmentsCameraShared.js', 'assets/scripts/modes/apartments/apartmentsCamera.js', 3 * 1024],
+    ['apartmentsFloorShared.js', 'assets/scripts/modes/apartments/apartmentsFloor.js', 3 * 1024],
+    ['apartmentsPanelShared.js', 'assets/scripts/modes/apartments/apartmentsInfoPanel.js', 3 * 1024],
+    ['apartmentsSwipeShared.js', 'assets/scripts/modes/apartments/apartmentsSwipe.js', 3 * 1024],
+    ['apartmentsVisualShared.js', 'assets/scripts/modes/apartments/apartmentsOutline.js', 3 * 1024],
+    ['apartmentsExpandedShared.js', 'assets/scripts/modes/apartments/apartmentsGallery.js', 3 * 1024],
+
+    // controllers (PlayCanvas scripts)
+    ['homeMode.js', 'assets/scripts/controllers/homeMode.js', 3 * 1024],
+    ['apartmentsMode.js', 'assets/scripts/controllers/apartmentsMode.js', 3 * 1024],
+    ['amenitiesMode.js', 'assets/scripts/controllers/amenitiesMode.js', 3 * 1024],
+    ['gallery.js', 'assets/scripts/controllers/galleryMode.js', 3 * 1024]
 ];
 
 export const CAMERA_SETTINGS = {

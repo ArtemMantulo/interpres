@@ -44,7 +44,89 @@
         });
     };
 
-    const selectMobileApartmentIndex = (ctx, index, { focusCamera = true, emitVisit = false } = {}) => {
+    const getCenteredMobileCardIndex = (ctx) => {
+        const scroll = ctx.mobilePanelScroll;
+        if (!scroll) return -1;
+        const cards = scroll.querySelectorAll('.apartments-mobile-card[data-index]');
+        if (!cards.length) return -1;
+        const scrollRect = scroll.getBoundingClientRect();
+
+        const scrollLeft = scroll.scrollLeft;
+        const prev = ctx._lastMobileScrollLeft || 0;
+        ctx._lastMobileScrollLeft = scrollLeft;
+        const scrollingRight = scrollLeft >= prev;
+        const thresholdX = scrollRect.left + scrollRect.width * (scrollingRight ? 0.4 : 0.6);
+
+        let candidateIndex = -1;
+        let candidateLeft = -Infinity;
+        let firstIndex = -1;
+        let firstLeft = Infinity;
+
+        for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const rect = card.getBoundingClientRect();
+            const idx = Number(card.dataset.index);
+            if (!Number.isFinite(idx)) continue;
+            if (rect.left < firstLeft) {
+                firstLeft = rect.left;
+                firstIndex = idx;
+            }
+            if (rect.left <= thresholdX && rect.left > candidateLeft) {
+                candidateLeft = rect.left;
+                candidateIndex = idx;
+            }
+        }
+
+        if (candidateIndex >= 0) return candidateIndex;
+        return firstIndex;
+    };
+
+    const queueMobileCenterSelectionSync = (ctx) => {
+        if (!isMobileLayout(ctx)) return;
+        if (!ctx.mobilePanelEl?.classList.contains('visible')) return;
+        if (ctx._mobileCenterSyncRaf) return;
+        ctx._mobileCenterSyncRaf = requestAnimationFrame(() => {
+            ctx._mobileCenterSyncRaf = 0;
+            const centeredIndex = getCenteredMobileCardIndex(ctx);
+            if (!Number.isFinite(centeredIndex) || centeredIndex < 0) return;
+            selectMobileApartmentIndex(ctx, centeredIndex, {
+                focusCamera: true,
+                emitVisit: false,
+                scrollCard: false
+            });
+        });
+    };
+
+    const bindMobileCenterSelectionSync = (ctx) => {
+        const scroll = ctx.mobilePanelScroll;
+        if (!scroll) return;
+        if (ctx._onMobileCenterScrollSync) {
+            scroll.removeEventListener('scroll', ctx._onMobileCenterScrollSync);
+            ctx._onMobileCenterScrollSync = null;
+        }
+        ctx._onMobileCenterScrollSync = () => {
+            queueMobileCenterSelectionSync(ctx);
+        };
+        scroll.addEventListener('scroll', ctx._onMobileCenterScrollSync, { passive: true });
+    };
+
+    const unbindMobileCenterSelectionSync = (ctx) => {
+        const scroll = ctx.mobilePanelScroll;
+        if (scroll && ctx._onMobileCenterScrollSync) {
+            scroll.removeEventListener('scroll', ctx._onMobileCenterScrollSync);
+        }
+        ctx._onMobileCenterScrollSync = null;
+        if (ctx._mobileCenterSyncRaf) {
+            cancelAnimationFrame(ctx._mobileCenterSyncRaf);
+            ctx._mobileCenterSyncRaf = 0;
+        }
+    };
+
+    const selectMobileApartmentIndex = (
+        ctx,
+        index,
+        { focusCamera = true, emitVisit = false, scrollCard = true } = {}
+    ) => {
         const row = getSelectedFloorRow(ctx);
         const apartments = row?.apartments;
         if (!apartments || !apartments.length) return false;
@@ -55,7 +137,20 @@
 
         ctx._selectedApartmentIndex = nextIndex;
         syncMobileCardSelection(ctx, nextIndex);
-        scrollMobileCardIntoView(ctx, nextIndex);
+        if (!changed) {
+            if (emitVisit && ctx.app?.fire) {
+                ctx.app.fire('apartments:visit', {
+                    mode: 'mobile',
+                    floorIndex: ctx._selectedFloorIndex,
+                    apartmentIndex: nextIndex,
+                    apartment: apartments[nextIndex] || null,
+                    marker: ctx._selectedApartment || null
+                });
+            }
+            return false;
+        }
+
+        if (scrollCard) scrollMobileCardIntoView(ctx, nextIndex);
         ctx.syncSelectedVisualOverlay?.();
 
         if (focusCamera) ctx.focusCameraForFloor(ctx._selectedFloorIndex);
@@ -71,7 +166,7 @@
             });
         }
 
-        return changed;
+        return true;
     };
 
     const applyMobilePanelContent = (ctx, marker, floorRow) => {
@@ -104,37 +199,12 @@
             }
 
             card.dataset.index = String(i);
-            let pressTimer = 0;
-            const clearPressed = () => {
-                if (pressTimer) {
-                    clearTimeout(pressTimer);
-                    pressTimer = 0;
-                }
-                card.classList.remove('is-pressed');
-            };
-            const releasePressed = () => {
-                if (!window.AppDetect?.isTouchDevice?.()) return;
-                if (pressTimer) clearTimeout(pressTimer);
-                pressTimer = setTimeout(() => {
-                    card.classList.remove('is-pressed');
-                    pressTimer = 0;
-                }, 80);
-            };
-            card.addEventListener('pointerdown', () => {
-                if (!window.AppDetect?.isTouchDevice?.()) return;
-                clearPressed();
-                card.classList.add('is-pressed');
-            });
-            card.addEventListener('pointerup', releasePressed);
-            card.addEventListener('pointercancel', releasePressed);
-            card.addEventListener('lostpointercapture', releasePressed);
-            card.addEventListener('click', (event) => {
-                clearPressed();
-                const trigger = event.target?.closest?.('.apartments-mobile-card-plan');
-                const nextIndex = Number(card.dataset.index);
-                if (!Number.isFinite(nextIndex)) return;
 
-                if (trigger) {
+            const planBtn = card.querySelector('.apartments-mobile-card-plan');
+            if (planBtn) {
+                planBtn.addEventListener('click', (event) => {
+                    const nextIndex = Number(card.dataset.index);
+                    if (!Number.isFinite(nextIndex)) return;
                     event.preventDefault();
                     event.stopPropagation();
                     selectMobileApartmentIndex(ctx, nextIndex, {
@@ -142,20 +212,16 @@
                         emitVisit: true
                     });
                     ctx.openPlanPanel?.();
-                    return;
-                }
-
-                selectMobileApartmentIndex(ctx, nextIndex, {
-                    focusCamera: true,
-                    emitVisit: false
                 });
-            });
+            }
 
             fragment.appendChild(card);
         }
 
         scroll.replaceChildren(fragment);
+        bindMobileCenterSelectionSync(ctx);
         selectMobileApartmentIndex(ctx, selectedIndex, { focusCamera: false, emitVisit: false });
+        queueMobileCenterSelectionSync(ctx);
     };
 
     const updateInfoPanelNavState = (ctx) => {
@@ -296,9 +362,11 @@
             ctx.updateFloorPanelPosition();
             updateInfoPanelNavState(ctx);
             scrollMobileCardIntoView(ctx, ctx._selectedApartmentIndex || 0);
+            queueMobileCenterSelectionSync(ctx);
             return;
         }
 
+        unbindMobileCenterSelectionSync(ctx);
         if (!ctx.infoPanel) return;
         ctx.beginInfoPanelPlacement?.();
         ctx.infoPanel.classList.add('visible');
@@ -316,6 +384,7 @@
     const closeInfoPanel = (ctx) => {
         ctx.cancelFloorAnimation();
         ctx.closePlanPanel?.({ keepInfoHidden: true });
+        unbindMobileCenterSelectionSync(ctx);
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('visible');
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('is-content-swapping');
         ctx.endInfoPanelPlacement?.();

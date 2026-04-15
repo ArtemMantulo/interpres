@@ -138,7 +138,7 @@
 
         ctx._forceDomUpdate = true;
         ctx.updateInfoPanelPosition();
-        if (ctx.app && !ctx.app.autoRender && 'renderNextFrame' in ctx.app) ctx.app.renderNextFrame = true;
+        window.PcScriptShared?.requestRenderFrame?.(ctx.app);
     };
 
     window.ApartmentsCameraShared = {
