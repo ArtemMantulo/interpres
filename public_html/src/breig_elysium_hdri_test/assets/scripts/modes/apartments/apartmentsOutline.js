@@ -103,11 +103,13 @@
         if (!device) return null;
         const width = Math.max(1, device.width | 0);
         const height = Math.max(1, device.height | 0);
+        // PIXELFORMAT_R8 is not supported on iOS/WebGL1, use RGBA8 instead
+        const supportsR8 = device.isWebGL2 && !/(iPad|iPhone|iPod)/i.test(navigator.userAgent);
         const texture = new pc.Texture(device, {
             name: OUTLINE_RT_NAME,
             width,
             height,
-            format: pc.PIXELFORMAT_R8,
+            format: supportsR8 ? pc.PIXELFORMAT_R8 : pc.PIXELFORMAT_RGBA8,
             mipmaps: false,
             minFilter: pc.FILTER_LINEAR,
             magFilter: pc.FILTER_LINEAR
