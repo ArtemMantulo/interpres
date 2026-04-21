@@ -13,16 +13,13 @@ ApartmentsMode.attributes.add('swipeThreshold', { type: 'number', default: 24 })
 ApartmentsMode.attributes.add('cameraPitch', { type: 'number', default: 30 });
 ApartmentsMode.attributes.add('cameraYaw', { type: 'number', default: -58 });
 ApartmentsMode.attributes.add('desktopYawOffset', { type: 'number', default: 0 });
-ApartmentsMode.attributes.add('cameraHorizontalRotateLimit', { type: 'number', default: 20 });
+ApartmentsMode.attributes.add('cameraHorizontalRotateLimit', { type: 'number', default: 10 });
 ApartmentsMode.attributes.add('cameraLandscapeDistance', { type: 'number', default: 5 });
 ApartmentsMode.attributes.add('cameraPortraitDistance', { type: 'number', default: 5 });
 ApartmentsMode.attributes.add('mobileFloorCenterOffset', { type: 'number', default: 50 });
 ApartmentsMode.attributes.add('mobileFloorLeftOffset', { type: 'number', default: 10 });
 ApartmentsMode.attributes.add('floorPositionLerp', { type: 'number', default: 0.14 });
-ApartmentsMode.attributes.add('floorHeightTransitionDurationMs', { type: 'number', default: 700 });
-ApartmentsMode.attributes.add('landscapeFloorHeightScale', { type: 'number', default: 0.9 });
-ApartmentsMode.attributes.add('landscapeFloorHeightScaleLeft', { type: 'number', default: 0.9 });
-ApartmentsMode.attributes.add('landscapeFloorHeightScaleRight', { type: 'number', default: 1.15 });
+ApartmentsMode.attributes.add('floorStepPx', { type: 'number', default: 70 });
 
 ApartmentsMode.prototype.initialize = function () {
     this.cameraEntity = this.app.root.findByName('Camera');
@@ -120,7 +117,6 @@ ApartmentsMode.prototype.initialize = function () {
     this._floorItemsData = [];
 
     this._forceDomUpdate = true;
-    this._floorHeightTransition = null;
 
     this._swipeTracking = false;
     this._swipePointerId = null;
@@ -610,8 +606,21 @@ ApartmentsMode.prototype.syncInfoPanelsForViewport = function () {
         }
         if (this.infoPanel) {
             this.beginInfoPanelPlacement();
+            this.markInfoPanelSizeDirty();
+            this.updateInfoPanelPosition();
+            this.infoPanel.classList.add('is-opening');
             this.infoPanel.classList.add('visible');
-            this.scheduleInfoPanelReposition();
+            requestAnimationFrame(() => {
+                if (!this.infoPanel?.classList.contains('visible')) return;
+                requestAnimationFrame(() => {
+                    if (!this.infoPanel?.classList.contains('visible')) return;
+                    this.infoPanel.classList.remove('is-opening');
+                });
+            });
+            requestAnimationFrame(() => {
+                if (!this.infoPanel?.classList.contains('visible')) return;
+                this.scheduleInfoPanelReposition();
+            });
         }
     }
 
@@ -643,139 +652,7 @@ ApartmentsMode.prototype.updatePlanPanelLandscapeHeight = function () {
     this.planPanel.style.removeProperty('max-height');
 };
 
-ApartmentsMode.prototype.clearFloorHeightTransition = function () {
-    this._floorHeightTransition = null;
-};
-
-ApartmentsMode.prototype._getFloorHeightsSnapshot = function (apartmentIndex, options) {
-    const marker = this._selectedApartment;
-    const rows = this.getCurrentFloorRows?.() || [];
-    if (!marker?.worldPos || !rows.length) return null;
-
-    const selectedIndex = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
-    const selectedRow = rows[selectedIndex] || null;
-    const aptIndexRaw = Number.isFinite(apartmentIndex) ? apartmentIndex : this._selectedApartmentIndex;
-    const aptIndex = Math.max(0, aptIndexRaw | 0);
-
-    const getApartmentForRow = (row, rowApartmentIndex) => {
-        const apartments = Array.isArray(row?.apartments) ? row.apartments : null;
-        if (!apartments || !apartments.length) return null;
-        const idx = Math.max(0, Math.min(apartments.length - 1, rowApartmentIndex | 0));
-        return apartments[idx] || apartments[0] || null;
-    };
-    const pickFinite = (values, fallback) => {
-        for (let i = 0; i < values.length; i++) {
-            const v = Number(values[i]);
-            if (isFinite(v)) return v;
-        }
-        return fallback;
-    };
-    const normalizeAngle = (deg) => ((((deg % 360) + 540) % 360) - 180);
-    const interpolatePair = (pair, t) => {
-        if (Array.isArray(pair) && pair.length >= 2) {
-            const left = Number(pair[0]);
-            const right = Number(pair[1]);
-            if (isFinite(left) && isFinite(right)) return left + (right - left) * t;
-        }
-        return NaN;
-    };
-
-    const selectedApt = getApartmentForRow(selectedRow, aptIndex);
-    const yawRange = Math.max(0.001, Math.abs(Number(this.cameraHorizontalRotateLimit || 20)));
-    const baseYaw = pickFinite(
-        [
-            selectedApt?.camera?.yaw,
-            selectedRow?.camera?.yaw,
-            marker?.camera?.yaw,
-            this.cameraYaw
-        ],
-        0
-    );
-    const orbit = this.getOrbit?.();
-    const forcedYaw = Number(options?.currentYaw);
-    const currentYaw = isFinite(forcedYaw)
-        ? forcedYaw
-        : pickFinite([orbit?.eulers?.y, orbit?.eulersTarget?.y], baseYaw);
-    const yawDelta = normalizeAngle(currentYaw - baseYaw);
-    const yawT = Math.max(0, Math.min(1, (yawDelta + yawRange) / (yawRange * 2)));
-
-    const selectedFloorPairs = selectedApt?.floorHeightsByYaw;
-    const resolveFloorHeight = (row, rowIndex) => {
-        const apt = getApartmentForRow(row, aptIndex);
-
-        if (Array.isArray(selectedFloorPairs) && rowIndex >= 0 && rowIndex < selectedFloorPairs.length) {
-            const h = interpolatePair(selectedFloorPairs[rowIndex], yawT);
-            if (isFinite(h)) return h;
-        }
-        if (Array.isArray(apt?.floorHeightsByYaw) && rowIndex >= 0 && rowIndex < apt.floorHeightsByYaw.length) {
-            const h = interpolatePair(apt.floorHeightsByYaw[rowIndex], yawT);
-            if (isFinite(h)) return h;
-        }
-
-        const rowPair = interpolatePair(apt?.floorHeightByYaw, yawT);
-        if (isFinite(rowPair)) return rowPair;
-
-        return isFinite(row?.height) ? row.height : marker.worldPos.y;
-    };
-
-    const rowHeights = new Array(rows.length);
-    for (let i = 0; i < rows.length; i++) {
-        rowHeights[i] = resolveFloorHeight(rows[i], i);
-    }
-    const selectedHeight = isFinite(rowHeights[selectedIndex])
-        ? rowHeights[selectedIndex]
-        : resolveFloorHeight(selectedRow, selectedIndex);
-
-    return { selectedHeight, rowHeights };
-};
-
-ApartmentsMode.prototype.beginFloorHeightTransition = function (_fromApartmentIndex, toApartmentIndex) {
-    if (this.isMobileUiLayout()) {
-        this.clearFloorHeightTransition();
-        return;
-    }
-
-    // Capture 'to' at the destination apartment's own camera yaw so the end state
-    // matches where the camera will settle, avoiding a wave after the transition.
-    const rows = this.getCurrentFloorRows?.() || [];
-    const selFloorIdx = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
-    const selRow = rows[selFloorIdx] || null;
-    const toAptIdx = Math.max(0, toApartmentIndex | 0);
-    const toApt = Array.isArray(selRow?.apartments) ? (selRow.apartments[toAptIdx] || null) : null;
-    const marker = this._selectedApartment;
-    const destYaw = isFinite(toApt?.camera?.yaw) ? toApt.camera.yaw
-        : isFinite(selRow?.camera?.yaw) ? selRow.camera.yaw
-        : isFinite(marker?.camera?.yaw) ? marker.camera.yaw
-        : isFinite(this.cameraYaw) ? this.cameraYaw
-        : null;
-    const toSnap = this._getFloorHeightsSnapshot(toAptIdx,
-        destYaw !== null ? { currentYaw: destYaw } : undefined
-    );
-    if (!toSnap) {
-        this.clearFloorHeightTransition();
-        return;
-    }
-
-    const durationRaw = Number(this.floorHeightTransitionDurationMs);
-    const duration = Math.max(120, isFinite(durationRaw) ? durationRaw : 700);
-    // fromOffsets is null; it will be initialized lazily on the first render frame
-    // using the actual item.lastY values and the then-current pixelsPerUnit.
-    // This avoids any jump caused by focusCameraForFloor changing the camera orbit
-    // target between this call and the first rendered frame.
-    this._floorHeightTransition = {
-        startTs: null,
-        durationMs: duration,
-        fromOffsets: null,
-        toApartmentIndex: toAptIdx,
-        to: toSnap
-    };
-    this._forceDomUpdate = true;
-    window.PcScriptShared?.requestRenderFrame?.(this.app);
-};
-
-
 ApartmentsMode.prototype.hideAllApartmentUi = function () {
-    this.clearFloorHeightTransition();
     this.clearSelectedVisualOverlay();
     for (let i = 0; i < this.apartmentsData.length; i++) {
         const item = this.apartmentsData[i];
@@ -833,7 +710,6 @@ ApartmentsMode.prototype.exitMode = function () {
     if (!this._active) return;
     this._active = false;
     this._selectionToken++;
-    this.clearFloorHeightTransition();
     this.cancelFloorAnimation();
     this.releaseCameraLock();
     this.hideAllApartmentUi();
@@ -1203,23 +1079,7 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
     const landscapeScale = this.getLandscapeUiScale();
     const shouldScaleFloors = !this.isMobileUiLayout() && landscapeScale < 0.999;
     const floorScaleSuffix = shouldScaleFloors ? ` scale(${landscapeScale})` : '';
-    const clampScale = (value, fallback) => {
-        const n = Number(value);
-        if (!isFinite(n)) return fallback;
-        return Math.max(0.05, Math.min(1.5, n));
-    };
-    const pickFinite = (values, fallback) => {
-        for (let i = 0; i < values.length; i++) {
-            const v = Number(values[i]);
-            if (isFinite(v)) return v;
-        }
-        return fallback;
-    };
-    const normalizeAngle = (deg) => ((((deg % 360) + 540) % 360) - 180);
-    const baseLandscapeHeightScale = shouldScaleFloors
-        ? clampScale(this.landscapeFloorHeightScale, landscapeScale)
-        : 1;
-    let landscapeHeightScale = baseLandscapeHeightScale;
+    const desktopFloorStepY = Math.max(1, Number(this.floorStepPx) || 30);
     const panelSize = this.getInfoPanelSize();
     const panelWidth = panelSize.width || 320;
     const floorGap = 52 * landscapeScale;
@@ -1228,27 +1088,19 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
 
     if (this.isMobileUiLayout()) {
         const fixedX = isFinite(this.mobileFloorLeftOffset) ? this.mobileFloorLeftOffset : 10;
-        const stepY = 50;
+        const mobileFloorStepY = 50;
         const centerOffsetY = isFinite(this.mobileFloorCenterOffset) ? this.mobileFloorCenterOffset : 50;
-        const listHeight = Math.max(0, (total - 1) * stepY);
+        const listHeight = Math.max(0, (total - 1) * mobileFloorStepY);
         const startY = window.innerHeight * 0.5 - listHeight * 0.5 - centerOffsetY;
 
         this._applyFloorItemPositions(
             fixedX,
             ' translate(0, -50%)',
-            (_item, i) => startY + (total - 1 - i) * stepY,
+            (_item, i) => startY + (total - 1 - i) * mobileFloorStepY,
             { ease: 1 }
         );
         return;
     }
-
-    // Desktop: world-projected positions
-    const camera = this.cameraEntity?.camera;
-    const rect = this.getCanvasRect();
-    if (!camera || !rect) return;
-
-    const marker = this._selectedApartment;
-    if (!marker?.worldPos) return;
 
     const floorItemWidth = 40 * (shouldScaleFloors ? landscapeScale : 1);
     const fixedX = panelLeft - floorGap - floorItemWidth;
@@ -1256,126 +1108,12 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
     const rows = this.getCurrentFloorRows?.() || [];
     if (!rows.length) return;
     const selectedIndex = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
-    const selectedApartmentIndex = Math.max(0, this._selectedApartmentIndex | 0);
-
-    if (shouldScaleFloors) {
-        const selectedRow = rows[selectedIndex] || null;
-        const apartments = Array.isArray(selectedRow?.apartments) ? selectedRow.apartments : [];
-        const selectedApartment = apartments[selectedApartmentIndex] || apartments[0] || null;
-        const baseYaw = pickFinite(
-            [
-                selectedApartment?.camera?.yaw,
-                selectedRow?.camera?.yaw,
-                this._selectedApartment?.camera?.yaw,
-                this.cameraYaw
-            ],
-            0
-        );
-        const orbit = this.getOrbit?.();
-        const currentYaw = pickFinite([orbit?.eulers?.y, orbit?.eulersTarget?.y], baseYaw);
-        const yawDelta = normalizeAngle(currentYaw - baseYaw);
-        const yawRange = Math.max(0.001, Math.abs(Number(this.cameraHorizontalRotateLimit || 20)));
-        const yawMix = Math.max(0, Math.min(1, Math.abs(yawDelta) / yawRange));
-        const leftScale = clampScale(this.landscapeFloorHeightScaleLeft, baseLandscapeHeightScale);
-        const rightScale = clampScale(this.landscapeFloorHeightScaleRight, baseLandscapeHeightScale);
-        const sideScale = yawDelta < 0 ? leftScale : rightScale;
-        landscapeHeightScale = baseLandscapeHeightScale + (sideScale - baseLandscapeHeightScale) * yawMix;
-    }
-
-    const baseSnapshot = this._getFloorHeightsSnapshot(selectedApartmentIndex);
-    if (!baseSnapshot) return;
-
-    const selectedHeight = Number(baseSnapshot.selectedHeight);
-    if (!isFinite(selectedHeight)) return;
-
-    // Compute anchor and pixelsPerUnit BEFORE any transition blend,
-    // so fromOffsets can be lazily initialised from item.lastY in the same scale.
-    const anchorPos = new pc.Vec3(marker.worldPos.x, selectedHeight, marker.worldPos.z);
-    camera.worldToScreen(anchorPos, this._screenPos);
-    if (!this._active || this._screenPos.z <= 0 ||
-        !Number.isFinite(this._screenPos.x) || !Number.isFinite(this._screenPos.y)) {
-        for (let i = 0; i < total; i++) {
-            const item = this._floorItemsData[i];
-            if (!item || !item.visible) continue;
-            item.visible = false;
-            item.style.display = 'none';
-            item.lastX = NaN;
-            item.lastY = NaN;
-        }
-        return;
-    }
-
     const panelCenterY = window.innerHeight * 0.5;
-    const anchorScreenY = rect.top + this._screenPos.y;
-    this._tempVec.set(anchorPos.x, anchorPos.y + 1.0, anchorPos.z);
-    camera.worldToScreen(this._tempVec, this._screenPos);
-    const pixelsPerUnit = anchorScreenY - (rect.top + this._screenPos.y);
-    if (!Number.isFinite(pixelsPerUnit) || Math.abs(pixelsPerUnit) < 1e-4) return;
-
-    let rowHeights = baseSnapshot.rowHeights;
-
-    const transition = this._floorHeightTransition;
-    if (transition) {
-        let justInitialized = false;
-        // Lazy init: capture fromOffsets on the first rendered frame after navigation.
-        // At this point focusCameraForFloor has already changed orbit focus, so
-        // pixelsPerUnit already reflects the new camera state - no jump.
-        if (!transition.fromOffsets) {
-            const offsets = new Array(rows.length);
-            for (let i = 0; i < rows.length; i++) {
-                const item = this._floorItemsData[i];
-                if (i === selectedIndex || !item || !isFinite(item.lastY)) {
-                    offsets[i] = 0;
-                } else {
-                    offsets[i] = (Number(item.lastY) - panelCenterY) / (pixelsPerUnit * landscapeHeightScale);
-                }
-            }
-            transition.fromOffsets = offsets;
-            transition.startTs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-            justInitialized = true;
-        }
-
-        const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
-        const duration = Math.max(1, Number(transition.durationMs) || 1);
-        const tRaw = justInitialized
-            ? 0
-            : Math.max(0, Math.min(1, (now - Number(transition.startTs)) / duration));
-        const t = tRaw * tRaw * (3 - 2 * tRaw);
-
-        const toSelH = Number(transition.to.selectedHeight);
-        const toHeights = Array.isArray(transition.to.rowHeights) ? transition.to.rowHeights : [];
-        const fromOffsets = transition.fromOffsets;
-        const blendedHeights = new Array(rows.length);
-        for (let i = 0; i < rows.length; i++) {
-            if (i === selectedIndex) { blendedHeights[i] = selectedHeight; continue; }
-            const fromOff = Number(fromOffsets[i]);
-            const toOff = isFinite(toSelH) && isFinite(Number(toHeights[i])) ? toSelH - Number(toHeights[i]) : NaN;
-            if (isFinite(fromOff) && isFinite(toOff)) blendedHeights[i] = selectedHeight - (fromOff + (toOff - fromOff) * t);
-            else if (isFinite(toOff))   blendedHeights[i] = selectedHeight - toOff;
-            else if (isFinite(fromOff)) blendedHeights[i] = selectedHeight - fromOff;
-            else blendedHeights[i] = Number(rowHeights[i]);
-        }
-        rowHeights = blendedHeights;
-
-        if (tRaw >= 0.999) this._floorHeightTransition = null;
-        else {
-            this._forceDomUpdate = true;
-            window.PcScriptShared?.requestRenderFrame?.(this.app);
-        }
-    }
-
-    const floorLerp = this._floorHeightTransition
-        ? 1
-        : Math.max(0.05, Math.min(1, Number(this.floorPositionLerp ?? 0.14)));
+    const floorLerp = Math.max(0.05, Math.min(1, Number(this.floorPositionLerp ?? 0.14)));
     this._applyFloorItemPositions(
         fixedX,
         ` translate(0, -50%)${floorScaleSuffix}`,
-        (_item, i) => {
-            if (i === selectedIndex) return panelCenterY;
-            const rowHeight = Number(rowHeights[i]);
-            if (!isFinite(rowHeight)) return null;
-            return panelCenterY + (selectedHeight - rowHeight) * pixelsPerUnit * landscapeHeightScale;
-        },
+        (_item, i) => panelCenterY + (selectedIndex - i) * desktopFloorStepY,
         { ease: floorLerp }
     );
 };
@@ -1629,7 +1367,6 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._onScreenSwipePointerDown = null;
     this._onPanelSwipePointerMove = null;
     this._onPanelSwipePointerUp = null;
-    this._floorHeightTransition = null;
     this._panelSwapAnimTimer = 0;
     this._planPanelCloseTimer = 0;
     this._infoPanelResizeObserver = null;

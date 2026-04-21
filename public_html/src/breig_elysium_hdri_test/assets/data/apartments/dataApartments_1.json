@@ -1,266 +1,246 @@
-{
-    "icon": "assets/images/icons/ui_home.png",
-    "position": [10, 3, -1.5],
-    "camera": { "pitch": 30, "yaw": -58, "distance": 10 },
-    "translations": {
-        "en": { "title": "Apartments" },
-        "ru": { "title": "Апартаменты" },
-        "de": { "title": "Wohnungen" },
-        "es": { "title": "Apartamentos" },
-        "fr": { "title": "Appartements" },
-        "ja": { "title": "アパート" },
-        "ko": { "title": "아파트" },
-        "ar": { "title": "شقق" },
-        "zh": { "title": "公寓" }
-    },
-    "floors": [
-        {
-            "floor": 1,
-            "height": -0.45,
-            "apartments": [
-                {
-                    "area": "34 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
-                    "look": [7.6, -4.95],
-                    "camera": { "pitch": 30, "yaw": -57  },
-                    "visual": "assets/models/apartments/Apt1_1_1.glb",
-                    "visual_position": [8.77, -0.5, -5.42],
-                    "visual_rotation": [0, -56, 0],
-                    "floorHeightsByYaw": [[-0.75, -0.75], [-0.2, 0.25], [0.4, 0.75], [0.9, 1.2]],
-                    "translations": {
-                        "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "1 شقق", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                },
-                {
-                    "area": "26 m",
-                    "bedrooms": 1,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [8, -2.95],
-                    "camera": { "pitch": 30, "yaw": -97 },
-                    "visual": "assets/models/apartments/Apt1_1_2.glb",
-                    "visual_position": [9.19, -0.5, -3.25],
-                    "visual_rotation": [0, -96, 0],
-                    "floorHeightsByYaw": [[-0.75, -0.75], [-0.325, 0.3], [0.2, 0.85], [0.75, 1.35]],
-                    "translations": {
-                        "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                },
-                {
-                    "area": "44 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [8.55, -0.4],
-                    "camera": { "pitch": 30, "yaw": -60 },
-                    "visual": "assets/models/apartments/Apt1_1_3.glb",
-                    "visual_position": [9.73, -0.5, -1.23],
-                    "visual_rotation": [0, -56, 0],
-                    "floorHeightsByYaw": [[-0.75, -0.75], [-0.1, 1], [0.5, 1.45], [1, 1.9]],
-                    "translations": {
-                        "en": { "name": "Apartments 3", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 3", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 3", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 3", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 3", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 3", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 3", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 3", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 3", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                },
-                {
-                    "area": "38 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
-                    "look": [10.65, 1.25],
-                    "camera": { "pitch": 30, "yaw": -12 },
-                    "visual": "assets/models/apartments/Apt1_1_4.glb",
-                    "visual_position": [11.63, -0.5, 0.2],
-                    "visual_rotation": [0, -16, 0],
-                    "floorHeightsByYaw": [[-0.75, -0.75], [0.25, 1.35], [0.8, 1.85], [1.3, 2.35]],
-                    "translations": {
-                        "en": { "name": "Apartments 4", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 4", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 4", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 4", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 4", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 4", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 4", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 4", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 4", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                },
-                {
-                    "area": "57 m",
-                    "bedrooms": 3,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [12.25, 2.65],
-                    "camera": { "pitch": 30, "yaw": -59 },
-                    "visual": "assets/models/apartments/Apt1_1_5.glb",
-                    "visual_position": [13.45, -0.5, 1.87],
-                    "visual_rotation": [0, -56, 0],
-                    "floorHeightsByYaw": [[-0.75, -0.75], [-0.35, 0.45], [0.15, 0.95], [0.65, 1.45]],
-                    "translations": {
-                        "en": { "name": "Apartments 5", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 5", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 5", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 5", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 5", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 5", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 5", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 5", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 5", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                }
-            ]
+[
+    {
+        "icon": "assets/images/icons/ui_home.png",
+        "position": [10, 3, -1.5],
+        "camera": { "pitch": 20, "yaw": -57, "distance": 10 },
+        "translations": {
+            "en": { "title": "Apartments" },
+            "ru": { "title": "Апартаменты" },
+            "de": { "title": "Wohnungen" },
+            "es": { "title": "Apartamentos" },
+            "fr": { "title": "Appartements" },
+            "ja": { "title": "アパート" },
+            "ko": { "title": "아파트" },
+            "ar": { "title": "شقق" },
+            "zh": { "title": "公寓" }
         },
-        {
-            "floor": 2,
-            "height": 0.25,
-            "apartments": [
-                {
-                    "area": "40 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [7.6, -4.95],
-                    "camera": { "pitch": 30, "yaw": -57 },
-                    "floorHeightsByYaw": [[-0.75, -0.05], [0.25, 0.25], [0.65, 1.15], [1.05, 1.5]],
-                    "translations": {
-                        "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+        "floors": [
+            {
+                "floor": 1,
+                "height": -0.45,
+                "apartments": [
+                    {
+                        "area": "34 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
+                        "look": [7.6, -4.95],
+                        "visual": "assets/models/apartments/Apt1_1_1.glb",
+                        "visual_position": [8.77, -0.5, -5.42],
+                        "visual_rotation": [0, -56, 0],
+                        "translations": {
+                            "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "1 شقق", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "26 m",
+                        "bedrooms": 1,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [8, -2.95],
+                        "visual": "assets/models/apartments/Apt1_1_2.glb",
+                        "visual_position": [9.19, -0.5, -3.25],
+                        "visual_rotation": [0, -96, 0],
+                        "translations": {
+                            "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "44 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [8.55, -0.4],
+                        "visual": "assets/models/apartments/Apt1_1_3.glb",
+                        "visual_position": [9.73, -0.5, -1.23],
+                        "visual_rotation": [0, -56, 0],
+                        "translations": {
+                            "en": { "name": "Apartments 3", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 3", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 3", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 3", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 3", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 3", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 3", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 3", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 3", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "38 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
+                        "look": [10.65, 1.25],
+                        "visual": "assets/models/apartments/Apt1_1_4.glb",
+                        "visual_position": [11.63, -0.5, 0.2],
+                        "visual_rotation": [0, -16, 0],
+                        "translations": {
+                            "en": { "name": "Apartments 4", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 4", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 4", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 4", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 4", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 4", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 4", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 4", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 4", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "57 m",
+                        "bedrooms": 3,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [12.25, 2.65],
+                        "visual": "assets/models/apartments/Apt1_1_5.glb",
+                        "visual_position": [13.45, -0.5, 1.87],
+                        "visual_rotation": [0, -56, 0],
+                        "translations": {
+                            "en": { "name": "Apartments 5", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 5", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 5", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 5", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 5", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 5", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 5", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 5", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 5", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
                     }
-                },
-                {
-                    "area": "32 m",
-                    "bedrooms": 1,
-                    "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
-                    "look": [8, -2.95],
-                    "camera": { "pitch": 30, "yaw": -97 },
-                    "floorHeightsByYaw": [[-1.25, -0.25], [0.25, 0.25], [0.65, 1], [1.075, 1.45]],
-                    "translations": {
-                        "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                ]
+            },
+            {
+                "floor": 2,
+                "height": 0.25,
+                "apartments": [
+                    {
+                        "area": "40 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [7.6, -4.95],
+                        "translations": {
+                            "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "32 m",
+                        "bedrooms": 1,
+                        "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
+                        "look": [8, -2.95],
+                        "translations": {
+                            "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "46 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [10.65, 1.25],
+                        "translations": {
+                            "en": { "name": "Apartments 3", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 3", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 3", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 3", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 3", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート3", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 3 ", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 3", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 3", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
                     }
-                },
-                {
-                    "area": "46 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [10.65, 1.25],
-                    "camera": { "pitch": 30, "yaw": -12 },
-                    "floorHeightsByYaw": [[-0.25, -0.15], [0.25, 0.25], [0.9, 1.5], [1.35, 2]],
-                    "translations": {
-                        "en": { "name": "Apartments 3", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 3", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 3", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 3", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 3", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート3", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 3 ", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 3", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 3", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                ]
+            },
+            {
+                "floor": 3,
+                "height": 0.7,
+                "apartments": [
+                    {
+                        "area": "44 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
+                        "look": [7.6, -4.95],
+                        "translations": {
+                            "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
+                    },
+                    {
+                        "area": "52 m",
+                        "bedrooms": 2,
+                        "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
+                        "look": [10.65, 1.25],
+                        "translations": {
+                            "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
                     }
-                }
-            ]
-        },
-        {
-            "floor": 3,
-            "height": 0.7,
-            "apartments": [
-                {
-                    "area": "44 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
-                    "look": [7.6, -4.95],
-                    "camera": { "pitch": 30, "yaw": -57  },
-                    "floorHeightsByYaw": [[-0.65, 0.05], [-0.1, 0.375], [0.7, 0.7], [1.1, 1.6]],
-                    "translations": {
-                        "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                ]
+            },
+            {
+                "floor": 4,
+                "height": 1.1,
+                "apartments": [
+                    {
+                        "area": "62 m",
+                        "bedrooms": 3,
+                        "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
+                        "look": [7.6, -4.95],
+                        "translations": {
+                            "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
+                            "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
+                            "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
+                            "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
+                            "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
+                            "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
+                            "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
+                            "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
+                            "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
+                        }
                     }
-                },
-                {
-                    "area": "52 m",
-                    "bedrooms": 2,
-                    "image": ["assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_4.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg"],
-                    "look": [10.65, 1.25],
-                    "camera": { "pitch": 30, "yaw": -12 },
-                    "floorHeightsByYaw": [[-0.15, -0.15], [0.3, 0.25], [0.7, 0.7], [1.3, 1.95]],
-                    "translations": {
-                        "en": { "name": "Apartments 2", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 2", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 2", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 2", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 2", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 2", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 2", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 2", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 2", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                }
-            ]
-        },
-        {
-            "floor": 4,
-            "height": 1.1,
-            "apartments": [
-                {
-                    "area": "62 m",
-                    "bedrooms": 3,
-                    "image": ["assets/images/pictures/apt_2.jpg", "assets/images/pictures/apt_3.jpg", "assets/images/pictures/apt_1.jpg", "assets/images/pictures/apt_5.jpg", "assets/images/pictures/apt_6.jpg", "assets/images/pictures/apt_4.jpg"],
-                    "look": [7.6, -4.95],
-                    "camera": { "pitch": 30, "yaw": -57 },
-                    "floorHeightsByYaw": [[-0.75, 0.15], [-0.15, 0.475], [0.45, 0.8], [1.1, 1.1]],
-                    "translations": {
-                        "en": { "name": "Apartments 1", "availability": "Available", "description": "Bright apartments with a thoughtful layout and panoramic windows. The perfect space for a relaxing lifestyle in harmony with nature." },
-                        "ru": { "name": "Апартаменты 1", "availability": "Доступно", "description": "Светлые апартаменты с продуманной планировкой и панорамными окнами. Идеальное пространство для спокойного образа жизни в гармонии с природой." },
-                        "de": { "name": "Wohnungen 1", "availability": "Verfügbar", "description": "Helle Wohnungen mit durchdachtem Grundriss und Panoramafenstern. Der perfekte Raum für einen entspannten Lebensstil im Einklang mit der Natur." },
-                        "es": { "name": "Apartamentos 1", "availability": "Disponible", "description": "Apartamentos luminosos con una distribución bien pensada y ventanas panorámicas. El espacio perfecto para un estilo de vida relajado en armonía con la naturaleza." },
-                        "fr": { "name": "Appartements 1", "availability": "Disponible", "description": "Appartements lumineux avec un agencement réfléchi et des fenêtres panoramiques. L'espace idéal pour un mode de vie détendu en harmonie avec la nature." },
-                        "ja": { "name": "アパート 1", "availability": "空き有り", "description": "考え抜かれた間取りとパノラマ窓を備えた明るいアパートです。自然と調和したリラックスしたライフスタイルに最適な空間です。" },
-                        "ko": { "name": "아파트 1", "availability": "입주 가능", "description": "세심하게 설계된 구조와 파노라마 창문을 갖춘 밝은 아파트입니다. 자연과 조화를 이루는 여유로운 라이프스타일에 완벽한 공간입니다." },
-                        "ar": { "name": "شقق 1", "availability": "متاح", "description": "شقق مضيئة بتصميم مدروس ونوافذ بانورامية. المساحة المثالية لأسلوب حياة مريح في انسجام مع الطبيعة." },
-                        "zh": { "name": "公寓 1", "availability": "可入住", "description": "布局合理、配备全景窗户的明亮公寓。在与自然和谐相处中享受轻松生活方式的完美空间。" }
-                    }
-                }
-            ]
-        }
-    ]
-}
+                ]
+            }
+        ]
+    }
+]

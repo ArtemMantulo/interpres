@@ -15,10 +15,22 @@
     flex-direction: column;
     padding: 0;
     pointer-events: none;
-    transform: translate3d(calc(var(--apartments-panel-x) - 8px), var(--apartments-panel-y), 0)
+    transform: translate3d(var(--apartments-panel-x), var(--apartments-panel-y), 0)
         scale(var(--apartments-panel-scale));
-    transition: transform 0.24s ease;
     z-index: 0;
+}
+
+#apartments-info-panel {
+    --apartments-panel-fade: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.24s ease, visibility 0s linear 0.24s;
+}
+
+.apartments-info-panel-clone {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.24s ease, visibility 0s linear 0.24s;
 }
 
 :root {
@@ -34,8 +46,12 @@
     background-color: rgba(51, 51, 51, 0.4);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    clip-path: inset(0 100% 0 0 round 24px);
-    transition: clip-path 0.24s ease;
+    clip-path: inset(0 0 0 0 round 24px);
+}
+
+#apartments-info-panel > .glass-panel.border-shadow {
+    background-color: rgba(51, 51, 51, calc(0.4 * var(--apartments-panel-fade)));
+    transition: background-color 0.24s ease;
 }
 
 #apartments-info-panel .amenities-line,
@@ -43,6 +59,11 @@
     padding: 1px;
     border-radius: var(--radius-lg);
     background: var(--gradient-line);
+}
+
+#apartments-info-panel .amenities-line {
+    opacity: var(--apartments-panel-fade);
+    transition: opacity 0.24s ease;
 }
 
 #apartments-info-panel .panel-container,
@@ -53,8 +74,12 @@
     align-items: normal;
     gap: 12px;
     padding: 16px;
-    clip-path: inset(0 100% 0 0 round 24px);
-    transition: clip-path 0.24s ease;
+    clip-path: inset(0 0 0 0 round 24px);
+}
+
+#apartments-info-panel .panel-container {
+    opacity: var(--apartments-panel-fade);
+    transition: opacity 0.24s ease;
 }
 
 #apartments-info-panel.visible {
@@ -62,12 +87,16 @@
     transform: translate3d(var(--apartments-panel-x), var(--apartments-panel-y), 0)
         translateY(var(--apartments-panel-drag-y))
         scale(var(--apartments-panel-scale));
+    --apartments-panel-fade: 1;
     opacity: var(--apartments-panel-opacity);
+    visibility: visible;
+    transition: opacity 0.24s ease, visibility 0s linear 0s;
     display: flex;
 }
 
-#apartments-info-panel.is-placing {
-    transition: none !important;
+#apartments-info-panel.is-opening {
+    transition: none;
+    --apartments-panel-fade: 0;
 }
 
 #apartments-info-panel.visible > .glass-panel.border-shadow {
@@ -88,6 +117,8 @@
         translateY(var(--apartments-panel-drag-y))
         scale(var(--apartments-panel-scale));
     opacity: var(--apartments-panel-opacity);
+    visibility: visible;
+    transition: opacity 0.24s ease;
     display: flex;
 }
 

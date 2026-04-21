@@ -276,9 +276,6 @@
         let nextIdx = prevIdx + direction;
         if (nextIdx < 0) nextIdx = total - 1;
         else if (nextIdx >= total) nextIdx = 0;
-        if (nextIdx !== prevIdx) {
-            ctx.beginFloorHeightTransition?.(prevIdx, nextIdx);
-        }
         ctx._selectedApartmentIndex = nextIdx;
         const apt = apts[nextIdx];
         ctx.applyPanelContent(ctx._selectedApartment, { ...row, ...apt });
@@ -296,7 +293,6 @@
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
         ctx.clearSelectedVisualOverlay?.();
-        ctx.clearFloorHeightTransition?.();
         ctx.updateFloorPanelVisibility();
     };
 
@@ -316,7 +312,6 @@
         if (ctx._selectedApartment?.dom && ctx._selectedApartment.dom !== entry.dom) {
             ctx._selectedApartment.dom.classList.remove('selected-for-info');
         }
-        ctx.clearFloorHeightTransition?.();
         entry.dom.classList.add('selected-for-info');
         ctx._selectedApartment = entry;
         ctx._selectedFloorIndex = -1;
@@ -355,7 +350,6 @@
         const next = Math.max(0, Math.min(rows.length - 1, index | 0));
         ctx._selectedFloorIndex = next;
         ctx._selectedApartmentIndex = 0;
-        ctx.clearFloorHeightTransition?.();
 
         const row = rows[next];
         ctx.applyPanelContent(ctx._selectedApartment, row);
@@ -394,11 +388,22 @@
         unbindMobileCenterSelectionSync(ctx);
         if (!ctx.infoPanel) return;
         ctx.beginInfoPanelPlacement?.();
+        ctx.markInfoPanelSizeDirty?.();
+        ctx.updateInfoPanelPosition?.();
+        ctx.infoPanel.classList.add('is-opening');
         ctx.infoPanel.classList.add('visible');
-        if (ctx.scheduleInfoPanelReposition) ctx.scheduleInfoPanelReposition();
-        else {
-            ctx.markInfoPanelSizeDirty();
-            ctx.updateInfoPanelPosition();
+        requestAnimationFrame(() => {
+            if (!ctx.infoPanel?.classList.contains('visible')) return;
+            requestAnimationFrame(() => {
+                if (!ctx.infoPanel?.classList.contains('visible')) return;
+                ctx.infoPanel.classList.remove('is-opening');
+            });
+        });
+        if (ctx.scheduleInfoPanelReposition) {
+            requestAnimationFrame(() => {
+                if (!ctx.infoPanel?.classList.contains('visible')) return;
+                ctx.scheduleInfoPanelReposition();
+            });
         }
         ctx.updateFloorPanelVisibility();
         ctx.updateFloorPanelPosition();
@@ -410,6 +415,7 @@
         ctx.cancelFloorAnimation();
         ctx.closePlanPanel?.({ keepInfoHidden: true });
         unbindMobileCenterSelectionSync(ctx);
+        if (ctx.infoPanel) ctx.infoPanel.classList.remove('is-opening');
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('visible');
         if (ctx.infoPanel) ctx.infoPanel.classList.remove('is-content-swapping');
         ctx.endInfoPanelPlacement?.();
@@ -428,7 +434,6 @@
         ctx._selectedFloorIndex = -1;
         ctx._selectedApartmentIndex = 0;
         ctx.clearSelectedVisualOverlay?.();
-        ctx.clearFloorHeightTransition?.();
         ctx.clearFloorPanelItems();
         ctx.hideFloorPanel();
         ctx.centerCameraToApartmentsHome?.();

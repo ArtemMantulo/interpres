@@ -14,36 +14,6 @@
         const src = String(value || '').trim();
         return src ? [src] : [];
     };
-    const normalizeYawHeights = (value) => {
-        if (!Array.isArray(value) || value.length < 2) return null;
-        const left = parseFloat(value[0]);
-        const right = parseFloat(value[1]);
-        return isFinite(left) && isFinite(right) ? [left, right] : null;
-    };
-    const normalizeFloorHeightsByYaw = (value) => {
-        if (!Array.isArray(value) || !value.length) return null;
-        const out = [];
-        let hasValid = false;
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            let left = NaN;
-            let right = NaN;
-            if (Array.isArray(item) && item.length >= 2) {
-                left = parseFloat(item[0]);
-                right = parseFloat(item[1]);
-            } else if (item && typeof item === 'object') {
-                left = parseFloat(item.left ?? item.l ?? item.minus20);
-                right = parseFloat(item.right ?? item.r ?? item.plus20);
-            }
-            if (isFinite(left) && isFinite(right)) {
-                out.push([left, right]);
-                hasValid = true;
-            } else {
-                out.push(null);
-            }
-        }
-        return hasValid ? out : null;
-    };
     const normalizeVec3 = (value) => {
         if (!Array.isArray(value) || value.length < 3) return null;
         const x = parseFloat(value[0]);
@@ -91,17 +61,6 @@
                     const planList = normalizeImageArray(
                         aptItem.planImage || aptItem.plan_image || aptItem.plan
                     );
-                    const floorHeightByYaw = normalizeYawHeights(
-                        aptItem.floorHeightByYaw ||
-                        aptItem.floorHeightYaw20 ||
-                        aptItem.floorHeightLR ||
-                        aptItem.floorHeightLr
-                    );
-                    const floorHeightsByYaw = normalizeFloorHeightsByYaw(
-                        aptItem.floorHeightsByYaw ||
-                        aptItem.floorHeightsYaw20 ||
-                        aptItem.floorHeightsLR
-                    );
                     const visual = String(aptItem.visual || '').trim();
                     const visualPosition = normalizeVec3(aptItem.visual_position ?? aptItem.visualPosition);
                     const visualRotation = normalizeVec3(aptItem.visual_rotation ?? aptItem.visualRotation);
@@ -122,9 +81,7 @@
                         visualPosition,
                         visualRotation,
                         look: Array.isArray(aptItem.look) && aptItem.look.length >= 2 ? aptItem.look : null,
-                        camera: aptItem.camera || null,
-                        floorHeightByYaw,
-                        floorHeightsByYaw
+                        camera: aptItem.camera || null
                     };
                 });
 
@@ -150,9 +107,7 @@
                     visualPosition: apt0.visualPosition || null,
                     visualRotation: apt0.visualRotation || null,
                     look: apt0.look || null,
-                    camera: apt0.camera || null,
-                    floorHeightByYaw: apt0.floorHeightByYaw || null,
-                    floorHeightsByYaw: apt0.floorHeightsByYaw || null
+                    camera: apt0.camera || null
                 });
             }
 
