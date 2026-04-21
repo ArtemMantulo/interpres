@@ -37,7 +37,6 @@
     align-items: center;
     z-index: 0;
     border-radius: var(--radius-pill);
-    will-change: transform;
     cursor: pointer;
 }
 

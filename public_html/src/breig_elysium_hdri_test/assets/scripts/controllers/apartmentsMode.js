@@ -113,6 +113,7 @@ ApartmentsMode.prototype.initialize = function () {
     this._visualOutlineCamera = null;
     this._visualOutlineEffect = null;
     this._visualOutlineEffectAttached = false;
+    this._outlineViewportSyncRaf = 0;
     this._visualLoadToken = 0;
     this._visualActiveKey = '';
     this._floorPanelNodes = [];
@@ -235,6 +236,10 @@ ApartmentsMode.prototype.initialize = function () {
     this._onPanelSwipePointerMove = this.onPanelSwipePointerMove.bind(this);
     this._onPanelSwipePointerUp = this.onPanelSwipePointerUp.bind(this);
     this._onViewportDirty = () => {
+        if (this._outlineViewportSyncRaf) {
+            cancelAnimationFrame(this._outlineViewportSyncRaf);
+            this._outlineViewportSyncRaf = 0;
+        }
         const nowPortrait = this.isPortrait();
         const orientationChanged = nowPortrait !== this._lastIsPortrait;
         if (orientationChanged) {
@@ -264,6 +269,15 @@ ApartmentsMode.prototype.initialize = function () {
         if (orientationChanged && this._active) this.syncInfoPanelsForViewport();
         this.syncFloorPanelWidth();
         this.ensureVisualOutlineRenderTargetSize();
+        this._outlineViewportSyncRaf = requestAnimationFrame(() => {
+            this._outlineViewportSyncRaf = requestAnimationFrame(() => {
+                this._outlineViewportSyncRaf = 0;
+                this.ensureVisualOutlineRenderTargetSize();
+                this.syncSelectedVisualOverlay?.();
+                this._forceDomUpdate = true;
+                window.PcScriptShared?.requestRenderFrame?.(this.app);
+            });
+        });
         this.updateInfoPanelPosition();
         this.updateFloorPanelPosition();
         this.updateInfoPanelNavState();
@@ -1499,6 +1513,10 @@ ApartmentsMode.prototype.onDestroy = function () {
         clearTimeout(this._planPanelCloseTimer);
         this._planPanelCloseTimer = 0;
     }
+    if (this._outlineViewportSyncRaf) {
+        cancelAnimationFrame(this._outlineViewportSyncRaf);
+        this._outlineViewportSyncRaf = 0;
+    }
 
     this._unregisterMode?.();
     if (this._fallbackModeHandlerBound) this.app.off('mode:change', this._onModeChangeFallback, this);
@@ -1583,6 +1601,7 @@ ApartmentsMode.prototype.onDestroy = function () {
     this._visualOutlineCamera = null;
     this._visualOutlineEffect = null;
     this._visualOutlineEffectAttached = false;
+    this._outlineViewportSyncRaf = 0;
     this._visualAssetCache = null;
     this._floorPanelNodes = null;
     this._floorItemsData = null;

@@ -155,6 +155,7 @@ const onQualityChange = () => {
     if (!isDesktop || !gsplatRef) return;
     activeProfile = getQualityProfile();
     applyQualityProfile(activeProfile, gsplatRef);
+    window.PcScriptShared?.requestRenderFrame?.(app);
 };
 
 const onSoundChange = (event) => {

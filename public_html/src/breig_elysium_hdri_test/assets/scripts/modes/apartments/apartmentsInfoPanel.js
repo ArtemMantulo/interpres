@@ -26,19 +26,31 @@
         }
     };
 
-    const scrollMobileCardIntoView = (ctx, selectedIndex) => {
+    const getNow = () => (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now());
+
+    const suspendMobileCenterSelectionSync = (ctx, durationMs) => {
+        const duration = Math.max(0, Number(durationMs) || 0);
+        ctx._mobileCenterSyncSuspendUntil = getNow() + duration;
+    };
+
+    const isMobileCenterSelectionSyncSuspended = (ctx) => {
+        return getNow() < (ctx._mobileCenterSyncSuspendUntil || 0);
+    };
+
+    const scrollMobileCardIntoView = (ctx, selectedIndex, options) => {
         const scroll = ctx.mobilePanelScroll;
         if (!scroll) return;
 
+        const behavior = options?.behavior || 'auto';
+        suspendMobileCenterSelectionSync(ctx, behavior === 'smooth' ? 360 : 120);
+
         if ((selectedIndex | 0) <= 0) {
-            const behavior = ctx.mobilePanelEl?.classList.contains('visible') ? 'smooth' : 'auto';
             scroll.scrollTo({ left: 0, behavior });
             return;
         }
 
         const target = scroll.querySelector(`.apartments-mobile-card[data-index="${selectedIndex}"]`);
         if (!target || typeof target.scrollIntoView !== 'function') return;
-        const behavior = ctx.mobilePanelEl?.classList.contains('visible') ? 'smooth' : 'auto';
         requestAnimationFrame(() => {
             target.scrollIntoView({ inline: 'start', block: 'nearest', behavior });
         });
@@ -84,9 +96,11 @@
     const queueMobileCenterSelectionSync = (ctx) => {
         if (!isMobileLayout(ctx)) return;
         if (!ctx.mobilePanelEl?.classList.contains('visible')) return;
+        if (isMobileCenterSelectionSyncSuspended(ctx)) return;
         if (ctx._mobileCenterSyncRaf) return;
         ctx._mobileCenterSyncRaf = requestAnimationFrame(() => {
             ctx._mobileCenterSyncRaf = 0;
+            if (isMobileCenterSelectionSyncSuspended(ctx)) return;
             const centeredIndex = getCenteredMobileCardIndex(ctx);
             if (!Number.isFinite(centeredIndex) || centeredIndex < 0) return;
             selectMobileApartmentIndex(ctx, centeredIndex, {
@@ -116,6 +130,8 @@
             scroll.removeEventListener('scroll', ctx._onMobileCenterScrollSync);
         }
         ctx._onMobileCenterScrollSync = null;
+        ctx._mobileCenterSyncSuspendUntil = 0;
+        ctx._lastMobileScrollLeft = 0;
         if (ctx._mobileCenterSyncRaf) {
             cancelAnimationFrame(ctx._mobileCenterSyncRaf);
             ctx._mobileCenterSyncRaf = 0;
@@ -125,7 +141,7 @@
     const selectMobileApartmentIndex = (
         ctx,
         index,
-        { focusCamera = true, emitVisit = false, scrollCard = true } = {}
+        { focusCamera = true, emitVisit = false, scrollCard = true, scrollBehavior = null } = {}
     ) => {
         const row = getSelectedFloorRow(ctx);
         const apartments = row?.apartments;
@@ -150,7 +166,11 @@
             return false;
         }
 
-        if (scrollCard) scrollMobileCardIntoView(ctx, nextIndex);
+        if (scrollCard) {
+            scrollMobileCardIntoView(ctx, nextIndex, {
+                behavior: scrollBehavior || (ctx.mobilePanelEl?.classList.contains('visible') ? 'smooth' : 'auto')
+            });
+        }
         ctx.syncSelectedVisualOverlay?.();
 
         if (focusCamera) ctx.focusCameraForFloor(ctx._selectedFloorIndex);
@@ -220,8 +240,11 @@
 
         scroll.replaceChildren(fragment);
         bindMobileCenterSelectionSync(ctx);
-        selectMobileApartmentIndex(ctx, selectedIndex, { focusCamera: false, emitVisit: false });
-        queueMobileCenterSelectionSync(ctx);
+        selectMobileApartmentIndex(ctx, selectedIndex, {
+            focusCamera: false,
+            emitVisit: false,
+            scrollBehavior: 'auto'
+        });
     };
 
     const updateInfoPanelNavState = (ctx) => {
@@ -349,6 +372,7 @@
 
     const openInfoPanel = (ctx) => {
         if (isMobileLayout(ctx)) {
+            const wasVisible = !!ctx.mobilePanelEl?.classList.contains('visible');
             if (ctx.infoPanel) {
                 ctx.infoPanel.classList.remove('visible');
                 ctx.infoPanel.classList.remove('is-content-swapping');
@@ -361,8 +385,9 @@
             ctx.updateFloorPanelVisibility();
             ctx.updateFloorPanelPosition();
             updateInfoPanelNavState(ctx);
-            scrollMobileCardIntoView(ctx, ctx._selectedApartmentIndex || 0);
-            queueMobileCenterSelectionSync(ctx);
+            scrollMobileCardIntoView(ctx, ctx._selectedApartmentIndex || 0, {
+                behavior: wasVisible ? 'smooth' : 'auto'
+            });
             return;
         }
 
