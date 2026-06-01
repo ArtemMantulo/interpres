@@ -50,7 +50,7 @@ const app = new pc.Application(canvas, {
     elementInput: new pc.ElementInput(canvas),
     graphicsDeviceOptions: {
         alpha: false,
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         devicePixelRatio: false,
         antialias: false,
         preferWebGl2: true
@@ -215,7 +215,12 @@ async function onGsplatsReady(smoothProgress) {
     smoothProgress.setNow(1);
     await delay(200);
 
-    finalizeStart({ reveal, setSplashProgress, hideSplash, loadLanguage });
+    finalizeStart({
+        reveal,
+        setSplashProgress,
+        hideSplash,
+        loadLanguage: () => loadLanguage('en')
+    });
     app.fire('ui:ready');
     syncUiVisibility();
 
