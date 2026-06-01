@@ -17,6 +17,17 @@ const waitFrames = async (count) => {
     for (let i = 0; i < count; i++) await waitForAnimationFrame();
 };
 
+const renderCaptureFrame = (app) => {
+    if (!app || app._destroyed) return;
+
+    if (typeof app.render === 'function') {
+        app.render();
+        return;
+    }
+
+    window.PcScriptShared?.requestRenderFrame?.(app);
+};
+
 const dataUrlToBlob = (dataUrl) => {
     const parts = String(dataUrl || '').split(',');
     const mime = parts[0]?.match(/:(.*?);/)?.[1] || 'image/png';
@@ -112,14 +123,10 @@ export function createScreenshotController({
             await wait(CONTROLS_SLIDE_DURATION_MS);
             await waitFrames(isMobileDevice ? 1 : 2);
 
+            renderCaptureFrame(app);
+
             let blob = null;
-            if (isMobileDevice) {
-                blob = dataUrlToBlob(canvas.toDataURL('image/png'));
-            } else if (canvas.toBlob) {
-                blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
-            } else {
-                blob = dataUrlToBlob(canvas.toDataURL('image/png'));
-            }
+            blob = dataUrlToBlob(canvas.toDataURL('image/png'));
 
             triggerBlobDownload(blob, getScreenshotFilename());
             await playFlash();
