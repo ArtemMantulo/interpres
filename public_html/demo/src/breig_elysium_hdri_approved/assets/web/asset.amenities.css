@@ -26,7 +26,7 @@
 
 .amenities {
     position: absolute;
-    height: 36px;
+    height: 32px;
     width: max-content;
     --amenities-text-max-width: min(560px, calc(100vw - 64px));
     --amenity-text-target-width: var(--amenities-text-max-width);
@@ -93,9 +93,9 @@
 
 .amenities-icon {
     position: relative;
-    width: 18px;
-    height: 18px;
-    padding: 9px;
+    width: 16px;
+    height: 16px;
+    padding: 8px;
     object-fit: contain;
     display: block;
     align-self: center;
@@ -114,7 +114,7 @@
     opacity: 0;
     transform: translateX(-6px);
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     transition:
         max-width 0.48s ease,
@@ -142,7 +142,7 @@
 .amenities.expanded .amenities-text,
 .amenities:focus-visible:not(.selected-for-info) .amenities-text {
     max-width: min(var(--amenity-text-target-width), var(--amenities-text-max-width));
-    padding-right: 7px;
+    padding-right: 6px;
     opacity: 1;
     transform: translateX(0);
 }
