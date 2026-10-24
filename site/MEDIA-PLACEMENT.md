@@ -141,11 +141,15 @@ All files go into `media/` next to the HTML pages. Number = file prefix.
 - **100-magnum-walkthrough.mp4** → case-magnum.html
 
 ## Pack 20 (101–102)
-- **101-render-film.mp4** → case-breig.html, renders.html
-- **102-render-reel1.mp4** → renders.html
+- **101-render-film.mp4** → renders.html (source: 01_Arco_AI_cinematic.mp4)
+- **102-render-reel1.mp4** → renders.html (source: 08_AI_reel.mp4)
 
 ## Pack 21 (103–104)
-- **103-render-reel2.mp4** → renders.html
-- **104-render-reel3.mp4** → renders.html
+- **103-render-reel2.mp4** → renders.html (source: 08_AI_reel (1).mp4)
+- **104-render-reel3.mp4** → renders.html (source: 0827.mp4; poster 078 is a frame of it)
+
+## Added 2026-10-24
+- **105-breig-ai-reel.mp4** → case-breig.html, "RAW RENDERS" tile (source: 06_Breig_AI_reel.mp4)
+- **105-breig-ai-reel-poster.jpg** → case-breig.html (frame of 105)
 
 Showreel: `Showreel_eng_Interpres.mp4` → `media/showreel.mp4` (index.html, hero).
