@@ -195,3 +195,9 @@ Originals: C:/work/interpres.live-old-root/public_html/assets/ (videos/, downloa
 
 - 109-magnum-nusantara-reel.mp4 (+poster) — replaced by the Instagram reel, moved to unused-media
 - 111-magnum-estate-reel-poster.jpg — replaced by 112, moved to unused-media
+
+## media/renders/interior/
+renders.html — "Interior & exterior design" rail (first two tiles)
+
+- 115-ue-villa.mp4 + 115-ue-villa-poster.jpg  _(Villa — exterior & interior; source 06_Education_UE_villa.mp4, 2:02, sound)_
+- 114-ue-interior.mp4 + 114-ue-interior-poster.jpg  _(Bedroom — Unreal Engine; source 05_Education_UE_Interior.mp4, 1:11, sound)_
