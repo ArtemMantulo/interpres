@@ -157,8 +157,8 @@ case-breig.html — "Digital catalogs" (087-breig-catalog.pdf still missing)
 ## media/case-breig/ai-cinematics/
 case-breig.html — "AI generated cinematics", RAW RENDERS tile
 
-- 105-breig-ai-reel.mp4
-- 105-breig-ai-reel-poster.jpg
+- 116-breig-raw-renders.mp4 + 116-breig-raw-renders-poster.jpg  _(RAW RENDERS tile; source Test_v01.mp4)_
+- 117-breig-ai-cinematic.mp4 + 117-breig-ai-cinematic-poster.jpg  _(CINEMATIC REEL tile; source Breig_AI.mp4 = 03_AI_breig_cinematic, 100.7 MB — must be compressed under 100 MB for GitHub)_
 
 ## media/case-magnum/developed/
 case-magnum.html — "What we developed" videos (interior, surroundings, UE level, walkthrough)
@@ -202,3 +202,4 @@ renders.html — "Interior & exterior design" rail (first two tiles)
 
 - 115-ue-villa.mp4 + 115-ue-villa-poster.jpg  _(Villa — exterior & interior; source 06_Education_UE_villa.mp4, 2:02, sound)_
 - 114-ue-interior.mp4 + 114-ue-interior-poster.jpg  _(Bedroom — Unreal Engine; source 05_Education_UE_Interior.mp4, 1:11, sound)_
+- 105-breig-ai-reel.mp4 (+poster) — replaced by 116, moved to unused-media
