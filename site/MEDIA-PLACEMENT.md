@@ -79,7 +79,7 @@ renders.html — Cinematic film & reels, AI generated videos, Interior walkthrou
 - 075-render-film-poster.jpg
 - 076-render-reel1-poster.jpg
 - 077-render-reel2-poster.jpg
-- 078-render-reel3-poster.jpg
+- 107-teaser-reel-poster.webp  _(Teaser reel tile poster; the tile's "Watch" opens the breigproperty Instagram reel)_
 - 101-render-film.mp4
 - 102-render-reel1.mp4
 - 103-render-reel2.mp4
@@ -184,7 +184,7 @@ case-magnum.html — VR build, Renders and AI generated content galleries
 - renders/videos/101-render-film.mp4 ← 01_Arco_AI_cinematic.mp4
 - renders/videos/102-render-reel1.mp4 ← 08_AI_reel.mp4
 - renders/videos/103-render-reel2.mp4 ← 08_AI_reel (1).mp4
-- renders/videos/104-render-reel3.mp4 ← 0827.mp4 (poster 078 is a frame of it)
+- renders/videos/104-render-reel3.mp4 ← 0827.mp4 (hover preview of the Teaser reel tile)
 - case-breig/ai-cinematics/105-breig-ai-reel.mp4 ← 06_Breig_AI_reel.mp4
 - index/hero/showreel.mp4 ← Showreel_eng_Interpres.mp4
 
