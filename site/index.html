@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · Immersive Solutions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1e2623;--panel:#161d1a;--panel2:#121815;--card:#26302c;--line:rgba(255,255,255,.08);--ink:#eef3ef;--mut:#a8b3ac;--mut2:#7f8b83;--acc:#86b8a0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img,video{display:block}
+.shell{display:flex;min-height:100vh}
+.side{width:238px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 22px 4px}
+.brand span{font:600 14px/1.18 'Inter',sans-serif;color:#fff}
+.side .grp{padding:20px 22px 12px;font:600 10px 'Inter',sans-serif;letter-spacing:.16em;color:var(--mut2)}
+.side .grp.mt{padding-top:26px}
+.nav a{padding:11px 22px;border-left:3px solid transparent;font:400 14px 'Inter',sans-serif;color:var(--mut);display:block}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.side .cta{margin:auto 22px 0;background:var(--acc);color:#fff;text-align:center;padding:12px;border-radius:999px;font:500 13px 'Inter',sans-serif}
+.main{flex:1;min-width:0}
+.wrap{max-width:1180px;margin:0 auto}
+.pill{display:inline-block;background:var(--acc);color:#fff;padding:13px 24px;border-radius:999px;font:500 14px 'Inter',sans-serif}
+.pill.ghost{background:transparent;border:1px solid rgba(255,255,255,.5)}
+.heroBtns .pill{font-size:15px;padding:14px 27px}
+.sec{padding:48px 52px}
+.eyebrow{font:500 11px 'Inter',sans-serif;letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+h1,h2,h3{margin:0}
+.trust{display:flex;align-items:center;gap:40px;padding:22px 52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font:400 13px 'Inter',sans-serif;color:var(--mut2);flex-wrap:wrap}
+.trust b{color:#dfe3e7;font-weight:500}
+.prod-scroll{scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:y proximity}
+.prod-scroll::-webkit-scrollbar{display:none}
+.pn{display:block;width:100%;text-align:left;padding:13px 15px;border:0;border-left:2px solid transparent;background:transparent;font:400 16px Inter;color:var(--mut);cursor:pointer;transition:color .2s,background .2s}
+.pn:hover{color:var(--ink)}
+.pn.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.pn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.caseRail{display:flex;gap:28px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+.caseRail::-webkit-scrollbar{height:6px}
+.caseRail::-webkit-scrollbar-track{background:transparent}
+.caseRail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:999px}
+.caseRail::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.32)}
+.casecard{position:relative;flex:none;width:520px;max-width:86%;aspect-ratio:16/11;scroll-snap-align:start;border-radius:22px;overflow:hidden}
+.casecard img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.casecard:hover img{transform:scale(1.04)}
+.casecard .cap{position:absolute;left:34px;bottom:30px;right:34px}
+.casecard .cap .t{font:500 30px/1.1 'Inter',sans-serif;letter-spacing:-.02em;color:#fff;margin-bottom:6px}
+.casecard .cap .s{font:400 16px 'Inter',sans-serif;color:rgba(255,255,255,.72)}
+.casecard .arw{position:absolute;right:26px;bottom:26px;width:48px;height:48px;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}
+.casecard:hover .arw{opacity:1;transform:translateY(0)}
+.scrim0{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(20,18,14,.72),transparent 52%)}
+.field{padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:transparent;width:100%}
+.field::placeholder{color:rgba(245,242,236,.45)}
+.topbar{display:none}
+@media(max-width:900px){
+  .side{display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar .m{display:flex;gap:16px;font:400 13px 'Inter',sans-serif;color:var(--mut);flex-wrap:wrap}
+  .sec{padding:30px 18px}
+  .trust{padding:18px 18px}
+  .grid3{grid-template-columns:1fr}
+  h1{font-size:40px!important}
+}
+</style>
+</head>
+<body><div class="shell"><aside class="side">
+  <a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
+  <div class="grp">PRODUCTS</div>
+  <nav class="nav">
+    <a href="index.html" class="on">Overview</a>
+    <a href="digital-twin.html">Digital Twin</a>
+    <a href="renders.html">Renders and Visualisation</a>
+    <a href="crm.html">CRM and AI Automation</a>
+  </nav>
+  <div class="grp mt">COMPANY</div>
+  <nav class="nav">
+    <a href="cases.html">Cases</a>
+    <a href="demos.html">Live demos</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="cta" href="contact.html">Book a demo</a>
+</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="crm.html">CRM</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
+<div style="position:relative;height:calc(100vh - 63px);min-height:520px">
+  <video id="heroVideo" autoplay muted loop playsinline poster="media/057-hero-poster.jpg" style="width:100%;height:100%;object-fit:cover"><source src="media/showreel.mp4" type="video/mp4"><source src="media/096-hero-video.mp4" type="video/mp4"></video>
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(20,18,14,.42) 0%,rgba(20,18,14,0) 24%,rgba(20,18,14,.1) 58%,rgba(20,18,14,.72) 100%)"></div>
+  <div style="position:absolute;left:52px;bottom:31px;max-width:740px">
+    <h1 id="heroTitle" style="margin:0 0 10px;font:300 28px/1.05 Inter;letter-spacing:-.03em;color:#fff;white-space:nowrap">Interactive <span style="font-weight:600">visualisation</span></h1>
+    <p id="heroSub" style="margin:0 0 16px;font:300 14px/1.5 Inter;color:rgba(255,255,255,.82)"><span class="subLine" style="white-space:nowrap">We bring architecture to life with technology</span><br><span class="subLine" style="white-space:nowrap">— for marketing, sales and internal approvals.</span></p>
+    <div class="heroBtns" style="display:flex;gap:12px;flex-wrap:wrap"><a class="pill" href="contact.html">Book a demo</a><a class="pill ghost" href="demos.html">Watch the reel</a></div>
+  </div>
+  <button id="heroSound" type="button" aria-label="Turn sound on" aria-pressed="false" style="position:absolute;right:52px;bottom:31px;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(20,18,14,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0">
+    <svg class="snd-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m23 9-6 6M17 9l6 6"/></svg>
+    <svg class="snd-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+  </button>
+  <script>
+    // Hero title + subtitle: same width as the button row below them (fonts scaled to fit).
+    (function () {
+      var h = document.getElementById('heroTitle');
+      if (!h) return;
+      var pills = h.parentElement.querySelectorAll('.heroBtns a.pill');
+      function fit() {
+        var first = pills[0].getBoundingClientRect(), last = pills[pills.length - 1].getBoundingClientRect();
+        if (Math.abs(first.top - last.top) > 2) return; // buttons wrapped (narrow screen): keep the base size
+        var target = last.right - first.left;
+        var range = document.createRange(); range.selectNodeContents(h);
+        var cur = parseFloat(getComputedStyle(h).fontSize), w = range.getBoundingClientRect().width;
+        if (w > 0) h.style.setProperty('font-size', (cur * target / w).toFixed(2) + 'px', 'important');
+        var sub = document.getElementById('heroSub');
+        if (sub) { // two fixed subtitle lines; the longer one is scaled to the row width
+          sub.style.fontSize = '';
+          var fs = parseFloat(getComputedStyle(sub).fontSize), lw = 0;
+          sub.querySelectorAll('.subLine').forEach(function (l) { lw = Math.max(lw, l.getBoundingClientRect().width); });
+          if (lw > 0) sub.style.fontSize = (fs * target / lw).toFixed(2) + 'px';
+        }
+      }
+      fit();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+      window.addEventListener('resize', fit);
+    })();
+  </script>
+  <script>
+    (function () {
+      var v = document.getElementById('heroVideo'), b = document.getElementById('heroSound');
+      if (!v || !b) return;
+      function sync() {
+        b.querySelector('.snd-off').style.display = v.muted ? '' : 'none';
+        b.querySelector('.snd-on').style.display = v.muted ? 'none' : '';
+        b.setAttribute('aria-pressed', String(!v.muted));
+        b.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
+      }
+      // Sound plays only if the user turned it on, the video is in view and the page is not hidden.
+      var wantSound = false, inView = true;
+      function apply() {
+        var on = wantSound && inView && !document.hidden;
+        if (v.muted === on) { v.muted = !on; sync(); }
+      }
+      b.addEventListener('click', function () {
+        wantSound = v.muted;
+        if (wantSound) { v.volume = 1; v.play(); }
+        v.muted = !wantSound;
+        sync();
+      });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          inView = entries[0].isIntersecting;
+          apply();
+        }, { threshold: 0 }).observe(v); // fires only when the video is fully out of / back into view
+      }
+      document.addEventListener('visibilitychange', apply); // tab switched, window minimised
+      window.addEventListener('pagehide', function () { v.muted = true; });
+      sync();
+    })();
+  </script>
+</div>
+<div class="trust"><span style="font-size:11px;letter-spacing:.08em">TRUSTED BY DEVELOPERS</span><b>BREIG</b><b>Magnum</b><b>SvoyDom</b><b>Талан</b><b>UDS</b><b>PARQ</b></div>
+<div style="display:grid;grid-template-columns:250px 1fr;gap:0" class="prodrow">
+  <div style="padding:44px 28px 44px 40px;background:linear-gradient(180deg,#12180f 0%,#2a332d 100%);width:250px">
+    <div style="font:500 11px Inter;letter-spacing:.14em;color:var(--acc);margin-bottom:24px">OUR PRODUCTS</div>
+    <div class="prodnav" style="display:flex;flex-direction:column;gap:4px">
+      <button type="button" class="pn on" aria-current="true">Digital Twin</button>
+      <button type="button" class="pn">Web Application</button>
+      <button type="button" class="pn">Touch Table</button>
+      <button type="button" class="pn">Virtual Reality (VR)</button>
+    </div>
+  </div>
+  <div class="prod-scroll" style="height:100vh;min-height:520px;overflow-y:auto">
+      <div style="position:relative;height:100%;min-height:520px;overflow:hidden;scroll-snap-align:start">
+        <img src="media/033-dt-laptop.png" style="width:100%;height:100%;object-fit:cover;object-position:center 76%" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.82) 0%,rgba(10,12,12,.4) 58%,rgba(10,12,12,0) 88%)"></div>
+        <div style="position:absolute;left:44px;bottom:44px;max-width:520px;pointer-events:none">
+          <div class="eyebrow" style="margin-bottom:14px">CHAPTER 01 — DIGITAL TWIN (DESKTOP)</div>
+          <h2 style="margin:0 0 14px;font:300 40px/1.03 Inter;letter-spacing:-.03em;color:#fff">A world your buyers can step into.</h2>
+          <p style="margin:0;font:300 16px/1.55 Inter;color:rgba(255,255,255,.82)">Change time, season and development phase — the whole scheme responds in real time.</p>
+          <div style="display:inline-flex;gap:30px;margin-top:22px;flex-wrap:wrap;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 22px"><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">USED BY</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Sales & marketing</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">WHERE IT LIVES</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">.exe application</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">KEY POWER</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Time, weather, scenarios</div></div></div>
+        </div>
+      </div>
+      <div style="position:relative;height:100%;min-height:520px;overflow:hidden;scroll-snap-align:start">
+        <img src="media/045-dt-webapp.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.82) 0%,rgba(10,12,12,.4) 58%,rgba(10,12,12,0) 88%)"></div>
+        <div style="position:absolute;left:44px;bottom:44px;max-width:520px;pointer-events:none">
+          <div class="eyebrow" style="margin-bottom:14px">CHAPTER 02 — WEB APPLICATION</div>
+          <h2 style="margin:0 0 14px;font:300 40px/1.03 Inter;letter-spacing:-.03em;color:#fff">The same world, sent as a link.</h2>
+          <p style="margin:0;font:300 16px/1.55 Inter;color:rgba(255,255,255,.82)">Unit availability, balcony views and a 3D interior tour — no install, any device.</p>
+          <div style="display:inline-flex;gap:30px;margin-top:22px;flex-wrap:wrap;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 22px"><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">USED BY</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Remote buyers</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">WHERE IT LIVES</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Any browser link</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">KEY POWER</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Views & interior tour</div></div></div>
+        </div>
+      </div>
+      <div style="position:relative;height:100%;min-height:520px;overflow:hidden;scroll-snap-align:start">
+        <img src="media/079-touch-table.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.82) 0%,rgba(10,12,12,.4) 58%,rgba(10,12,12,0) 88%)"></div>
+        <div style="position:absolute;left:44px;bottom:44px;max-width:520px;pointer-events:none">
+          <div class="eyebrow" style="margin-bottom:14px">CHAPTER 03 — TOUCH TABLE</div>
+          <h2 style="margin:0 0 14px;font:300 40px/1.03 Inter;letter-spacing:-.03em;color:#fff">Built for the sales-office screen.</h2>
+          <p style="margin:0;font:300 16px/1.55 Inter;color:rgba(255,255,255,.82)">A full-scale, touch-driven presentation of the same twin your agents use on site.</p>
+          <div style="display:inline-flex;gap:30px;margin-top:22px;flex-wrap:wrap;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 22px"><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">USED BY</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Agents on site</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">WHERE IT LIVES</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Sales-office screen</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">KEY POWER</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Full-scale presentation</div></div></div>
+        </div>
+      </div>
+      <div style="position:relative;height:100%;min-height:520px;overflow:hidden;scroll-snap-align:start">
+        <img src="media/081-vr.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+        <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.82) 0%,rgba(10,12,12,.4) 58%,rgba(10,12,12,0) 88%)"></div>
+        <div style="position:absolute;left:44px;bottom:44px;max-width:520px;pointer-events:none">
+          <div class="eyebrow" style="margin-bottom:14px">CHAPTER 04 — VIRTUAL REALITY (VR)</div>
+          <h2 style="margin:0 0 14px;font:300 40px/1.03 Inter;letter-spacing:-.03em;color:#fff">Step inside at true scale.</h2>
+          <p style="margin:0;font:300 16px/1.55 Inter;color:rgba(255,255,255,.82)">A room-scale headset walkthrough lets buyers feel the real proportions and views before construction begins.</p>
+          <div style="display:inline-flex;gap:30px;margin-top:22px;flex-wrap:wrap;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:16px 22px"><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">USED BY</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">Buyers on site</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">WHERE IT LIVES</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">VR headset</div></div><div><div style="font:600 9.5px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:5px">KEY POWER</div><div style="font:400 13px Inter;color:rgba(255,255,255,.92)">True-scale immersion</div></div></div>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="sec" style="border-top:1px solid var(--line)">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px">
+    <h2 style="font:300 30px Inter;letter-spacing:-.02em;color:var(--ink)">Cases</h2>
+    <span style="font:300 14px Inter;color:var(--mut2)">See how visual technology helps sell real estate</span>
+  </div>
+  <div class="caseRail">
+    <a class="casecard" href="case-breig.html"><img src="media/017-breig-card.webp" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t">Elysium BREIG</div><div class="s">Bali · Digital Twin + Web App</div></div><div class="arw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#161d1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></div></a>
+    <a class="casecard" href="case-magnum.html"><img src="media/068-magnum-hero.jpg" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t">Magnum Sanur</div><div class="s">Bali · Digital Twin</div></div><div class="arw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#161d1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></div></a>
+    <a class="casecard" href="case-altyn.html"><img src="media/013-altyn-surroundings.jpg?v=3" style="width:100%;height:100%;object-fit:cover;display:block"><div class="scrim0"></div><div class="cap"><div class="t">Altyn Adam</div><div class="s">Astana · Touch Table</div></div><div class="arw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#161d1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></div></a>
+  </div>
+</div>
+<div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div>
+  <a class="pill" href="contact.html">Book a demo →</a>
+</div></div>
+<div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>RU · EN</span></div>
+</div></div>
+<script>
+  // Products menu: click scrolls the slides to that chapter; the active item follows the scroll.
+  (function () {
+    var inner = document.querySelector('.prod-scroll'), items = document.querySelectorAll('.prodnav .pn');
+    if (!inner || !items.length) return;
+    var slides = inner.children;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function slideTop(i) { return slides[i].getBoundingClientRect().top - inner.getBoundingClientRect().top + inner.scrollTop; }
+    function setActive(i) {
+      items.forEach(function (it, k) {
+        it.classList.toggle('on', k === i);
+        if (k === i) it.setAttribute('aria-current', 'true'); else it.removeAttribute('aria-current');
+      });
+    }
+    var lockUntil = 0;
+    items.forEach(function (it, i) {
+      it.addEventListener('click', function () {
+        if (!slides[i]) return;
+        setActive(i);
+        lockUntil = Date.now() + 900; // keep the clicked item highlighted while the scroll animates
+        inner.scrollTo({ top: slideTop(i), behavior: reduce ? 'auto' : 'smooth' });
+      });
+    });
+    inner.addEventListener('scroll', function () {
+      if (Date.now() < lockUntil) return;
+      var max = inner.scrollHeight - inner.clientHeight, i;
+      if (inner.scrollTop >= max - 2) i = slides.length - 1; // last slide can't reach the top
+      else {
+        i = 0;
+        for (var k = 1; k < slides.length; k++) if (slideTop(k) - inner.scrollTop <= inner.clientHeight * 0.4) i = k;
+      }
+      setActive(Math.min(i, items.length - 1));
+    }, { passive: true });
+  })();
+</script>
+<script>
+  // Two-screen snap at the top of the page: hero video <-> products block.
+  // A small scroll down from the hero jumps to the products block; a scroll up
+  // from the top of the products block jumps back. Below that, scrolling is normal.
+  (function () {
+    var row = document.querySelector('.prodrow'), inner = document.querySelector('.prod-scroll');
+    if (!row) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var busy = false, touchY = null;
+    function prodTop() { return Math.round(row.getBoundingClientRect().top + window.scrollY); }
+    function go(y) {
+      busy = true;
+      window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+      var done = function () { busy = false; window.removeEventListener('scrollend', done); };
+      window.addEventListener('scrollend', done);
+      setTimeout(done, 1000); // fallback for browsers without scrollend
+    }
+    // dir > 0 = down, dir < 0 = up. Returns true if the snap handled the gesture.
+    function snap(dir, target) {
+      var top = prodTop(), y = window.scrollY;
+      if (y < top - 1) { go(dir > 0 ? top : 0); return true; }          // inside the hero screen
+      if (dir < 0 && y <= top + 1) {                                     // at the top of the products block
+        if (inner && inner.contains(target) && inner.scrollTop > 0) return false; // let slides scroll up first
+        go(0); return true;
+      }
+      return false;
+    }
+    window.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) < 2) return;
+      if (busy) { if (window.scrollY <= prodTop() + 1) e.preventDefault(); return; }
+      if (snap(e.deltaY, e.target)) e.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchstart', function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchmove', function (e) {
+      if (touchY === null) return;
+      var dy = touchY - e.touches[0].clientY;
+      if (busy) { if (window.scrollY <= prodTop() + 1) e.preventDefault(); return; }
+      if (Math.abs(dy) < 12) return;
+      if (snap(dy, e.target)) { e.preventDefault(); touchY = null; }
+    }, { passive: false });
+    window.addEventListener('keydown', function (e) {
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      var dir = { ArrowDown: 1, PageDown: 1, ' ': e.shiftKey ? -1 : 1, ArrowUp: -1, PageUp: -1 }[e.key];
+      if (!dir) return;
+      if (busy || snap(dir, e.target)) e.preventDefault();
+    });
+  })();
+</script>
+</body></html>

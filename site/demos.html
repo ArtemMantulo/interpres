@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live demos · Immersive Solutions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1e2623;--panel:#161d1a;--panel2:#121815;--card:#26302c;--line:rgba(255,255,255,.08);--ink:#eef3ef;--mut:#a8b3ac;--mut2:#7f8b83;--acc:#86b8a0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img,video{display:block}
+.shell{display:flex;min-height:100vh}
+.side{width:238px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 22px 4px}
+.brand span{font:600 14px/1.18 'Inter',sans-serif;color:#fff}
+.side .grp{padding:20px 22px 12px;font:600 10px 'Inter',sans-serif;letter-spacing:.16em;color:var(--mut2)}
+.side .grp.mt{padding-top:26px}
+.nav a{padding:11px 22px;border-left:3px solid transparent;font:400 14px 'Inter',sans-serif;color:var(--mut);display:block}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.side .cta{margin:auto 22px 0;background:var(--acc);color:#fff;text-align:center;padding:12px;border-radius:999px;font:500 13px 'Inter',sans-serif}
+.main{flex:1;min-width:0}
+.wrap{max-width:1180px;margin:0 auto}
+.pill{display:inline-block;background:var(--acc);color:#fff;padding:13px 24px;border-radius:999px;font:500 14px 'Inter',sans-serif}
+.pill.ghost{background:transparent;border:1px solid rgba(255,255,255,.5)}
+.sec{padding:48px 52px}
+.eyebrow{font:500 11px 'Inter',sans-serif;letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+h1,h2,h3{margin:0}
+.trust{display:flex;align-items:center;gap:40px;padding:22px 52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font:400 13px 'Inter',sans-serif;color:var(--mut2);flex-wrap:wrap}
+.trust b{color:#dfe3e7;font-weight:500}
+.prod-scroll{scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:y proximity}
+.prod-scroll::-webkit-scrollbar{display:none}
+.grid3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px}
+.casecard{position:relative;height:280px;border-radius:8px;overflow:hidden}
+.casecard .cap{position:absolute;left:18px;bottom:16px}
+.casecard .cap .t{font:500 18px 'Inter',sans-serif;color:#fff}
+.casecard .cap .s{font:400 12px 'Inter',sans-serif;color:rgba(255,255,255,.8)}
+.scrim0{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(20,18,14,.8),transparent 55%)}
+.field{padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:transparent;width:100%}
+.field::placeholder{color:rgba(245,242,236,.45)}
+.topbar{display:none}
+@media(max-width:900px){
+  .side{display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar .m{display:flex;gap:16px;font:400 13px 'Inter',sans-serif;color:var(--mut);flex-wrap:wrap}
+  .sec{padding:30px 18px}
+  .trust{padding:18px 18px}
+  .grid3{grid-template-columns:1fr}
+  h1{font-size:40px!important}
+}
+</style>
+</head>
+<body><div class="shell"><aside class="side">
+  <a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
+  <div class="grp">PRODUCTS</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="digital-twin.html">Digital Twin</a>
+    <a href="renders.html">Renders and Visualisation</a>
+    <a href="crm.html">CRM and AI Automation</a>
+  </nav>
+  <div class="grp mt">COMPANY</div>
+  <nav class="nav">
+    <a href="cases.html">Cases</a>
+    <a href="demos.html" class="on">Live demos</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="cta" href="contact.html">Book a demo</a>
+</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="crm.html">CRM</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
+<div class="sec"><div class="eyebrow" style="margin-bottom:12px">LIVE DEMOS</div><h1 style="font:300 46px Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:10px">Open in your browser</h1><p style="font:300 17px Inter;color:var(--mut2);max-width:560px">Real builds, real data. No install, no login.</p></div>
+<div class="sec" style="padding-top:0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<a class="casecard" href="#" style="height:220px"><img src="media/024-breig-hero.jpg" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t" style="font-size:16px">Breig Elysium — walkthrough</div><div class="s">Web Application · OPEN ↗</div></div></a>
+<a class="casecard" href="#" style="height:220px"><img src="media/067-magnum-gameplay.jpg" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t" style="font-size:16px">Magnum — gameplay</div><div class="s">Digital Twin · OPEN ↗</div></div></a>
+<a class="casecard" href="#" style="height:220px"><img src="media/045-dt-webapp.jpg" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t" style="font-size:16px">Interior tour — Gaussian splat</div><div class="s">Web Application · OPEN ↗</div></div></a>
+<a class="casecard" href="#" style="height:220px"><img src="media/079-touch-table.jpg" style="width:100%;height:100%;object-fit:cover"><div class="scrim0"></div><div class="cap"><div class="t" style="font-size:16px">Altyn Adam — touch table</div><div class="s">Touch Table · OPEN ↗</div></div></a>
+</div></div>
+<div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div>
+  <a class="pill" href="contact.html">Book a demo →</a>
+</div></div><div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>RU · EN</span></div></div></div></body></html>

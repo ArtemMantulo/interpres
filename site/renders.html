@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renders and Visualisation · Immersive Solutions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1e2623;--panel:#161d1a;--panel2:#121815;--card:#26302c;--line:rgba(255,255,255,.08);--ink:#eef3ef;--mut:#a8b3ac;--mut2:#7f8b83;--acc:#86b8a0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+img,video{display:block}
+.hrail{scrollbar-width:none;-ms-overflow-style:none}
+.hrail::-webkit-scrollbar{display:none}
+.cinewrap button{opacity:0;transition:opacity .25s,background .2s}
+.cinewrap:hover button{opacity:1}
+.shell{display:flex;min-height:100vh}
+.side{width:238px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 22px 4px}
+.brand span{font:600 14px/1.18 'Inter',sans-serif;color:#fff}
+.side .grp{padding:20px 22px 12px;font:600 10px 'Inter',sans-serif;letter-spacing:.16em;color:var(--mut2)}
+.side .grp.mt{padding-top:26px}
+.nav a{padding:11px 22px;border-left:3px solid transparent;font:400 14px 'Inter',sans-serif;color:var(--mut);display:block}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.side .cta{margin:auto 22px 0;background:var(--acc);color:#fff;text-align:center;padding:12px;border-radius:999px;font:500 13px 'Inter',sans-serif}
+.main{flex:1;min-width:0}
+.wrap{max-width:1180px;margin:0 auto}
+.pill{display:inline-block;background:var(--acc);color:#fff;padding:13px 24px;border-radius:999px;font:500 14px 'Inter',sans-serif}
+.pill.ghost{background:transparent;border:1px solid rgba(255,255,255,.5)}
+.sec{padding:48px 52px}
+.eyebrow{font:500 11px 'Inter',sans-serif;letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+h1,h2,h3{margin:0}
+.trust{display:flex;align-items:center;gap:40px;padding:22px 52px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font:400 13px 'Inter',sans-serif;color:var(--mut2);flex-wrap:wrap}
+.trust b{color:#dfe3e7;font-weight:500}
+.prod-scroll{scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:y proximity}
+.prod-scroll::-webkit-scrollbar{display:none}
+.grid3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px}
+.casecard{position:relative;height:280px;border-radius:8px;overflow:hidden}
+.casecard .cap{position:absolute;left:18px;bottom:16px}
+.casecard .cap .t{font:500 18px 'Inter',sans-serif;color:#fff}
+.casecard .cap .s{font:400 12px 'Inter',sans-serif;color:rgba(255,255,255,.8)}
+.scrim0{position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(20,18,14,.8),transparent 55%)}
+.field{padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:8px;font:400 14px 'Inter',sans-serif;color:var(--ink);background:transparent;width:100%}
+.field::placeholder{color:rgba(245,242,236,.45)}
+.topbar{display:none}
+@media(max-width:900px){
+  .side{display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar .m{display:flex;gap:16px;font:400 13px 'Inter',sans-serif;color:var(--mut);flex-wrap:wrap}
+  .sec{padding:30px 18px}
+  .trust{padding:18px 18px}
+  .grid3{grid-template-columns:1fr}
+  h1{font-size:40px!important}
+}
+</style>
+</head>
+<body><div class="shell"><aside class="side">
+  <a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
+  <div class="grp">PRODUCTS</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="digital-twin.html">Digital Twin</a>
+    <a href="renders.html" class="on">Renders and Visualisation</a>
+    <a href="crm.html">CRM and AI Automation</a>
+  </nav>
+  <div class="grp mt">COMPANY</div>
+  <nav class="nav">
+    <a href="cases.html">Cases</a>
+    <a href="demos.html">Live demos</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="cta" href="contact.html">Book a demo</a>
+</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="crm.html">CRM</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
+<div style="position:relative;height:420px">
+  <img src="media/067-magnum-gameplay.jpg" style="width:100%;height:100%;object-fit:cover">
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.85) 0%,rgba(10,12,12,.35) 62%,rgba(10,12,12,.1) 100%)"></div>
+  <div style="position:absolute;left:52px;bottom:48px;max-width:640px">
+    <div class="eyebrow" style="margin-bottom:14px">SOLUTION · RENDERS & VISUALISATION</div>
+    <h1 style="font:300 50px/1.04 Inter;letter-spacing:-.03em;color:#fff;margin-bottom:16px">Renders and Visualisation</h1>
+    <p style="font:300 18px/1.55 Inter;color:rgba(255,255,255,.85);max-width:520px">Photoreal stills, cinematic film and interactive tours produced from the same 3D pipeline as your twin — no duplicated work.</p>
+  </div>
+</div>
+<div class="sec"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px"><div style="font:600 10px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:8px">USED BY</div><div style="font:400 15px/1.5 Inter;color:var(--ink)">Marketing & brand teams</div></div><div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px"><div style="font:600 10px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:8px">DELIVERED AS</div><div style="font:400 15px/1.5 Inter;color:var(--ink)">Film, short video, reels, stills, interactive tours</div></div><div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px"><div style="font:600 10px Inter;letter-spacing:.12em;color:var(--acc);margin-bottom:8px">SOURCE</div><div style="font:400 15px/1.5 Inter;color:var(--ink)">Your existing 3D model or we can create them for you</div></div>
+</div></div>
+<div class="sec" style="padding-top:8px">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+    <div><div class="eyebrow" style="margin-bottom:10px">CINEMATIC FILM AND REELS</div><h3 style="font:300 30px/1.12 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">The launch reel your campaign deserves.</h3></div>
+    <span style="font:300 14px Inter;color:var(--mut2)">Hover any tile to see it in motion</span>
+  </div>
+  <p style="font:300 16px/1.65 Inter;color:var(--mut);max-width:620px;margin:0 0 22px">Aerials, hero shots and lifestyle sequences rendered from the real model, ready for social, out-of-home and events.</p>
+  <div class="cinewrap" style="position:relative">
+  <div class="hrail" id="cineRail" style="display:flex;gap:14px;height:420px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px">
+    <div class="fmedia" style="flex:none;width:600px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/046-feat-cinematic.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/090-feat-cinematic.mp4" poster="media/046-feat-cinematic.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">FILM · 16:9</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Launch showreel</span></div>
+    <div class="fmedia" style="flex:none;width:236px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/076-render-reel1-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/102-render-reel1.mp4" poster="media/076-render-reel1-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">REEL · 9:16</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Amenities reel</span></div>
+    <div class="fmedia" style="flex:none;width:236px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/077-render-reel2-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/103-render-reel2.mp4" poster="media/077-render-reel2-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">REEL · 9:16</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Lifestyle reel</span></div>
+    <div class="fmedia" style="flex:none;width:236px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/078-render-reel3-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/104-render-reel3.mp4" poster="media/078-render-reel3-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">REEL · 9:16</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Teaser reel</span></div>
+  </div>
+  <button aria-label="prev" onclick="document.getElementById('cineRail').scrollBy({left:-420,behavior:'smooth'})" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+  <button aria-label="next" onclick="document.getElementById('cineRail').scrollBy({left:420,behavior:'smooth'})" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+  </div>
+  <script>(function(){var r=document.getElementById('cineRail');if(!r)return;r.addEventListener('wheel',function(e){var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!d)return;r.scrollLeft+=d;e.preventDefault();e.stopPropagation();},{passive:false});})();</script>
+<script>document.querySelectorAll('.fmedia').forEach(function(f){var v=f.querySelector('video');if(!v)return;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script>
+</div>
+<div class="sec" style="padding-top:8px">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+    <div><div class="eyebrow" style="margin-bottom:10px">AI GENERATED VIDEOS</div><h3 style="font:300 30px/1.12 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">Generative motion, on brand and on budget.</h3></div>
+    <span style="font:300 14px Inter;color:var(--mut2)">Hover any tile to see it in motion</span>
+  </div>
+  <p style="font:300 16px/1.65 Inter;color:var(--mut);max-width:620px;margin:0 0 22px">AI-generated films and social reels produced from your project — fast turnarounds for campaigns, teasers and always-on content.</p>
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;height:420px">
+    <div class="fmedia" style="position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/075-render-film-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/101-render-film.mp4" poster="media/075-render-film-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">AI FILM · 16:9</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">AI cinematic</span></div>
+    <div class="fmedia" style="position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/076-render-reel1-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/102-render-reel1.mp4" poster="media/076-render-reel1-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">AI REEL · 9:16</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">AI reel 01</span></div>
+    <div class="fmedia" style="position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/077-render-reel2-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/103-render-reel2.mp4" poster="media/077-render-reel2-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">AI REEL · 9:16</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 14px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">AI reel 02</span></div>
+  </div>
+<script>document.querySelectorAll('.fmedia').forEach(function(f){var v=f.querySelector('video');if(!v||f.dataset.b)return;f.dataset.b=1;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script>
+</div>
+<div class="sec intdesign">
+  <div class="eyebrow" style="margin-bottom:12px">INTERIOR DESIGN</div>
+  <h2 style="font:300 34px/1.1 Inter;letter-spacing:-.02em;color:var(--ink);margin:0 0 20px;max-width:620px">Interiors you can walk through before the first fit-out.</h2>
+  <div class="cinewrap" style="position:relative">
+    <div class="hrail" id="intRail" style="display:flex;gap:14px;height:440px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px">
+      <div class="fmedia" style="flex:none;width:680px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/076-render-reel1-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/102-render-reel1.mp4" poster="media/076-render-reel1-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">WALKTHROUGH</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 15px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Living room — golden hour</span></div>
+      <div class="fmedia" style="flex:none;width:680px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/046-feat-cinematic.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/090-feat-cinematic.mp4" poster="media/046-feat-cinematic.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">WALKTHROUGH</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 15px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Kitchen &amp; dining</span></div>
+      <div class="fmedia" style="flex:none;width:680px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c"><img src="media/077-render-reel2-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/103-render-reel2.mp4" poster="media/077-render-reel2-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:14px;top:12px;z-index:3;font:600 10px Inter;letter-spacing:.06em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px">WALKTHROUGH</span><span style="position:absolute;left:0;right:0;bottom:0;z-index:3;padding:16px 18px;font:500 15px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.85),transparent);pointer-events:none">Master bedroom</span></div>
+    </div>
+    <button aria-label="prev" onclick="document.getElementById('intRail').scrollBy({left:-694,behavior:'smooth'})" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+    <button aria-label="next" onclick="document.getElementById('intRail').scrollBy({left:694,behavior:'smooth'})" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+  </div>
+  <div style="max-width:720px;margin:40px 0 8px">
+    <p style="font:300 18px/1.7 Inter;color:var(--mut);margin:0">We produce photoreal interior renders and walkthroughs from your drawings — furniture, materials, textiles and lighting to spec. Test finishes and layouts before you commit, show buyers exactly how a unit will feel, and reuse every asset across brochures, listings and the sales office.</p>
+  </div>
+</div>
+<div class="sec" style="padding-top:8px">
+  <div style="background:linear-gradient(180deg,#12180f 0%,#232a26 100%);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:0 18px 40px rgba(0,0,0,.28)">
+    <div class="eyebrow" style="margin-bottom:8px">RENDERS</div>
+    <h2 style="font:300 30px/1.12 Inter;letter-spacing:-.02em;color:var(--ink);margin:0 0 6px">Every render workflow, one gallery.</h2>
+    <p style="font:300 15px/1.6 Inter;color:var(--mut);max-width:640px;margin:0">Photoreal CGI, live captures from the Digital Twin, and AI-enhanced passes — pick the pipeline that fits the deadline.</p>
+
+    <div style="">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <div><div class="eyebrow" style="margin-bottom:6px">PHOTOREAL RENDERS</div><h3 style="font:300 22px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">A gallery you can send straight to sales.</h3></div>
+        <span style="font:300 12px Inter;color:var(--mut2)">Scroll or use the arrows</span>
+      </div>
+      <div class="cinewrap" style="position:relative">
+        <div class="hrail" id="rendRail" style="display:flex;gap:14px;height:280px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px">
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/024-breig-hero.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Living · Elysium BREIG</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/052-gallery_04.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Pool & beach club</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/053-gallery_06.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Aerial masterplan</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/054-gallery_07.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Sunrise elevation</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/055-gallery_08.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Beach volleyball</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/056-gallery_09.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Garden pavilion</span></div>
+        </div>
+        <button aria-label="prev" onclick="document.getElementById('rendRail').scrollBy({left:-434,behavior:'smooth'})" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+        <button aria-label="next" onclick="document.getElementById('rendRail').scrollBy({left:434,behavior:'smooth'})" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+      </div>
+    </div>
+
+    <div style="margin-top:30px;padding-top:26px;border-top:1px solid var(--line)">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <div><div class="eyebrow" style="margin-bottom:6px">DIGITAL TWIN · PHOTOSHOOT MODE</div><h3 style="font:300 22px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">Cinematic stills captured live inside the app.</h3></div>
+        <span style="font:300 12px Inter;color:var(--mut2)">Scroll or use the arrows</span>
+      </div>
+      <div class="cinewrap" style="position:relative">
+        <div class="hrail" id="dtRail" style="display:flex;gap:14px;height:280px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px">
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/053-gallery_06.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Aerial · masterplan</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/054-gallery_07.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Golden-hour elevation</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/046-feat-cinematic.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Amenities deck</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/045-dt-webapp.jpg" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Unit view study</span></div>
+        <div style="flex:none;width:420px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/080-visualisation.png" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Environment pass</span></div>
+        </div>
+        <button aria-label="prev" onclick="document.getElementById('dtRail').scrollBy({left:-434,behavior:'smooth'})" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+        <button aria-label="next" onclick="document.getElementById('dtRail').scrollBy({left:434,behavior:'smooth'})" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+      </div>
+    </div>
+
+    <div style="margin-top:30px;padding-top:26px;border-top:1px solid var(--line)">
+      <div style="margin-bottom:16px"><div class="eyebrow" style="margin-bottom:6px">AI ENHANCED RENDERS</div><h3 style="font:300 22px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin:0 0 4px">Drag to compare base and AI-enhanced.</h3><span style="font:300 12px Inter;color:var(--mut2)">Drag the handle left / right</span></div>
+      <div id="baWrap" style="position:relative;width:100%;height:440px;border-radius:14px;overflow:hidden;cursor:ew-resize;user-select:none">
+        <img src="media/054-gallery_07.jpg" alt="After" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+        <div id="baTop" style="position:absolute;inset:0;width:50%;overflow:hidden">
+          <img id="baBefore" src="media/056-gallery_09.jpg" alt="Before" style="position:absolute;left:0;top:0;height:100%;object-fit:cover;object-position:left center">
+          <span style="position:absolute;left:16px;bottom:16px;font:600 11px Inter;letter-spacing:.08em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:6px 12px;border-radius:999px">BEFORE</span>
+        </div>
+        <span style="position:absolute;right:16px;bottom:16px;z-index:2;font:600 11px Inter;letter-spacing:.08em;color:#0d100c;background:var(--acc);padding:6px 12px;border-radius:999px">AFTER · AI</span>
+        <div id="baLine" style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;transform:translateX(-1px);z-index:3;box-shadow:0 0 12px rgba(0,0,0,.4)"></div>
+        <div id="baHandle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;width:46px;height:46px;border-radius:999px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:#0d100c;font-size:16px;box-shadow:0 6px 18px rgba(0,0,0,.35)">⟺</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>['intRail','rendRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;r.addEventListener('wheel',function(e){var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!d)return;r.scrollLeft+=d;e.preventDefault();e.stopPropagation();},{passive:false});});document.querySelectorAll('.intdesign .fmedia, .intdesign ~ .sec .fmedia').forEach(function(f){var v=f.querySelector('video');if(!v||f.dataset.b)return;f.dataset.b=1;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script>
+<div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div>
+  <a class="pill" href="contact.html">Book a demo →</a>
+</div></div>
+<div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>RU · EN</span></div>
+</div></div>
+<script>(function(){var w=document.getElementById('baWrap');if(!w)return;var top=document.getElementById('baTop'),line=document.getElementById('baLine'),ha=document.getElementById('baHandle');var bef=document.getElementById('baBefore');function fit(){bef.style.width=w.getBoundingClientRect().width+'px';}fit();window.addEventListener('resize',fit);function set(x){var r=w.getBoundingClientRect();var p=Math.max(0,Math.min(1,(x-r.left)/r.width));top.style.width=(p*100)+'%';line.style.left=(p*100)+'%';ha.style.left=(p*100)+'%';}var drag=false;w.addEventListener('mousedown',function(e){drag=true;set(e.clientX);});window.addEventListener('mousemove',function(e){if(drag)set(e.clientX);});window.addEventListener('mouseup',function(){drag=false;});w.addEventListener('touchstart',function(e){drag=true;set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchmove',function(e){if(drag)set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchend',function(){drag=false;});})();</script>
+
+<script>(function(){
+ var ov=document.createElement('div');
+ ov.style.cssText='display:none;opacity:0;transition:opacity .22s;position:fixed;inset:0;z-index:9999;background:rgba(8,11,9,.92);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:40px;cursor:pointer';
+ var box=document.createElement('div');box.style.cssText='max-width:96vw;max-height:92vh;display:flex;align-items:center;justify-content:center';ov.appendChild(box);
+ var cl=document.createElement('button');cl.setAttribute('aria-label','close');cl.textContent='\u00d7';cl.style.cssText='position:fixed;top:22px;right:26px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2';ov.appendChild(cl);
+ document.body.appendChild(ov);
+ function openMedia(node){
+   box.innerHTML='';
+   var v=node.querySelector&&node.querySelector('video');
+   var i=node.querySelector&&node.querySelector('img');
+   if(v&&v.getAttribute('src')){
+     var vid=document.createElement('video');vid.src=v.getAttribute('src');vid.controls=true;vid.autoplay=true;vid.loop=true;vid.playsInline=true;vid.style.cssText='max-width:96vw;max-height:92vh;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)';box.appendChild(vid);
+   } else if(i){
+     var img=document.createElement('img');img.src=i.src;img.style.cssText='max-width:96vw;max-height:92vh;object-fit:contain;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)';box.appendChild(img);
+   } else return;
+   ov.style.display='flex';requestAnimationFrame(function(){ov.style.opacity=1;});
+ }
+ function close(){ov.style.opacity=0;setTimeout(function(){ov.style.display='none';box.innerHTML='';},220);}
+ ov.addEventListener('click',function(e){if(e.target===ov||e.target===cl)close();});
+ cl.addEventListener('click',close);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
+ document.querySelectorAll('.fmedia').forEach(function(t){t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});
+ ['rendRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;[].slice.call(r.children).forEach(function(t){if(t.tagName==='BUTTON')return;t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});});
+})();</script>
+</body></html>

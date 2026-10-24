@@ -1,10 +1,12 @@
 {
   "name": "interpres-live",
-  "version": "1.0.0",
-  "description": "Gaussian Splats Viewer",
+  "version": "3.0.0",
+  "description": "Immersive Solutions site (root, sources in site/) + Gaussian Splats Viewer (/demo)",
   "scripts": {
-    "start": "http-server public_html -p 8000 -o",
-    "dev": "http-server public_html -p 8000"
+    "dev": "npm --prefix site run dev",
+    "build": "npm --prefix site run build",
+    "preview": "npm --prefix site run preview",
+    "demo": "http-server public_html/demo -p 8001 -o"
   },
   "keywords": [],
   "author": "",

@@ -1,4 +1,7 @@
 /.trash
 /start_server.ps1
+/.claude/
 node_modules/
-package-lock.json
+/package-lock.json
+site/dist/
+/out/
