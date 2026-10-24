@@ -36,6 +36,8 @@ h1,h2,h3{margin:0}
 .devrow .m{border-radius:12px;overflow:hidden;aspect-ratio:2/1;background:#1a201d;cursor:pointer}
 .devrow .m img,.devrow .m video{width:100%;height:100%;object-fit:cover}
 .devrow .m.full{aspect-ratio:16/9} /* 16:9 clip shown whole (its UI sits at the top/bottom edges) */
+.embed-play{position:absolute;left:18px;bottom:18px;z-index:2;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;background:var(--acc);color:#fff;font:500 14px Inter;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.embed-play:hover{filter:brightness(1.08)}
 .devnum{font:300 13px Inter;color:var(--acc);letter-spacing:.1em;margin-bottom:14px}
 .reslist{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 #infraRail{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
@@ -121,7 +123,7 @@ h1,h2,h3{margin:0}
     <div class="eyebrow" style="margin-bottom:10px">Construction progress</div>
     <p style="font:300 21px/1.5 Inter;color:var(--ink)">Park construction progress with seasonal scenario changes.</p>
   </div>
-  <div class="m full"><video src="media/case-altyn/hero/085-altyn-progress.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+  <div class="m full" data-embed="https://kinescope.io/embed/8wqMh5P4ctnrQmmhtNZDqo" data-embed-ratio="9/16" style="position:relative"><video src="media/case-altyn/hero/085-altyn-progress.mp4" autoplay muted loop playsinline preload="metadata"></video><button type="button" class="embed-play" aria-label="Watch the full video"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Watch full video</button></div>
 </div></div><div class="sec" style="padding-top:0"><h2 style="font:300 44px/1.05 Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:38px">Achieved results</h2>
 <div style="display:grid;grid-template-columns:1fr 340px;gap:44px;align-items:start;margin-bottom:44px">
   <div><div><div class="eyebrow" style="margin-bottom:12px">Sales office</div><p style="font:300 28px/1.35 Inter;letter-spacing:-.01em;color:var(--ink);margin:0 0 22px;max-width:90%">All developer properties in the district sold out within 18 months of using the Digital Twin.</p>
@@ -168,6 +170,14 @@ h1,h2,h3{margin:0}
  document.body.appendChild(ov);
  function openMedia(node){
    box.innerHTML='';
+   var emb=node.dataset&&node.dataset.embed;
+   if(emb){ // external player (Kinescope): sized to the clip's ratio, e.g. 9/16 for a vertical video
+     var r=(node.dataset.embedRatio||'16/9').split('/'),rw=+r[0]||16,rh=+r[1]||9;
+     var f=document.createElement('iframe');f.src=emb+(emb.indexOf('?')<0?'?':'&')+'autoplay=1';
+     f.allow='autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write';f.allowFullscreen=true;f.setAttribute('frameborder','0');
+     f.style.cssText='border:0;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6);background:#000;width:min(96vw,calc(88vh*'+rw+'/'+rh+'));aspect-ratio:'+rw+'/'+rh;
+     box.appendChild(f);ov.style.display='flex';requestAnimationFrame(function(){ov.style.opacity=1;});return;
+   }
    var v=node.querySelector&&node.querySelector('video');
    var i=node.querySelector&&node.querySelector('img');
    if(v&&v.getAttribute('src')){
@@ -182,6 +192,7 @@ h1,h2,h3{margin:0}
  cl.addEventListener('click',close);
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
  document.querySelectorAll('.devrow .m, a.icard').forEach(function(t){t.style.cursor='pointer';t.addEventListener('dblclick',function(e){e.preventDefault();openMedia(t);});});
+ document.querySelectorAll('.embed-play').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();openMedia(btn.closest('[data-embed]'));});});
 })();</script>
 <script>(function(){var w=document.getElementById('aslWrap');if(!w)return;var top=document.getElementById('aslTop'),line=document.getElementById('aslLine'),ha=document.getElementById('aslHandle'),bef=document.getElementById('aslBefore');function fit(){bef.style.width=w.getBoundingClientRect().width+'px';}fit();window.addEventListener('resize',fit);function set(x){var r=w.getBoundingClientRect();var p=Math.max(0,Math.min(1,(x-r.left)/r.width));top.style.width=(p*100)+'%';line.style.left=(p*100)+'%';ha.style.left=(p*100)+'%';}var drag=false;w.addEventListener('mousedown',function(e){drag=true;set(e.clientX);});window.addEventListener('mousemove',function(e){if(drag)set(e.clientX);});window.addEventListener('mouseup',function(){drag=false;});w.addEventListener('touchstart',function(e){drag=true;set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchmove',function(e){if(drag)set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchend',function(){drag=false;});})();</script>
 <script>(function(){var r=document.getElementById('infraRail'),d=document.getElementById('infraDots');if(!r||!d)return;var cards=[].slice.call(r.children);cards.forEach(function(_,i){var b=document.createElement('button');b.style.cssText='width:8px;height:8px;border-radius:999px;border:0;padding:0;cursor:pointer;background:'+(i===0?'var(--acc)':'rgba(255,255,255,.25)')+';transition:background .2s';b.addEventListener('click',function(){r.scrollTo({left:cards[i].offsetLeft-r.offsetLeft,behavior:'smooth'});});d.appendChild(b);});function upd(){var c=r.scrollLeft+r.clientWidth/2,idx=0,best=1e9;cards.forEach(function(el,i){var mid=el.offsetLeft-r.offsetLeft+el.clientWidth/2,dist=Math.abs(mid-c);if(dist<best){best=dist;idx=i;}});[].slice.call(d.children).forEach(function(b,i){b.style.background=i===idx?'var(--acc)':'rgba(255,255,255,.25)';});}r.addEventListener('scroll',upd);})();</script>
