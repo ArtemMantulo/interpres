@@ -153,12 +153,12 @@
 }
 
 
+/* Apartment pin looks and behaves like the amenity pins: an icon circle whose label
+   slides out on hover/focus (sizes kept in sync with asset.amenities.css). */
 .apartment-pin {
     position: absolute;
-    height: 40px;
-    min-width: 40px;
+    height: 32px;
     width: max-content;
-    max-width: min(460px, calc(100vw - 64px));
     overflow: visible;
     display: flex;
     pointer-events: auto;
@@ -170,7 +170,7 @@
 }
 
 .apartment-pin .glass-panel {
-    background-color: var(--glass-bg-dark);
+    background-color: rgba(28, 28, 28, 0.4);
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
     z-index: 0;
@@ -191,19 +191,20 @@
 .apartment-pin .panel-container {
     position: relative;
     height: 100%;
-    max-width: 100%;
-    min-width: 40px;
     gap: 0;
-    padding: 0 6px 0 0;
+    padding: 0;
     align-items: center;
+    transition:
+        gap 0.8s ease,
+        padding 0.8s ease;
     z-index: 2;
 }
 
 .apartment-pin-icon {
     position: relative;
-    width: 20px;
-    height: 20px;
-    padding: 10px;
+    width: 16px;
+    height: 16px;
+    padding: 8px;
     object-fit: contain;
     display: block;
     align-self: center;
@@ -215,16 +216,39 @@
     height: 100%;
     display: flex;
     align-items: center;
-    white-space: nowrap;
+    align-self: center;
+    max-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 0;
+    opacity: 0;
+    transform: translateX(-6px);
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
-    max-width: min(380px, calc(100vw - 120px));
-    padding-right: 8px;
+    transition:
+        max-width 0.48s ease,
+        padding-right 0.48s ease,
+        opacity 0.36s ease,
+        transform 0.48s ease;
     -webkit-user-select: none;
     user-select: none;
+}
+
+.apartment-pin:hover:not(.selected-for-info) .panel-container,
+.apartment-pin.expanded .panel-container,
+.apartment-pin:focus-visible:not(.selected-for-info) .panel-container {
+    gap: 0px;
+    padding: 0 4px 0 0;
+}
+
+.apartment-pin:hover:not(.selected-for-info) .apartment-pin-text,
+.apartment-pin.expanded .apartment-pin-text,
+.apartment-pin:focus-visible:not(.selected-for-info) .apartment-pin-text {
+    max-width: min(380px, calc(100vw - 120px));
+    padding-right: 6px;
+    opacity: 1;
+    transform: translateX(0);
 }
 
 .apartment-pin.selected-for-info .glass-panel {

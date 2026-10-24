@@ -328,17 +328,25 @@
         max-width: var(--amenities-text-max-width);
         padding-right: 4px;
     }
+    /* Mobile: same as amenity pins - icon only (tap opens the info panel). */
     .apartment-pin {
-        height: 40px;
-        max-width: calc(100vw - 40px);
+        height: 32px;
     }
     .apartment-pin-icon {
-        width: 20px;
-        height: 20px;
-        padding: 10px;
+        width: 16px;
+        height: 16px;
     }
-    .apartment-pin-text {
-        padding-right: 6px;
+    .apartment-pin:hover:not(.selected-for-info) .panel-container,
+    .apartment-pin:focus-visible:not(.selected-for-info) .panel-container {
+        gap: 0;
+        padding: 0;
+    }
+    .apartment-pin:hover:not(.selected-for-info) .apartment-pin-text,
+    .apartment-pin:focus-visible:not(.selected-for-info) .apartment-pin-text {
+        max-width: 0;
+        padding-right: 0;
+        opacity: 0;
+        transform: translateX(-6px);
     }
 
     .gallery-panel {
@@ -365,7 +373,7 @@
     }
 
     .apartment-pin-text {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     #amenities-info-panel {
