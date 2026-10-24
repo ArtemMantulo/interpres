@@ -57,6 +57,7 @@
     cursor: pointer;
     transition:
         width 0.24s ease,
+        margin-left 0.24s ease,
         background-color 0.2s ease;
 }
 
@@ -125,7 +126,18 @@
 .floor-panel-item:focus-visible,
 .floor-panel-item.active {
     width: 80px;
+    /* Grow 20px to each side instead of only to the right, so the "Floor N" pill stays
+       centred on the same axis as the 40px number circles (all share one left edge). */
+    margin-left: -20px;
     background-color: rgba(36, 36, 36, 0.48);
+}
+
+/* Portrait mobile: the column is pinned to the screen's left edge, keep growing rightwards. */
+@media screen and (pointer: coarse) and (max-width: 767px) {
+    .floor-panel-item:focus-visible,
+    .floor-panel-item.active {
+        margin-left: 0;
+    }
 }
 
 .floor-panel-item:focus-visible .floor-panel-item-label,
