@@ -294,7 +294,7 @@
         bottom: 160px;
     }
     .amenities {
-        height: 40px;
+        height: 36px;
         --amenities-text-max-width: calc(100vw - 40px);
     }
     .amenities .panel-container {
@@ -302,8 +302,8 @@
         padding: 0;
     }
     .amenities-icon {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
     }
     .amenities-text {
         padding-right: 0;
@@ -360,8 +360,8 @@
     }
 
     .amenities-text {
-        font-size: 14px;
-        line-height: 20px;
+        font-size: 13px;
+        line-height: 18px;
     }
 
     .apartment-pin-text {

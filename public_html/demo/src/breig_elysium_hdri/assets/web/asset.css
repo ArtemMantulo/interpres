@@ -371,7 +371,7 @@ button,
 
 .amenities {
     position: absolute;
-    height: 36px;
+    height: 32px;
     width: max-content;
     overflow: visible;
     display: flex;
@@ -445,8 +445,8 @@ button,
 
 .amenities-icon {
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
     display: block;
 }
@@ -458,7 +458,7 @@ button,
     align-items: center;
     padding-right: 8px;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
     -webkit-user-select: none;
     user-select: none;

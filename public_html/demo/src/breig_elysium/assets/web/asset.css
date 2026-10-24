@@ -222,7 +222,7 @@ canvas {
 
 .amenities {
     position: absolute;
-    height: 36px;   
+    height: 32px;   
     overflow: hidden;
     display: flex;
     width: max-content;
@@ -254,8 +254,8 @@ canvas {
 
 .amenities-icon {
     position: relative;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     margin: 0;
     padding: 0;
     object-fit: contain;
@@ -265,7 +265,7 @@ canvas {
 .amenities-text {
     position: relative;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
     padding-right: 8px;
     height: 100%;
