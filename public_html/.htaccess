@@ -1,18 +1,60 @@
-# Enable MIME types for JavaScript modules
+# ============================================================
+#  interpres.live  —  root: Interpres marketing site (SPA)
+#                    /demo: Gaussian Splats Viewer (legacy)
+# ============================================================
+
+# --- MIME types for ES modules ---------------------------------
 <IfModule mod_mime.c>
     AddType text/javascript .js .mjs
-    RemoveType .mjs
-    AddType text/javascript .mjs
+    AddType model/gltf-binary .glb
+    AddType application/octet-stream .ksplat
+    AddType image/webp .webp
+    AddType video/mp4 .mp4
 </IfModule>
 
-<FilesMatch "\.(js|mjs)$">
-    <IfModule mod_headers.c>
-        Header set Content-Type "text/javascript; charset=utf-8"
-        Header set X-Content-Type-Options "nosniff"
-    </IfModule>
-</FilesMatch>
+# NOTE: Cross-Origin-Embedder-Policy is intentionally NOT set here.
+# The viewer needs it (see demo/.htaccess), but require-corp at the
+# root would block Google Fonts and other third-party assets used
+# by the marketing site.
 
-<IfModule mod_headers.c>
-    Header set Cross-Origin-Opener-Policy "same-origin"
-    Header set Cross-Origin-Embedder-Policy "require-corp"
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # --- Bridge for the legacy viewer -------------------------------
+    # The viewer bundles absolute paths (/assets/*.ksplat, /src/...),
+    # which after the move to /demo would miss at the root. Anything
+    # not found at the root is served from /demo instead.
+    RewriteCond %{REQUEST_URI} !^/demo/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^assets/(.+)$ /demo/assets/$1 [L]
+
+    RewriteCond %{REQUEST_URI} !^/demo/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^src/(.+)$ /demo/src/$1 [L]
+
+    RewriteCond %{REQUEST_URI} !^/demo/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^scene_assets/(.+)$ /demo/scene_assets/$1 [L]
+
+    # --- SPA client-side routing -----------------------------------
+    # /solutions/*, /cases/* etc. are React Router paths: send every
+    # unmatched request outside /demo to the SPA entry point.
+    RewriteCond %{REQUEST_URI} !^/demo(/|$)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.html [L]
+</IfModule>
+
+# --- Caching ---------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    # Hashed build assets are immutable
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
