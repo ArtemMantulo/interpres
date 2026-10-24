@@ -5,7 +5,8 @@
 ```
 site/                      # исходники сайта Immersive Solutions (Vite, multi-page)
 ├── *.html                 # index, digital-twin, renders, crm, cases, case-*, demos, contact
-├── public/media/          # все картинки и видео сайта (копируются в сборку как есть)
+├── public/media/          # картинки и видео сайта по папкам <страница>/<блок>/ (копируются в сборку как есть)
+├── unused-media/          # неиспользуемые медиа (не деплоятся)
 ├── public/image-slot.js   # обычный (не module) скрипт, не бандлится
 └── vite.config.js
 public_html/
@@ -54,5 +55,5 @@ npm run demo                # только вьюер, http://localhost:8001
 ## Медиа
 
 Список файлов и где они используются — `site/MEDIA-PLACEMENT.md`.
-Новые картинки/видео класть в `site/public/media/`, ссылаться как `media/<файл>`.
+Новые картинки/видео класть в `site/public/media/<страница>/<блок>/`, ссылаться как `media/<страница>/<блок>/<файл>`; общие для нескольких страниц — в `shared/`.
 Лимит GitHub — 100 МБ на файл; видео больше этого сжимать перед коммитом.
