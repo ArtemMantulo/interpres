@@ -97,7 +97,7 @@ h1,h2,h3{margin:0}
     <div style="font:400 15px Inter;color:rgba(255,255,255,.82)">Digital Twin</div>
   </div>
 </div><div class="sec" style="padding-bottom:34px"><img src="https://magnum-assets.b-cdn.net/images/main/white_logo.svg" alt="Magnum Estate" style="height:38px;width:auto;opacity:.92;margin-bottom:24px"><p style="font:300 19px/1.72 Inter;color:var(--mut);max-width:none;text-wrap:pretty">Founded in 2019, <b style="color:var(--ink);font-weight:500">Magnum Estate</b> is a full-cycle luxury real estate developer in Bali, handling land, architecture, construction and management in-house. Its portfolio spans <b style="color:var(--ink);font-weight:500">8 projects</b> completed and under construction — including the flagship oceanfront <b style="color:var(--ink);font-weight:500">Magnum Resort Sanur</b> — and has won the Asia Pacific Property Awards five times.</p></div>
-<div class="sec" style="padding-top:0"><a href="demos.html" class="icard" style="position:relative;display:block;border-radius:20px;overflow:hidden;aspect-ratio:2.4/1"><img style="width:100%;height:100%;object-fit:cover" src="media/shared/misc/067-magnum-gameplay.jpg"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,14,.5),transparent 40%)"></div><div style="position:absolute;left:26px;top:24px;font:500 22px Inter;color:#fff">Digital Twin | Gameplay</div><div style="position:absolute;left:26px;bottom:26px;width:52px;height:52px;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#161d1a"><path d="M8 5v14l11-7z"/></svg></div><span class="pill" style="position:absolute;right:22px;bottom:22px;background:#fff;color:#161d1a;padding:9px 20px">Watch</span></a></div><div class="sec"><h2 style="font:300 44px/1.05 Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:34px">What we developed</h2>
+<div class="sec" style="padding-top:0"><div class="gameplay-card" data-embed="https://kinescope.io/embed/mUDWQPLXsWg2NDnozReqz6" data-embed-ratio="16/10" style="position:relative;display:block;border-radius:20px;overflow:hidden;aspect-ratio:2.4/1;box-shadow:0 18px 44px rgba(0,0,0,.34)"><img style="width:100%;height:100%;object-fit:cover" src="media/shared/misc/067-magnum-gameplay.jpg"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,14,.5),transparent 40%)"></div><div style="position:absolute;left:26px;top:24px;font:500 22px Inter;color:#fff">Digital Twin | Gameplay</div><button type="button" class="pill embed-open" style="position:absolute;right:22px;bottom:22px;background:#fff;color:#161d1a;padding:9px 20px;border:0;cursor:pointer">Watch</button></div></div><div class="sec"><h2 style="font:300 44px/1.05 Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:34px">What we developed</h2>
 <div class="devrow">
   <div class="txt">
     <div class="devnum">01</div>
@@ -171,6 +171,14 @@ h1,h2,h3{margin:0}
  document.body.appendChild(ov);
  function openMedia(node){
    box.innerHTML='';
+   var emb=node.dataset&&node.dataset.embed;
+   if(emb){ // external player (Kinescope), sized to the clip's ratio
+     var r=(node.dataset.embedRatio||'16/9').split('/'),rw=+r[0]||16,rh=+r[1]||9;
+     var f=document.createElement('iframe');f.src=emb+(emb.indexOf('?')<0?'?':'&')+'autoplay=1';
+     f.allow='autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write';f.allowFullscreen=true;f.setAttribute('frameborder','0');
+     f.style.cssText='border:0;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6);background:#000;width:min(96vw,calc(88vh*'+rw+'/'+rh+'));aspect-ratio:'+rw+'/'+rh;
+     box.appendChild(f);ov.style.display='flex';requestAnimationFrame(function(){ov.style.opacity=1;});return;
+   }
    var v=node.querySelector&&node.querySelector('video');
    var i=node.querySelector&&node.querySelector('img');
    if(v&&v.getAttribute('src')){
@@ -185,6 +193,7 @@ h1,h2,h3{margin:0}
  cl.addEventListener('click',close);
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
  document.querySelectorAll('.devrow .m, a.icard').forEach(function(t){t.style.cursor='pointer';t.addEventListener('dblclick',function(e){e.preventDefault();openMedia(t);});});
+ document.querySelectorAll('.embed-open').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();openMedia(btn.closest('[data-embed]'));});});
 })();</script>
 <script>document.querySelectorAll('.devrow .m').forEach(function(m){var v=m.querySelector('video');if(!v)return;m.addEventListener('mouseenter',function(){var p=v.play();if(p&&p.catch)p.catch(function(){});});m.addEventListener('mouseleave',function(){v.pause();});});</script>
 </body></html>
