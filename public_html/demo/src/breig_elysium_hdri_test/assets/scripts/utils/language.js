@@ -1,8 +1,10 @@
 const SUPPORTED_LANGS = new Set(['en', 'ru', 'ko', 'zh', 'de', 'fr', 'es', 'ar', 'ja']);
 const STORAGE_KEY = 'lang';
+const FORCED_LANGUAGE = 'en';
 
 let currentDictionary = null;
 let allDictionaries = null;
+let currentLanguage = FORCED_LANGUAGE;
 
 const safeStorageGet = () => {
     try {
@@ -36,7 +38,7 @@ const detectLanguage = () =>
     );
 
 const getLanguage = (forcedLanguage) =>
-    forcedLanguage ? normalizeLanguage(forcedLanguage) : detectLanguage();
+    normalizeLanguage(forcedLanguage || FORCED_LANGUAGE || currentLanguage || detectLanguage());
 
 const applyTranslations = (dictionary) => {
     const elements = document.querySelectorAll('[data-lng]');
@@ -61,6 +63,7 @@ const getText = (key, fallback) => {
 
 export async function loadLanguage(forcedLanguage) {
     const language = getLanguage(forcedLanguage);
+    currentLanguage = language;
 
     document.documentElement.setAttribute('lang', language);
     safeStorageSet(language);

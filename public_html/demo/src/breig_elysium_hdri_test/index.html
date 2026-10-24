@@ -339,11 +339,10 @@
             <div id="ui-screenshot-toggle" class="ui-toggle">
                 <button
                     id="ui-screenshot"
-                    class="ui-placeholder-toggle-button ui-screenshot-toggle-button"
+                    class="screenshot-toggle-button ui-screenshot-toggle-button is-off"
                     type="button"
                     aria-label="Screenshot"
-                    aria-disabled="true"
-                    disabled
+                    aria-pressed="false"
                 ></button>
                 <div class="ui-toggle-tooltip" aria-hidden="true">
                     <div class="glass-panel border-shadow">
@@ -460,6 +459,34 @@
                     <span class="ui-toggle-tooltip-text" data-lng="sound">Sound</span>
                 </div>
             </div>
+        </div>
+
+        <div id="screenshot-mode-controls" class="hidden" aria-hidden="true">
+            <button
+                id="screenshot-mode-capture"
+                class="screenshot-mode-pill"
+                type="button"
+                aria-label="Take Screenshot"
+            >
+                <div class="glass-panel border-shadow">
+                    <div class="amenities-line"></div>
+                </div>
+                <div class="panel-container">
+                    <span class="screenshot-mode-icon" aria-hidden="true"></span>
+                    <span class="screenshot-mode-text" data-lng="take_screenshot">Take Screenshot</span>
+                </div>
+            </button>
+            <button
+                id="screenshot-mode-close"
+                class="screenshot-mode-close"
+                type="button"
+                aria-label="Close screenshot mode"
+            >
+                <div class="glass-panel border-shadow">
+                    <div class="amenities-line"></div>
+                </div>
+                <span class="screenshot-mode-close-icon" aria-hidden="true"></span>
+            </button>
         </div>
 
         <div id="debug-stats" class="hidden"></div>

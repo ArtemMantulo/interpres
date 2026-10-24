@@ -39,7 +39,6 @@
     top: 0;
     display: none;
     pointer-events: auto;
-    will-change: transform;
     width: 40px;
     height: 40px;
     padding: 0;
@@ -155,7 +154,6 @@
     align-items: center;
     z-index: 0;
     border-radius: var(--radius-pill);
-    will-change: transform;
     cursor: pointer;
 }
 

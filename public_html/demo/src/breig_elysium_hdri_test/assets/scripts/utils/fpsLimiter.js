@@ -1,7 +1,20 @@
+import {
+    POINTER_BLOCK_WITH_CLICK_EVENTS,
+    bindEvents,
+    unbindEvents,
+    stopPropagation,
+    setToggleState
+} from './uiEvents.js';
+
 const ORIGINAL_RENDER = Symbol('fpslocker:originalRender');
 
 export function createFpsLocker(app, options = {}) {
-    const { toggleElementId = 'fps30', cappedFps = 30, shouldRender = null, renderGate = null } = options;
+    const {
+        toggleElementId = 'fps30',
+        cappedFps = 30,
+        shouldRender = null,
+        renderGate = null
+    } = options;
 
     const state = {
         active: false,
@@ -15,6 +28,7 @@ export function createFpsLocker(app, options = {}) {
     };
 
     const toggleEl = toggleElementId ? document.getElementById(toggleElementId) : null;
+    const toggleWrap = toggleEl?.parentElement || null;
 
     const setActive = (enabled) => {
         const next = !!enabled;
@@ -39,20 +53,23 @@ export function createFpsLocker(app, options = {}) {
 
         if (toggleEl) {
             toggleEl.classList.toggle('active', state.active);
-            toggleEl.classList.toggle('is-on', state.active);
-            toggleEl.classList.toggle('is-off', !state.active);
-            toggleEl.checked = state.active;
-            toggleEl.setAttribute('aria-pressed', state.active ? 'true' : 'false');
+            setToggleState(toggleEl, state.active);
         }
+
+        window.PcScriptShared?.requestRenderFrame?.(app);
     };
 
-    const onToggleClick = () => setActive(!state.active);
+    const onToggleClick = (event) => {
+        event?.preventDefault?.();
+        event?.stopPropagation?.();
+        setActive(!state.active);
+        event?.currentTarget?.blur?.();
+    };
 
     const loop = () => {
         state.rafId = requestAnimationFrame(loop);
 
-        if (!state.active) return;
-        if (document.hidden) return;
+        if (!state.active || document.hidden) return;
 
         const now = performance.now();
         if (now < state.nextTime) return;
@@ -76,10 +93,12 @@ export function createFpsLocker(app, options = {}) {
         app.render = function () {
             const allowedByGate = typeof renderGate === 'function' ? !!renderGate() : true;
             if (!allowedByGate) return;
+
             if (state.active) {
                 if (state.consumedRenderTicket >= state.renderTicket) return;
                 state.consumedRenderTicket = state.renderTicket;
             }
+
             state.renderFrameCounter++;
             return app[ORIGINAL_RENDER]();
         };
@@ -87,24 +106,36 @@ export function createFpsLocker(app, options = {}) {
 
     const onVisibilityChange = () => {
         if (!state.active) return;
+
         if (document.hidden) {
             if (state.rafId) cancelAnimationFrame(state.rafId);
             state.rafId = 0;
             return;
         }
+
         state.nextTime = performance.now() + state.frameMs;
         if (!state.rafId) state.rafId = requestAnimationFrame(loop);
     };
 
     document.addEventListener('visibilitychange', onVisibilityChange);
 
-    if (toggleEl) toggleEl.addEventListener('click', onToggleClick);
+    if (toggleEl) {
+        toggleEl.addEventListener('click', onToggleClick);
+        bindEvents(toggleEl, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+    }
+
+    bindEvents(toggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
 
     return {
         state,
         setActive,
         destroy() {
-            if (toggleEl) toggleEl.removeEventListener('click', onToggleClick);
+            if (toggleEl) {
+                toggleEl.removeEventListener('click', onToggleClick);
+                unbindEvents(toggleEl, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
+            }
+
+            unbindEvents(toggleWrap, POINTER_BLOCK_WITH_CLICK_EVENTS, stopPropagation);
             document.removeEventListener('visibilitychange', onVisibilityChange);
             setActive(false);
 
