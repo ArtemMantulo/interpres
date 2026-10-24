@@ -81,7 +81,7 @@ renders.html — Cinematic film & reels, AI generated videos, Interior walkthrou
 - 077-render-reel2-poster.jpg
 - 107-teaser-reel-poster.webp  _(Teaser reel tile poster; the tile's "Watch" opens the breigproperty Instagram reel)_
 - 108-breig-reel-poster.webp  _(BREIG reel tile poster; its "Watch" opens the Instagram reel DWWsjOEkexi)_
-- 111-magnum-estate-reel-poster.jpg  _(Amenities reel tile poster; its "Watch" opens the magnum.estate Instagram reel DWQsrwbjmlG)_
+- 112-penthouse-listing-poster.webp  _(Penthouse listing tile poster; its "Watch" opens the magnum.estate Instagram reel DWQsrwbjmlG)_
 - 110-magnum-sanur-reel.mp4 + 110-magnum-sanur-reel-poster.jpg  _(Lifestyle reel tile in Cinematic film and reels; source 02_Magnum_Sanur_reel_v02.mp4, 9:16)_
 - 101-render-film.mp4
 - 102-render-reel1.mp4
@@ -193,3 +193,4 @@ case-magnum.html — VR build, Renders and AI generated content galleries
 Originals: C:/work/interpres.live-old-root/public_html/assets/ (videos/, download/).
 
 - 109-magnum-nusantara-reel.mp4 (+poster) — replaced by the Instagram reel, moved to unused-media
+- 111-magnum-estate-reel-poster.jpg — replaced by 112, moved to unused-media
