@@ -84,7 +84,6 @@ renders.html — Cinematic film & reels, AI generated videos, Interior walkthrou
 - 101-render-film.mp4
 - 102-render-reel1.mp4
 - 103-render-reel2.mp4
-- 104-render-reel3.mp4
 
 ## media/crm/
 crm.html — Live inventory / reservations card
@@ -185,7 +184,7 @@ case-magnum.html — VR build, Renders and AI generated content galleries
 - renders/videos/101-render-film.mp4 ← 01_Arco_AI_cinematic.mp4
 - renders/videos/102-render-reel1.mp4 ← 08_AI_reel.mp4
 - renders/videos/103-render-reel2.mp4 ← 08_AI_reel (1).mp4
-- renders/videos/104-render-reel3.mp4 ← 0827.mp4 (hover preview of the Teaser reel tile)
+- 104-render-reel3.mp4 ← 0827.mp4 — no longer used (moved to unused-media)
 - case-breig/ai-cinematics/105-breig-ai-reel.mp4 ← 06_Breig_AI_reel.mp4
 - index/hero/showreel.mp4 ← Showreel_eng_Interpres.mp4
 
