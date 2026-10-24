@@ -51,6 +51,7 @@
                 const floorNum = parseFloat(floor.floor);
                 const floorRaw = String(floor.floor ?? (f + 1));
                 const height = parseFloat(floor.height);
+                const markerHeight = parseFloat(floor.markerHeight);
                 const apts = Array.isArray(floor.apartments) ? floor.apartments : [];
 
                 const apartments = apts.map(aptItem => {
@@ -90,6 +91,8 @@
                     floorRaw,
                     floorNumber: isFinite(floorNum) ? floorNum : NaN,
                     height: isFinite(height) ? height : 0,
+                    // World Y of the floor level for the floor-number marker (camera focus uses `height`).
+                    markerHeight: isFinite(markerHeight) ? markerHeight : NaN,
                     apartments,
                     name: apt0.name || '',
                     area: apt0.area || '',

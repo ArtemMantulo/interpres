@@ -1108,6 +1108,42 @@ ApartmentsMode.prototype._updateFloorItemPositions = function () {
     const rows = this.getCurrentFloorRows?.() || [];
     if (!rows.length) return;
     const selectedIndex = Math.max(0, Math.min(rows.length - 1, this._selectedFloorIndex | 0));
+
+    // When every floor has a `markerHeight` (world Y of its floor level), place each marker
+    // where that level projects on screen, on the vertical the camera looks along. This keeps
+    // the numbers on their floors for every camera angle and window size; a fixed pixel step
+    // only matched one view (upper markers drifted onto the roof when a lower floor was selected).
+    const camera = this.cameraEntity?.camera;
+    const rect = camera && this.getCanvasRect?.();
+    if (camera && rect && rows.every((r) => isFinite(r?.markerHeight))) {
+        const selRow = rows[selectedIndex];
+        const aptIdx = this._selectedApartmentIndex || 0;
+        const apt = selRow?.apartments?.[aptIdx] || selRow?.apartments?.[0];
+        const look = apt?.look || selRow?.look || null;
+        const base = this._selectedApartment?.worldPos;
+        const lx = look && isFinite(look[0]) ? look[0] : base?.x;
+        const lz = look && isFinite(look[1]) ? look[1] : base?.z;
+        if (isFinite(lx) && isFinite(lz)) {
+            if (!this._floorMarkerWorld) this._floorMarkerWorld = new pc.Vec3();
+            if (!this._floorMarkerScreen) this._floorMarkerScreen = new pc.Vec3();
+            const world = this._floorMarkerWorld;
+            const screen = this._floorMarkerScreen;
+            this._applyFloorItemPositions(
+                fixedX,
+                ` translate(0, -50%)${floorScaleSuffix}`,
+                (_item, i) => {
+                    const row = rows[i];
+                    if (!row) return null;
+                    world.set(lx, row.markerHeight, lz);
+                    camera.worldToScreen(world, screen);
+                    return screen.z > 0 && isFinite(screen.y) ? rect.top + screen.y : null;
+                },
+                { ease: 1 } // already follows the (smoothed) camera every frame
+            );
+            return;
+        }
+    }
+
     const panelCenterY = window.innerHeight * 0.5;
     const floorLerp = Math.max(0.05, Math.min(1, Number(this.floorPositionLerp ?? 0.14)));
     this._applyFloorItemPositions(
