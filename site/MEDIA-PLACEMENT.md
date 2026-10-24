@@ -203,4 +203,4 @@ renders.html — "Interior & exterior design" rail (first two tiles)
 - 115-ue-villa.mp4 + 115-ue-villa-poster.jpg  _(Villa — exterior & interior; source 06_Education_UE_villa.mp4, 2:02, sound)_
 - 114-ue-interior.mp4 + 114-ue-interior-poster.jpg  _(Bedroom — Unreal Engine; source 05_Education_UE_Interior.mp4, 1:11, sound)_
 - 105-breig-ai-reel.mp4 (+poster) — replaced by 116, moved to unused-media
-- 118-magnum-gameplay-poster.jpg  _("Magnum Sanur — gameplay" tile in the design rail; poster from Kinescope; Watch opens kinescope.io/embed/mUDWQPLXsWg2NDnozReqz6)_
+- 118-magnum-gameplay-poster.jpg  _("Magnum Sanur — gameplay" tile in the design rail; poster: interior frame of the gameplay, cursor/label removed; Watch opens kinescope.io/embed/mUDWQPLXsWg2NDnozReqz6)_
