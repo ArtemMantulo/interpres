@@ -158,7 +158,7 @@ case-breig.html — "Digital catalogs" (087-breig-catalog.pdf still missing)
 case-breig.html — "AI generated cinematics", RAW RENDERS tile
 
 - 116-breig-raw-renders.mp4 + 116-breig-raw-renders-poster.jpg  _(RAW RENDERS tile; source Test_v01.mp4)_
-- 117-breig-ai-cinematic.mp4 + 117-breig-ai-cinematic-poster.jpg  _(CINEMATIC REEL tile; source Breig_AI.mp4 = 03_AI_breig_cinematic, compressed to 24 MB, H.264 CRF 23, 1080x1920)_
+- 117-breig-ai-cinematic.mp4 + 117-breig-ai-cinematic-poster.webp  _(CINEMATIC REEL tile, poster: gecko image; source Breig_AI.mp4 = 03_AI_breig_cinematic, compressed to 24 MB, H.264 CRF 23, 1080x1920)_
 
 ## media/case-magnum/developed/
 case-magnum.html — "What we developed" videos (interior, surroundings, UE level, walkthrough)
