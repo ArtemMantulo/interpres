@@ -137,6 +137,7 @@ case-breig.html — "What we developed" (before/after, apartment & surroundings 
 case-breig.html — "Achieved results" (master plan)
 
 - 027-breig-master-plan.png
+- award-property.svg, award-exquisite.svg, award-luxury.svg  _(Awards cards; copied from breig-property.com/site/about/)_
 
 ## media/case-breig/marketing/
 case-breig.html — "Marketing materials" (booklet, totem)
