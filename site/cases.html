@@ -168,6 +168,10 @@ h1,h2,h3{margin:0}
     box-shadow:0 10px 24px rgba(134,184,160,.25)}
   /* footer */
   [style*="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter"]{flex-direction:column;align-items:center;text-align:center;gap:6px!important;padding:22px 18px 30px!important;font-size:12px!important;line-height:1.5}
+  /* Digital Twin steps: 2 per row, the odd last card centred */
+  .stepcards{grid-template-columns:repeat(4,1fr)!important}
+  .stepcards>.stepcard{grid-column:span 2}
+  .stepcards>.stepcard:last-child:nth-child(odd){grid-column:2/span 2}
   .casecard .cap .t{font-size:24px!important}
   .pill{padding:12px 20px}
 }
