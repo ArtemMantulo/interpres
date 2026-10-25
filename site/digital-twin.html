@@ -169,7 +169,10 @@ h1,h2,h3{margin:0}
   [style*="min-width:320px"],[style*="min-width:300px"]{min-width:0!important}
   [style*="min-height:420px"],[style*="min-height:469px"]{min-height:0!important;aspect-ratio:16/10}
   [style*="flex:1 1 200px"]{flex:1 1 calc(50% - 8px)!important;min-width:0!important}  /* VR clips: two per row */
-  [style*="width:236px"],[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
+  :not(.hrail)>[style*="width:236px"],:not(.hrail)>[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
+  /* cinematic reels rail: film ~84vw, vertical reels ~44vw, all the same height */
+  #cineRail{height:340px!important;scroll-padding-left:0}
+  #cineRail>[style*="width:236px"]{width:44vw!important;max-width:none!important}
   #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
   .cinewrap>button{display:none!important}  /* swipe instead of arrows */
   /* top bar: centred logo, sections in a burger menu */
