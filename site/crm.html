@@ -59,7 +59,7 @@ h1,h2,h3{margin:0}
 /* Phone layout (iPhone 14 and up: 390–430 px wide). Pages use inline styles, so rules
    below target those inline declarations; desktop is untouched (max-width:600px only). */
 @media (max-width:600px){
-  html,body{overflow-x:hidden}
+  html,body{overflow-x:clip}  /* clip, not hidden: keeps the sticky top bar working */
   .main{min-width:0}
   img,video,iframe{max-width:100%}
   .sec{padding:28px 18px!important}
@@ -97,6 +97,18 @@ h1,h2,h3{margin:0}
   [style*="width:236px"],[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
   #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
   .cinewrap>button{display:none!important}  /* swipe instead of arrows */
+  /* top bar: logo, then one swipeable row of sections */
+  .topbar{flex-direction:column!important;align-items:stretch!important;gap:10px!important;padding:12px 0 0!important}
+  .topbar>div:first-child{padding:0 18px;justify-content:center}
+  .topbar .m{flex-wrap:nowrap!important;overflow-x:auto;gap:6px!important;padding:0 18px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .topbar .m::-webkit-scrollbar{display:none}
+  .topbar .m a{flex:none;white-space:nowrap;padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:14px;color:var(--mut)}
+  .topbar .m a.on{background:var(--acc);border-color:var(--acc);color:#0d100c}
+  /* digital twin hero */
+  .hero-lt .sub{font-size:17px!important;line-height:1.5!important;color:var(--mut)!important}
+  .hero-lt .sub br{display:none}
+  .hstats .v{font-size:20px!important}
+  .hstats .st{padding:0 10px!important}
   /* home: hero */
   [style*="position:absolute;left:52px;bottom:31px"]{left:18px!important;right:18px!important;bottom:22px!important}
   #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
@@ -132,7 +144,7 @@ h1,h2,h3{margin:0}
     <a href="contact.html">Contact</a>
   </nav>
   <a class="cta" href="contact.html">Book a demo</a>
-</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
+</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="index.html">Overview</a><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
 <div style="position:relative;height:420px">
   <img src="media/shared/products/045-dt-webapp.jpg" style="width:100%;height:100%;object-fit:cover">
   <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,12,.85) 0%,rgba(10,12,12,.35) 62%,rgba(10,12,12,.1) 100%)"></div>
@@ -175,6 +187,8 @@ h1,h2,h3{margin:0}
 </div></div>
 <!--mobile:js-->
 <script id="mobile-video">
+/* Mobile top bar: bring the current section's pill into view. */
+(function(){var a=document.querySelector('.topbar .m a.on');if(a&&a.parentElement.scrollWidth>a.parentElement.clientWidth){a.parentElement.scrollLeft=a.offsetLeft-a.parentElement.clientWidth/2+a.offsetWidth/2;}})();
 /* Touch screens have no hover: play muted tile videos while they are on screen. */
 (function(){
   if(!window.matchMedia||!matchMedia('(hover: none)').matches||!('IntersectionObserver' in window)) return;
