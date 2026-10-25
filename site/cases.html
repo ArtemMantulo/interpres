@@ -205,7 +205,7 @@ h1,h2,h3{margin:0}
   /* case videos on phones: native frame, nothing cropped (they are screen recordings of the apps) */
   .devrow .m:has(video){aspect-ratio:auto!important;height:auto!important}
   .devrow .m:has(video) video{height:auto!important;display:block;object-fit:contain!important}
-  .devrow>[id$="Wrap"] img[id$="Before"]{max-width:none!important;object-fit:contain!important;object-position:center!important}
+  .devrow>[id$="Wrap"] img[id$="Before"]{max-width:none!important;object-fit:cover!important;object-position:center!important}
   /* case pages: "All cases" stays pinned under the top bar while scrolling */
   a[href="cases.html"][style*="left:52px;top:34px"]{position:fixed!important;left:18px!important;top:66px!important;z-index:19;
     padding:8px 14px;border-radius:999px;font:500 13px Inter!important;color:#fff!important;
