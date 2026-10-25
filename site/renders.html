@@ -102,6 +102,8 @@ h1,h2,h3{margin:0}
   :not(.hrail)>[style*="width:236px"],:not(.hrail)>[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
   /* cinematic reels rail: film ~84vw, vertical reels ~44vw, all the same height */
   #cineRail{height:340px!important;scroll-padding-left:0}
+  #intrRail{height:300px!important}
+  #intrRail>[style*="width:250px"]{width:52vw!important}
   #cineRail>[style*="width:236px"]{width:44vw!important;max-width:none!important}
   #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
   .cinewrap>button{display:none!important}  /* swipe instead of arrows */
@@ -295,6 +297,27 @@ h1,h2,h3{margin:0}
 
     <div style="margin-top:30px;padding-top:26px;border-top:1px solid var(--line)">
       <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+        <div><div class="eyebrow" style="margin-bottom:6px">PHOTOREAL INTERIOR RENDERS</div><h3 style="font:300 22px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">Interiors rendered still by still, down to the last detail.</h3></div>
+        <span style="font:300 12px Inter;color:var(--mut2)">Scroll or use the arrows</span>
+      </div>
+      <div class="cinewrap" style="position:relative">
+        <div class="hrail" id="intrRail" style="display:flex;gap:14px;height:360px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px">
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/127-interior-01.jpg" alt="Open-plan living" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Open-plan living</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/128-interior-02.jpg" alt="Coffee table detail" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Coffee table detail</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/129-interior-03.jpg" alt="Café counter" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Café counter</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/130-interior-04.jpg" alt="Café seating" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Café seating</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/131-interior-05.jpg" alt="Glass office" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Glass office</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/132-interior-06.jpg" alt="Walk-in wardrobe" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Walk-in wardrobe</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/133-interior-07.jpg" alt="Dressing room" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Dressing room</span></div>
+        <div style="flex:none;width:250px;scroll-snap-align:start;position:relative;overflow:hidden;border-radius:12px"><img src="media/renders/interiors/134-interior-08.jpg" alt="Living room" loading="lazy" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;font:500 13px Inter;color:#fff;background:linear-gradient(0deg,rgba(8,10,7,.8),transparent);pointer-events:none">Living room</span></div>
+        </div>
+        <button aria-label="prev" onclick="document.getElementById('intrRail').scrollBy({left:-264,behavior:'smooth'})" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+        <button aria-label="next" onclick="document.getElementById('intrRail').scrollBy({left:264,behavior:'smooth'})" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:3" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+      </div>
+    </div>
+
+    <div style="margin-top:30px;padding-top:26px;border-top:1px solid var(--line)">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px">
         <div><div class="eyebrow" style="margin-bottom:6px">DIGITAL TWIN · PHOTOSHOOT MODE</div><h3 style="font:300 22px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin:0">Cinematic stills captured live inside the app.</h3></div>
         <span style="font:300 12px Inter;color:var(--mut2)">Scroll or use the arrows</span>
       </div>
@@ -326,7 +349,7 @@ h1,h2,h3{margin:0}
     </div>
   </div>
 </div>
-<script>['intRail','rendRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;r.addEventListener('wheel',function(e){var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!d)return;r.scrollLeft+=d;e.preventDefault();e.stopPropagation();},{passive:false});});document.querySelectorAll('.intdesign .fmedia, .intdesign ~ .sec .fmedia').forEach(function(f){var v=f.querySelector('video');if(!v||f.dataset.b)return;f.dataset.b=1;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script>
+<script>['intRail','rendRail','intrRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;r.addEventListener('wheel',function(e){var d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(!d)return;r.scrollLeft+=d;e.preventDefault();e.stopPropagation();},{passive:false});});document.querySelectorAll('.intdesign .fmedia, .intdesign ~ .sec .fmedia').forEach(function(f){var v=f.querySelector('video');if(!v||f.dataset.b)return;f.dataset.b=1;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script>
 <div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
   <div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div>
   <a class="pill" href="contact.html">Book a demo →</a>
@@ -367,7 +390,7 @@ h1,h2,h3{margin:0}
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
  document.querySelectorAll('.fmedia').forEach(function(t){t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});
  document.querySelectorAll('.embed-open').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();openMedia(btn.closest('[data-embed]'));});});
- ['rendRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;[].slice.call(r.children).forEach(function(t){if(t.tagName==='BUTTON')return;t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});});
+ ['rendRail','intrRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;[].slice.call(r.children).forEach(function(t){if(t.tagName==='BUTTON')return;t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});});
 })();</script>
 <!--mobile:js-->
 <script id="mobile-video">

@@ -220,3 +220,15 @@ renders.html — Digital Twin · Photoshoot mode rail (also uses case-magnum 072
 - 123-living-apartments-v05.jpg  _(Street-level façade; source Living_apartments_v05.jpg, 4500 px -> 1680 px)_
 - 124-living-apartments-v04.jpg  _(Courtyard & pergola; source Living_apartments_v04.jpg, 8192 px -> 1680 px)_
 - 125-living-apartments-v02.jpg  _(Evening courtyard lounge; source Living_apartments_v02.png, 46 MB -> 376 KB)_
+
+## media/renders/interiors/
+renders.html — "Photoreal interior renders" rail (between Photoreal renders and Photoshoot mode). 8 stills resized to 1200 px wide JPEG.
+
+- 127-interior-01.jpg
+- 128-interior-02.jpg
+- 129-interior-03.jpg
+- 130-interior-04.jpg
+- 131-interior-05.jpg
+- 132-interior-06.jpg
+- 133-interior-07.jpg
+- 134-interior-08.jpg
