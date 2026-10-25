@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elysium BREIG · Immersive Solutions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1e2623;--panel:#161d1a;--panel2:#121815;--card:#26302c;--line:rgba(255,255,255,.08);--ink:#eef3ef;--mut:#a8b3ac;--mut2:#7f8b83;--acc:#86b8a0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+a:hover{color:var(--acc)}
+img,video{display:block}
+.hrail{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent}
+.hrail::-webkit-scrollbar{height:8px}
+.hrail::-webkit-scrollbar-track{background:transparent}
+.hrail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:999px}
+.hrail::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.4)}
+.catnav{opacity:0;pointer-events:none;transition:opacity .2s}
+.catwrap:hover .catnav{opacity:1;pointer-events:auto}
+#catRail>div{transition:transform .3s ease}
+#catRail>div:hover{transform:scale(1.04)}
+.catcover:hover .dlbtn{opacity:1!important}
+.shell{display:flex;min-height:100vh;position:static!important;left:auto!important;top:auto!important}
+.side{width:238px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 22px 4px}
+.brand span{font:600 14px/1.18 'Inter',sans-serif;color:#fff}
+.side .grp{padding:20px 22px 12px;font:600 10px 'Inter',sans-serif;letter-spacing:.16em;color:var(--mut2)}
+.side .grp.mt{padding-top:26px}
+.nav a{padding:11px 22px;border-left:3px solid transparent;font:400 14px 'Inter',sans-serif;color:var(--mut);display:block}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.side .cta{margin:auto 22px 0;background:var(--acc);color:#fff;text-align:center;padding:12px;border-radius:999px;font:500 13px 'Inter',sans-serif}
+.main{flex:1;min-width:0}
+.pill{display:inline-block;background:var(--acc);color:#fff;padding:13px 24px;border-radius:999px;font:500 14px 'Inter',sans-serif}
+.sec{padding:48px 52px}
+.eyebrow{font:500 11px 'Inter',sans-serif;letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+h1,h2,h3{margin:0}
+.devrow{position:relative;background:linear-gradient(158deg,#27302c 0%,#202824 48%,#1b221e 100%);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:24px;padding:32px 34px}
+.devrow::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(134,184,160,.15),rgba(134,184,160,.045) 45%,transparent 78%);pointer-events:none}
+.devrow>*{position:relative}
+.devrow .txt{max-width:820px;margin-bottom:24px}
+.devrow .m{border-radius:12px;overflow:hidden;aspect-ratio:2/1;background:#1a201d}
+.devrow .m img,.devrow .m video{width:100%;height:100%;object-fit:cover}
+.devnum{font:300 13px Inter;color:var(--acc);letter-spacing:.1em;margin-bottom:14px}
+.reslist{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.rescard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.rescard .k{font:300 15px/1.5 Inter;color:var(--ink)}
+.awgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.awcard{position:relative;background:linear-gradient(158deg,#2b3531 0%,#212a26 55%,#1c2420 100%);border:1px solid var(--line);border-radius:16px;padding:24px 26px 30px;display:flex;flex-direction:column;box-shadow:0 18px 44px rgba(0,0,0,.34);transition:box-shadow .3s ease,transform .3s ease}
+.awcard:hover{transform:translateY(-3px);box-shadow:0 26px 60px rgba(0,0,0,.44)}
+.awcard::before{content:"";position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(134,184,160,.16),rgba(134,184,160,.04) 45%,transparent 78%);pointer-events:none}
+.awcard>*{position:relative}
+.awyear{align-self:flex-start;font:500 12px Inter;color:var(--acc);background:rgba(134,184,160,.12);border:1px solid rgba(134,184,160,.28);padding:5px 12px;border-radius:8px}
+.awmark{flex:1;display:flex;align-items:center;justify-content:center;padding:26px 0;min-height:150px}
+.awtitle{font:400 21px Inter;letter-spacing:-.01em;color:var(--ink);margin-bottom:8px}
+.awsub{font:300 14px/1.55 Inter;color:var(--mut)}
+.icard{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease;box-shadow:0 18px 44px rgba(0,0,0,.34)}
+.icard img{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.icard:hover{transform:scale(1.02);box-shadow:0 30px 70px rgba(0,0,0,.46)}
+.icard:hover img{transform:scale(1.06)}
+.topbar{display:none}
+.fmedia{box-shadow:0 18px 44px rgba(0,0,0,.34)}
+@media(max-width:900px){
+  .side{display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar .m{display:flex;gap:16px;font:400 13px 'Inter',sans-serif;color:var(--mut);flex-wrap:wrap}
+  .sec{padding:30px 18px}
+  .devrow{margin-bottom:36px}
+  .devrow .m{aspect-ratio:16/10}
+  .reslist{grid-template-columns:1fr}
+  .awgrid{grid-template-columns:1fr}
+  h1{font-size:40px!important}
+}
+</style>
+<!--mobile:css-->
+<style id="mobile-fixes">
+/* Phone layout (iPhone 14 and up: 390–430 px wide). Pages use inline styles, so rules
+   below target those inline declarations; desktop is untouched (max-width:600px only). */
+@media (max-width:600px){
+  html,body{overflow-x:clip}  /* clip, not hidden: keeps the sticky top bar working */
+  .main{min-width:0}
+  img,video,iframe{max-width:100%}
+  .sec{padding:28px 18px!important}
+  .sec[style*="height:"]{height:auto!important}
+  .sec[style*="padding-top:0"]{padding-top:0!important}  /* keep sections that sit flush under the previous one */
+  .sec>p:last-child{margin-bottom:0!important}
+  h1{font-size:clamp(34px,10vw,44px)!important;line-height:1.05!important}
+  h2{font-size:clamp(26px,7.4vw,32px)!important;line-height:1.12!important}
+  h3{font-size:clamp(20px,5.8vw,24px)!important}
+  p[style*="font:300 28px"],p[style*="font:300 24px"]{font-size:20px!important;line-height:1.45!important}
+  p[style*="font:300 21px"],p[style*="font:300 19px"]{font-size:17px!important}
+  [style*="white-space:nowrap"]:not(.subLine):not(#heroTitle):not(.pill):not(button){white-space:normal!important}
+  [style*="max-width:90%"]{max-width:100%!important}
+  [style*="width:93%"]{width:100%!important;margin-left:auto;margin-right:auto}
+  p[style*="width:880px"],p[style*="width:720px"],p[style*="width:760px"]{width:auto!important}
+  [style*="transform:translateX(-15%)"]{transform:none!important}
+
+  /* multi-column inline grids -> one column */
+  [style*="grid-template-columns:1fr 1fr"],[style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:1.4fr 1fr 1fr"],[style*="grid-template-columns:.95fr 1.05fr"],
+  [style*="grid-template-columns:1.05fr .95fr"],[style*="grid-template-columns:1fr 340px"],
+  [style*="grid-template-columns:1.3fr 1fr"],[style*="grid-template-columns:1.15fr .85fr"]{
+    grid-template-columns:1fr!important;gap:20px!important}
+  /* stat strips -> two columns */
+  [style*="grid-template-columns:repeat(4,minmax(0,1fr))"],[style*="grid-template-columns:repeat(4,1fr)"],
+  [style*="grid-template-columns:repeat(5,1fr)"]{grid-template-columns:1fr 1fr!important}
+  /* film + two reels grid: film full width, reels side by side */
+  [style*="grid-template-columns:2fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;height:auto!important}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:first-child{grid-column:1/-1;aspect-ratio:16/10}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:not(:first-child){aspect-ratio:9/16}
+
+  /* fixed-width tiles in rails and rows never wider than the screen */
+  [style*="flex:none;width:"]{max-width:84vw!important}
+  [style*="flex:1 1 460px"],[style*="flex:1 1 360px"]{flex-basis:100%!important;min-width:0!important}
+  [style*="min-width:320px"],[style*="min-width:300px"]{min-width:0!important}
+  [style*="min-height:420px"],[style*="min-height:469px"]{min-height:0!important;aspect-ratio:16/10}
+  [style*="flex:1 1 200px"]{flex:1 1 calc(50% - 8px)!important;min-width:0!important}  /* VR clips: two per row */
+  :not(.hrail)>[style*="width:236px"],:not(.hrail)>[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
+  /* cinematic reels rail: film ~84vw, vertical reels ~44vw, all the same height */
+  #cineRail{height:340px!important;scroll-padding-left:0}
+  #intrRail{height:300px!important}
+  #intrRail>[style*="width:250px"]{width:52vw!important}
+  #cineRail>[style*="width:236px"]{width:44vw!important;max-width:none!important}
+  #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
+  .cinewrap>button{display:none!important}  /* swipe instead of arrows */
+  /* top bar: centred logo, sections in a burger menu */
+  .topbar{position:sticky!important;top:0;flex-direction:row!important;justify-content:center!important;align-items:center!important;padding:14px 56px!important;min-height:56px;box-sizing:border-box}
+  .topbar>div:first-child{padding:0;justify-content:center}
+  .topbar .m{display:none!important}
+  .topbar.open .m{display:flex!important;flex-direction:column;position:absolute;left:0;right:0;top:100%;gap:4px!important;padding:10px 14px 16px;
+    background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+  .topbar .m a{display:block;padding:13px 14px;border-radius:10px;font-size:17px;color:var(--ink);white-space:nowrap}
+  .topbar .m a.on{background:rgba(134,184,160,.14);color:var(--acc)}
+  .burger{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:10px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:0}
+  .burger span{display:block;width:22px;height:2px;border-radius:2px;background:var(--ink);transition:transform .25s ease,opacity .2s ease}
+  .topbar.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .topbar.open .burger span:nth-child(2){opacity:0}
+  .topbar.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  /* digital twin hero */
+  .hero-lt .sub{font-size:17px!important;line-height:1.5!important;color:var(--mut)!important}
+  .hero-lt .sub br{display:none}
+  .hstats .v{font-size:20px!important}
+  .hstats .st{padding:0 10px!important}
+  /* home: hero */
+  /* home hero (phone): video pinned to the top (30% side crop), text centred below it on a green panel */
+  .hero{height:auto!important;min-height:0!important;overflow:hidden;background:#0d100c}
+  #heroVideo{position:relative;display:block;margin-left:-21.43vw;width:142.86vw!important;height:auto!important;max-width:none!important;aspect-ratio:971/540;object-fit:cover!important}
+  .hero>[style*="pointer-events:none;background:linear-gradient(180deg,rgba(20,18,14,.42)"]{display:none}
+  [style*="position:absolute;left:52px;bottom:31px"]{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;max-width:none!important;
+    text-align:center;padding:26px 20px 28px;background:linear-gradient(158deg,#27302c 0%,#202824 48%,#1b221e 100%);border-top:1px solid var(--line);box-shadow:inset 0 0 0 9999px rgba(134,184,160,.05)}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroTitle{display:inline-block}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroSub{margin-left:auto!important;margin-right:auto!important}
+  .heroBtns{justify-content:center}
+  /* partners: label on top, names in one swipeable row */
+  .trust{display:grid!important;grid-auto-flow:column;grid-auto-columns:max-content;grid-template-rows:auto auto;gap:8px 26px!important;padding:14px 18px!important;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .trust::-webkit-scrollbar{display:none}
+  .trust>span{grid-row:1;grid-column:1/span 6}
+  .trust>b{grid-row:2;font-size:15px}
+  .heroMore{display:block!important;margin:-4px auto 20px;max-width:340px;font:300 14px/1.55 Inter;color:var(--mut)}
+  /* first phone screen = hero + "Trusted by" strip; the products block starts below the fold */
+  .heroFill{display:flex;flex-direction:column}
+  .heroFill>[style*="position:absolute;left:52px;bottom:31px"]{flex:1;display:flex;flex-direction:column;justify-content:center}
+  #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
+  /* home: products — menu becomes a swipeable row above full-screen slides */
+  .prodrow{grid-template-columns:minmax(0,1fr)!important}
+  .prodrow>*{min-width:0}
+  /* products: slides flow in the page (no inner scroller on phones), menu sticks under the top bar */
+  .prod-scroll{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;scroll-snap-type:none!important}
+  .prod-scroll>div{height:calc(100svh - 148px)!important;min-height:480px!important}
+  .prodrow>div:first-child{position:sticky;top:56px;z-index:6}
+  .prodrow>div:first-child{width:auto!important;padding:18px 18px 12px!important}
+  .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
+  .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
+  .prodnav::-webkit-scrollbar{display:none}
+  .prodnav,.trust,.hrail,.caseRail{overscroll-behavior-x:contain}
+  /* swipeable rows hint that there is more: fade on the side that still has content */
+  .swipe-more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent)}
+  .swipe-more.swipe-mid{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent)}
+  .swipe-more.swipe-end{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px);mask-image:linear-gradient(90deg,transparent,#000 40px)}
+  .pn{width:auto!important;white-space:nowrap;padding:9px 12px!important;font-size:14px!important;border-left:0!important;border-bottom:2px solid transparent!important;border-radius:8px}
+  .pn.on{border-bottom-color:var(--acc)!important}
+  /* laptop slide: lift the laptop above the slide text (image is shifted up, slide bg shows below) */
+  .prod-scroll img[src*="033-dt-laptop"]{transform:translateY(-24%);height:124%!important}
+  .prod-scroll [style*="left:44px;bottom:44px"]{left:18px!important;right:18px!important;bottom:22px!important;max-width:none!important}
+  .prod-scroll [style*="display:inline-flex;gap:30px"]{gap:14px 20px!important;padding:12px 14px!important}
+  /* "Get in touch" call-to-action card */
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"]{position:relative;overflow:hidden;flex-direction:column!important;align-items:stretch!important;gap:22px!important;
+    padding:32px 24px 26px!important;border-radius:20px!important;text-align:center;
+    background:radial-gradient(120% 90% at 50% 0%,rgba(134,184,160,.22),transparent 60%),linear-gradient(160deg,#27302c 0%,#1d2521 55%,#151b18 100%)!important;
+    border:1px solid rgba(134,184,160,.22);box-shadow:0 24px 50px rgba(0,0,0,.35)}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] [style*="color:var(--acc);margin-bottom:10px"]{font:600 11px Inter!important;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px!important}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] h2{font:300 30px/1.12 Inter!important;letter-spacing:-.02em!important;max-width:none!important;margin:0 auto!important;text-wrap:balance}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] .pill{display:block;width:100%;box-sizing:border-box;text-align:center;padding:15px 20px!important;font-size:16px!important;
+    box-shadow:0 10px 24px rgba(134,184,160,.25)}
+  /* footer */
+  [style*="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter"]{flex-direction:column;align-items:center;text-align:center;gap:6px!important;padding:22px 18px 30px!important;font-size:12px!important;line-height:1.5}
+  /* Digital Twin steps: 2 per row, the odd last card centred */
+  .stepcards{grid-template-columns:repeat(4,1fr)!important}
+  .stepcards>.stepcard{grid-column:span 2}
+  .stepcards>.stepcard:last-child:nth-child(odd){grid-column:2/span 2}
+  /* Digital Twin "four ways" panels: eyebrow + title on the photo, description below it */
+  .surf-hero{height:auto!important;overflow:visible!important;display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto auto auto}
+  .surf-hero::after{display:none!important}
+  .surf-hero>.surf-media{position:relative!important;inset:auto!important;height:auto!important;aspect-ratio:4/3;border-radius:12px!important;overflow:hidden;grid-row:1/4;grid-column:1}
+  .surf-hero>.surf-media::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,10,7,.85) 0%,rgba(8,10,7,.35) 38%,rgba(8,10,7,0) 62%)}
+  .surf-hero .surf-info{display:contents!important}
+  .surf-hero .surf-info>.eyebrow{grid-row:2;grid-column:1;position:relative;z-index:2;padding:0 18px;margin-bottom:6px!important}
+  .surf-hero .surf-info>h3{grid-row:3;grid-column:1;position:relative;z-index:2;padding:0 18px 16px;margin:0!important;font-size:18px!important}
+  .surf-hero .surf-info>:not(.eyebrow):not(h3){grid-row:4;grid-column:1;padding:16px 4px 4px;font-size:14px!important;line-height:1.6!important}
+  /* case pages "What we developed": less card padding, bigger visuals reaching the card edges */
+  .devrow{padding:22px 0 0!important;margin-bottom:20px!important}
+  .devrow .txt{padding:0 18px;margin-bottom:16px!important}
+  .devrow>:not(.txt){border-radius:0 0 17px 17px!important}
+  /* case images and before/after sliders on phones: the whole picture, nothing cropped */
+  .devrow .m:has(img){aspect-ratio:auto!important;height:auto!important}
+  .devrow .m img{height:auto!important;display:block}
+  .devrow .m{aspect-ratio:4/3!important}
+  .devrow .m.full{aspect-ratio:16/9!important}
+  /* case videos on phones: native frame, nothing cropped (they are screen recordings of the apps) */
+  .devrow .m:has(video){aspect-ratio:auto!important;height:auto!important}
+  .devrow .m:has(video) video{height:auto!important;display:block;object-fit:contain!important}
+  .devrow>[id$="Wrap"] img[id$="Before"]{max-width:none!important;object-fit:cover!important;object-position:center!important}
+  /* case pages: "All cases" stays pinned under the top bar while scrolling */
+  a[href="cases.html"][style*="left:52px;top:34px"]{position:fixed!important;left:18px!important;top:66px!important;z-index:19;
+    padding:8px 14px;border-radius:999px;font:500 13px Inter!important;color:#fff!important;
+    background:rgba(20,24,22,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 6px 18px rgba(0,0,0,.3);transition:transform .3s ease,opacity .3s ease}
+  a.back-hidden{transform:translateY(-140%);opacity:0;pointer-events:none}
+  /* case "Digital Twin | Gameplay" banner: taller on phones (it is a cover image, cropping is fine) */
+  .gameplay-card{aspect-ratio:5/3!important}
+  .gameplay-card>[style*="font:500 22px"]{left:20px!important;top:18px!important;font-size:20px!important}
+  /* Digital Twin showreel (YouTube) block: 15% taller on phones */
+  .ytwrap{aspect-ratio:1677/972}
+  .ytwrap img{height:100%!important;object-fit:cover!important}
+  /* media lightbox (overlay created by JS, so its inline style is serialised as "z-index: 9999"):
+     close button in its own strip at the top, media starts below it */
+  .lb-ov{padding:72px 12px 20px!important}
+  .lb-ov>div{max-height:none!important;width:100%}
+  .lb-ov video,.lb-ov img{max-width:100%!important;max-height:calc(100svh - 100px)!important}
+  .lb-ov iframe{max-height:calc(100svh - 100px)!important}
+  .lb-ov>button[aria-label="close"]{top:calc(env(safe-area-inset-top,0px) + 14px)!important;right:14px!important;width:42px!important;height:42px!important;font-size:20px!important}
+  .casecard .cap .t{font-size:24px!important}
+  .pill{padding:12px 20px}
+}
+</style>
+<!--mobile:css-end-->
+</head>
+<body><div class="shell"><aside class="side">
+  <a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
+  <div class="grp">PRODUCTS</div>
+  <nav class="nav">
+    <a href="index.html">Overview</a>
+    <a href="digital-twin.html">Digital Twin</a>
+    <a href="renders.html">Renders and Visualisation</a>
+  </nav>
+  <div class="grp mt">COMPANY</div>
+  <nav class="nav">
+    <a href="cases.html" class="on">Cases</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a class="cta" href="contact.html">Book a demo</a>
+</aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="index.html">Overview</a><a href="digital-twin.html">Digital Twin</a><a href="renders.html">Renders</a><a href="cases.html" class="on" aria-current="page">Cases</a><a href="contact.html">Contact</a></div></div>
+<div style="position:relative;height:480px">
+  <img style="width:100%;height:100%;object-fit:cover" src="media/shared/case-cards/017-breig-card.webp">
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(20,18,14,.92) 0%,rgba(20,18,14,.15) 55%,rgba(20,18,14,.4) 100%)"></div>
+  <a href="cases.html" style="position:absolute;left:52px;top:34px;font:400 13px Inter;color:rgba(255,255,255,.85)">← All cases</a>
+  <div style="position:absolute;left:52px;bottom:46px;right:52px">
+    <div class="eyebrow" style="margin-bottom:12px">CASE · BALI</div>
+    <h1 style="font:300 56px/1.02 Inter;letter-spacing:-.03em;color:#fff;margin-bottom:12px">Elysium BREIG</h1>
+    <div style="font:400 15px Inter;color:rgba(255,255,255,.82)">Digital Twin · Web Application</div>
+  </div>
+</div><div class="sec" style="height:250px"><img src="media/case-breig/hero/026-breig-logo.svg" style="height:40px;width:auto;filter:brightness(0) invert(1);opacity:.9;margin-bottom:22px"><p style="font:300 19px/1.72 Inter;color:var(--mut);max-width:none;text-wrap:pretty">Since 2017, <b style="color:var(--ink);font-weight:500">BREIG</b> has been a leading developer in Bali's luxury real estate market. The company currently manages <b style="color:var(--ink);font-weight:500">17 unique projects</b> located in the island's most popular tourist areas. The flagship project <b style="color:var(--ink);font-weight:500">Elysium</b> covers over <b style="color:var(--ink);font-weight:500">20,000 m²</b>. BREIG's portfolio has earned numerous industry awards, including "Best Developer in Bali".</p></div>
+<div class="sec" style="padding-top:0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+  <a href="demos.html" class="icard" style="position:relative;display:block;border-radius:20px;overflow:hidden;aspect-ratio:16/9"><img style="width:100%;height:100%;object-fit:cover" src="media/case-breig/intro/023-breig-gameplay.jpg"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,14,.55),transparent 45%)"></div><div style="position:absolute;left:26px;top:24px;font:500 22px Inter;color:#fff">Digital Twin | Gameplay</div><div style="position:absolute;left:26px;bottom:26px;width:52px;height:52px;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#161d1a"><path d="M8 5v14l11-7z"/></svg></div><span class="pill" style="position:absolute;right:22px;bottom:22px;background:#fff;color:#161d1a;padding:9px 20px">Watch</span></a>
+  <a href="demos.html" class="icard" style="position:relative;display:block;border-radius:20px;overflow:hidden;aspect-ratio:16/9"><img style="width:100%;height:100%;object-fit:cover" src="media/case-breig/intro/029-breig-widget.jpg"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,14,.5),transparent 45%)"></div><div style="position:absolute;left:26px;top:24px;font:500 22px Inter;color:#fff">Web Application</div><span class="pill" style="position:absolute;right:22px;bottom:22px;background:#fff;color:#161d1a;padding:9px 20px">Open</span></a>
+</div></div>
+<div class="sec"><h2 style="font:300 44px/1.05 Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:34px">What we developed</h2>
+<div class="devrow">
+  <div class="txt">
+    <div class="devnum">01</div>
+    <div class="eyebrow" style="margin-bottom:10px">Master plan</div>
+    <p style="font:300 21px/1.5 Inter;color:var(--ink);width:880px">3D model of the complex based on the client's master plan for 2 hectares in 4 weeks. Created interactive functionality for viewing 13 zones.</p>
+  </div>
+  <div id="mpWrap" style="position:relative;width:100%;aspect-ratio:2/1;border-radius:12px;overflow:hidden;cursor:ew-resize;user-select:none;background:#f3f4f6">
+    <img src="media/case-breig/developed/014-breig-after.jpg" alt="After" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+    <div id="mpTop" style="position:absolute;inset:0;width:50%;overflow:hidden;background:#f3f4f6">
+      <img id="mpBefore" src="media/case-breig/developed/015-breig-before.jpg" alt="Before" style="position:absolute;left:0;top:0;height:100%;object-fit:cover;object-position:left center">
+      <span style="position:absolute;left:16px;bottom:16px;font:600 11px Inter;letter-spacing:.08em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:6px 12px;border-radius:999px">BEFORE</span>
+    </div>
+    <span style="position:absolute;right:16px;bottom:16px;z-index:2;font:600 11px Inter;letter-spacing:.08em;color:#0d100c;background:var(--acc);padding:6px 12px;border-radius:999px">AFTER</span>
+    <div id="mpLine" style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;transform:translateX(-1px);z-index:3;box-shadow:0 0 12px rgba(0,0,0,.4)"></div>
+    <div id="mpHandle" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;width:46px;height:46px;border-radius:999px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:#0d100c;font-size:16px;box-shadow:0 6px 18px rgba(0,0,0,.35)">⟺</div>
+  </div>
+</div>
+<div class="devrow">
+  <div class="txt">
+    <div class="devnum">02</div>
+    <div class="eyebrow" style="margin-bottom:10px">Surroundings</div>
+    <p style="font:300 21px/1.5 Inter;color:var(--ink)">Surroundings within a 2 km radius based on maps, with 6 key points added.</p>
+  </div>
+  <div class="m"><video src="media/case-breig/developed/088-breig-surroundings.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+</div>
+<div class="devrow">
+  <div class="txt">
+    <div class="devnum">03</div>
+    <div class="eyebrow" style="margin-bottom:10px">Apartment</div>
+    <p style="font:300 21px/1.5 Inter;color:var(--ink)">Balcony view functionality and a 3D interior tour.</p>
+  </div>
+  <div class="m"><video src="media/case-breig/developed/086-breig-apartment.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+</div></div><div class="sec" style="padding-top:0"><h2 style="font:300 44px/1.05 Inter;letter-spacing:-.03em;color:var(--ink);margin-bottom:34px">Achieved results</h2><div class="eyebrow" style="margin-bottom:8px">Awards</div><p style="font:300 16px/1.6 Inter;color:var(--mut);max-width:620px;margin:0 0 24px">Won three international property and lifestyle awards.</p>
+<div class="awgrid" style="margin-top:22px">
+  <div class="awcard"><span class="awyear">2025–2026</span><div class="awmark"><img src="media/case-breig/results/award-property.svg" alt="Asia Pacific Property Awards" style="height:132px;width:auto;object-fit:contain"></div><div class="awtitle">Asia Pacific Property Awards</div><div class="awsub">Residential Property Indonesia. Apartment / Condominium Development Indonesia.</div></div>
+  <div class="awcard"><span class="awyear">2025</span><div class="awmark"><img src="media/case-breig/results/award-exquisite.svg" alt="Exquisite Awards" style="height:132px;width:auto;object-fit:contain"></div><div class="awtitle">Exquisite Awards</div><div class="awsub">Best Property Developer in Bali.</div></div>
+  <div class="awcard"><span class="awyear">2025</span><div class="awmark"><img src="media/case-breig/results/award-luxury.svg" alt="Luxury Lifestyle Awards" style="height:132px;width:auto;object-fit:contain"></div><div class="awtitle">Luxury Lifestyle Awards</div><div class="awsub">Winner.</div></div>
+</div>
+<div class="eyebrow" style="margin-top:40px;margin-bottom:8px">Sales result</div><div style="font:300 16px/1.6 Inter;color:var(--mut);margin-bottom:18px;max-width:620px">Blocks 1 and 2 of apartments sold out within 1 year of using the Digital Twin.</div><div style="margin-top:0;background:#1a201d;border:1px solid var(--line);border-radius:12px;padding:30px 34px;box-shadow:0 18px 44px rgba(0,0,0,.34)"><img src="media/case-breig/results/027-breig-master-plan.png" style="width:100%;height:auto;display:block"></div></div><div class="sec" style="padding-top:0"><div class="eyebrow" style="margin-bottom:8px">Marketing materials</div><p style="font:300 16px/1.6 Inter;color:var(--mut);max-width:620px;margin:0 0 18px">Booklets, sales-office stands and billboards built from the Digital Twin renders.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;width:93%"><div style="border-radius:12px;overflow:hidden;aspect-ratio:4/5;background:#1a201d;box-shadow:0 18px 44px rgba(0,0,0,.34)"><img src="media/case-breig/marketing/028-breig-totem.png" style="width:100%;height:100%;object-fit:cover"></div><div style="border-radius:12px;overflow:hidden;aspect-ratio:4/5;background:#1a201d;box-shadow:0 18px 44px rgba(0,0,0,.34)"><img src="media/case-breig/marketing/016-breig-booklet.png" style="width:100%;height:100%;object-fit:cover"></div></div></div><div class="sec" style="padding-top:0"><div class="eyebrow" style="margin-bottom:8px">Digital catalogs</div><p style="font:300 16px/1.6 Inter;color:var(--mut);max-width:620px;margin:0 0 18px">Interactive project catalogs generated from the Digital Twin.</p><div class="catwrap" style="position:relative">
+    <div class="hrail" id="catRail" style="display:flex;align-items:center;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:14px 2px 20px">
+      <div class="catcover" style="flex:none;width:269px;height:440px;scroll-snap-align:start;border-radius:12px;overflow:hidden;background:#0d100c;position:relative"><img src="media/case-breig/catalogs/021-breig-cat-cover.png" style="width:100%;height:100%;object-fit:cover"><a href="media/case-breig/catalogs/087-breig-catalog.pdf" download aria-label="Download catalog" class="dlbtn" style="position:absolute;left:50%;bottom:38px;transform:translateX(-50%);display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(20,26,23,.55);backdrop-filter:blur(10px);color:#fff;font:600 11px Inter;letter-spacing:.03em;text-decoration:none;opacity:0;transition:opacity .22s,background .2s" onmouseover="this.style.background='rgba(20,26,23,.75)'" onmouseout="this.style.background='rgba(20,26,23,.55)'"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Download</a></div>
+      <div style="flex:none;width:248px;height:440px;scroll-snap-align:start;border-radius:12px;overflow:hidden;background:#0d100c"><img src="media/case-breig/catalogs/019-breig-cat-04.png" style="width:100%;height:100%;object-fit:cover"></div>
+      <div style="flex:none;width:248px;height:440px;scroll-snap-align:start;border-radius:12px;overflow:hidden;background:#0d100c"><img src="media/case-breig/catalogs/018-breig-cat-03.png" style="width:100%;height:100%;object-fit:cover"></div>
+      <div style="flex:none;width:248px;height:440px;scroll-snap-align:start;border-radius:12px;overflow:hidden;background:#0d100c"><img src="media/case-breig/catalogs/020-breig-cat-06.png" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <button class="catnav" aria-label="prev" onclick="document.getElementById('catRail').scrollBy({left:-452,behavior:'smooth'})" style="left:10px;position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">‹</button>
+    <button class="catnav" aria-label="next" onclick="document.getElementById('catRail').scrollBy({left:452,behavior:'smooth'})" style="right:10px;position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.28)'" onmouseout="this.style.background='rgba(255,255,255,.14)'">›</button>
+  </div></div>
+<div id="catLightbox" style="display:none;opacity:0;transition:opacity .22s;position:fixed;inset:0;z-index:9999;background:rgba(8,11,9,.92);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:40px;cursor:pointer">
+  <img id="catLightboxImg" alt="" style="max-width:96vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)">
+  <button aria-label="close" onclick="this.parentElement.click()" style="position:fixed;top:22px;right:26px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+</div>
+<script>(function(){var r=document.getElementById('catRail');if(!r)return;if(r.children.length<=4){document.querySelectorAll('.catnav').forEach(function(b){b.style.display='none';});}
+var ov=document.getElementById('catLightbox'),im=document.getElementById('catLightboxImg');
+r.querySelectorAll(':scope > div').forEach(function(card){card.style.cursor='pointer';card.addEventListener('dblclick',function(){var img=card.querySelector('img');if(!img)return;im.src=img.src;ov.style.display='flex';requestAnimationFrame(function(){ov.style.opacity=1;});});});
+function close(){ov.style.opacity=0;setTimeout(function(){ov.style.display='none';im.removeAttribute('src');},220);}
+ov.addEventListener('click',close);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
+})();</script>
+<div class="sec" style="padding-top:0"><div class="eyebrow" style="margin-bottom:8px">AI generated cinematics</div><p style="font:300 16px/1.6 Inter;color:var(--mut);max-width:620px;margin:0 0 18px">We took clean renders of the project and turned them into a cinematic reel with AI. Hover either tile to compare the raw renders with the final film.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="fmedia" style="position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c;aspect-ratio:15/11"><img src="media/case-breig/ai-cinematics/116-breig-raw-renders-poster.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/case-breig/ai-cinematics/116-breig-raw-renders.mp4" poster="media/case-breig/ai-cinematics/116-breig-raw-renders-poster.jpg" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;left:16px;bottom:16px;z-index:4;font:600 11px Inter;letter-spacing:.08em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:6px 12px;border-radius:999px">RAW RENDERS</span></div><div class="fmedia" style="position:relative;overflow:hidden;border-radius:14px;cursor:pointer;background:#0d100c;aspect-ratio:15/11"><img src="media/case-breig/ai-cinematics/117-breig-ai-cinematic-poster.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><video src="media/case-breig/ai-cinematics/117-breig-ai-cinematic.mp4" poster="media/case-breig/ai-cinematics/117-breig-ai-cinematic-poster.webp" muted loop playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s ease"></video><span style="position:absolute;right:16px;bottom:16px;z-index:4;font:600 11px Inter;letter-spacing:.08em;color:#0d100c;background:var(--acc);padding:6px 12px;border-radius:999px">CINEMATIC REEL</span></div></div><script>document.querySelectorAll('.fmedia').forEach(function(f){var v=f.querySelector('video');if(!v||f.dataset.b)return;f.dataset.b=1;f.addEventListener('mouseenter',function(){v.style.opacity=1;v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});});f.addEventListener('mouseleave',function(){v.style.opacity=0;v.pause();});});</script></div>
+<div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div>
+  <a class="pill" href="contact.html">Book a demo →</a>
+</div></div>
+<div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>EN</span></div>
+</div></div>
+<script>(function(){var w=document.getElementById('mpWrap');if(!w)return;var top=document.getElementById('mpTop'),line=document.getElementById('mpLine'),ha=document.getElementById('mpHandle'),bef=document.getElementById('mpBefore');function fit(){bef.style.width=w.getBoundingClientRect().width+'px';}fit();window.addEventListener('resize',fit);function set(x){var r=w.getBoundingClientRect();var p=Math.max(0,Math.min(1,(x-r.left)/r.width));top.style.width=(p*100)+'%';line.style.left=(p*100)+'%';ha.style.left=(p*100)+'%';}var drag=false;w.addEventListener('mousedown',function(e){drag=true;set(e.clientX);});window.addEventListener('mousemove',function(e){if(drag)set(e.clientX);});window.addEventListener('mouseup',function(){drag=false;});w.addEventListener('touchstart',function(e){drag=true;set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchmove',function(e){if(drag)set(e.touches[0].clientX);},{passive:true});window.addEventListener('touchend',function(){drag=false;});})();</script>
+
+<script>(function(){
+ var ov=document.createElement('div');
+ ov.style.cssText='display:none;opacity:0;transition:opacity .22s;position:fixed;inset:0;z-index:9999;background:rgba(8,11,9,.92);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:40px;cursor:pointer';
+ var box=document.createElement('div');box.style.cssText='max-width:96vw;max-height:92vh;display:flex;align-items:center;justify-content:center';ov.appendChild(box);
+ var cl=document.createElement('button');cl.setAttribute('aria-label','close');cl.textContent='\u00d7';cl.style.cssText='position:fixed;top:22px;right:26px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2';ov.appendChild(cl);
+ document.body.appendChild(ov);
+ function openMedia(node){
+   box.innerHTML='';
+   var v=node.querySelector&&node.querySelector('video');
+   var i=node.querySelector&&node.querySelector('img');
+   if(v&&v.getAttribute('src')){
+     var vid=document.createElement('video');vid.src=v.getAttribute('src');vid.controls=true;vid.autoplay=true;vid.loop=true;vid.playsInline=true;vid.style.cssText='max-width:96vw;max-height:92vh;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)';box.appendChild(vid);
+   } else if(i){
+     var img=document.createElement('img');img.src=i.src;img.style.cssText='max-width:96vw;max-height:92vh;object-fit:contain;border-radius:10px;box-shadow:0 30px 90px rgba(0,0,0,.6)';box.appendChild(img);
+   } else return;
+   ov.style.display='flex';requestAnimationFrame(function(){ov.style.opacity=1;});
+ }
+ function close(){ov.style.opacity=0;setTimeout(function(){ov.style.display='none';box.innerHTML='';},220);}
+ ov.addEventListener('click',function(e){if(e.target===ov||e.target===cl)close();});
+ cl.addEventListener('click',close);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.display==='flex')close();});
+ document.querySelectorAll('.fmedia').forEach(function(t){t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});
+ ['rendRail','dtRail','aiRail'].forEach(function(id){var r=document.getElementById(id);if(!r)return;[].slice.call(r.children).forEach(function(t){if(t.tagName==='BUTTON')return;t.style.cursor='pointer';t.addEventListener('dblclick',function(){openMedia(t);});});});
+})();</script>
+<!--mobile:js-->
+<script id="mobile-video">
+/* Mobile top bar: burger button that opens the section menu. */
+(function(){
+  var bar=document.querySelector('.topbar'), menu=bar&&bar.querySelector('.m');
+  if(!bar||!menu||bar.querySelector('.burger')) return;
+  menu.id=menu.id||'mobileMenu';
+  var btn=document.createElement('button');
+  btn.type='button'; btn.className='burger'; btn.setAttribute('aria-label','Menu'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',menu.id);
+  btn.innerHTML='<span></span><span></span><span></span>';
+  bar.appendChild(btn);
+  function set(open){bar.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'Close menu':'Menu');}
+  btn.addEventListener('click',function(e){e.stopPropagation();set(!bar.classList.contains('open'));});
+  menu.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});
+  document.addEventListener('click',function(e){if(bar.classList.contains('open')&&!bar.contains(e.target))set(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+})();
+/* Home on phones: stretch the hero panel so hero + trust strip fill exactly one screen. */
+(function(){
+  var v=document.getElementById('heroVideo'); if(!v||!matchMedia('(max-width:600px)').matches) return;
+  var hero=v.parentElement, trust=document.querySelector('.trust'), bar=document.querySelector('.topbar');
+  hero.classList.add('heroFill'); /* style attr gets rewritten by JS, so CSS targets .hero */
+  function fit(){ if(!matchMedia('(max-width:600px)').matches){hero.style.minHeight='';return;}
+    var h=innerHeight-(bar?bar.getBoundingClientRect().height:0)-(trust?trust.getBoundingClientRect().height:0)-4; hero.style.setProperty('min-height',Math.max(h,0)+'px','important'); }
+  fit(); addEventListener('resize',fit); addEventListener('orientationchange',fit);
+})();
+/* Swipeable rows (product tabs, partners): fade the edge that still has hidden content. */
+(function(){
+  [].forEach.call(document.querySelectorAll('.prodnav, .trust'),function(el){
+    function upd(){
+      var max=el.scrollWidth-el.clientWidth;
+      if(max<=2||!matchMedia('(max-width:600px)').matches){el.classList.remove('swipe-more','swipe-mid','swipe-end');return;}
+      el.classList.add('swipe-more');
+      el.classList.toggle('swipe-end',el.scrollLeft>=max-2);
+      el.classList.toggle('swipe-mid',el.scrollLeft>2&&el.scrollLeft<max-2);
+    }
+    el.addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(upd);
+    // one gentle nudge the first time the row comes into view, so it reads as swipeable
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;io.disconnect();
+      if(el.scrollWidth-el.clientWidth<=2||el.scrollLeft>0)return;
+      setTimeout(function(){el.scrollTo({left:48,behavior:'smooth'});setTimeout(function(){el.scrollTo({left:0,behavior:'smooth'});},450);},400);},{threshold:.9});io.observe(el);}
+  });
+})();
+/* Case pages: "All cases" pill hides while scrolling down and comes back on scroll up. */
+(function(){
+  var a=document.querySelector('a[href="cases.html"][style*="top:34px"]'); if(!a) return;
+  var last=scrollY, acc=0;
+  addEventListener('scroll',function(){
+    var y=scrollY, d=y-last; last=y;
+    if(!matchMedia('(max-width:600px)').matches){a.classList.remove('back-hidden');return;}
+    if(y<80){a.classList.remove('back-hidden');acc=0;return;}
+    acc=(d>0)===(acc>0)?acc+d:d;           // distance moved in the current direction
+    if(acc>24) a.classList.add('back-hidden');
+    else if(acc<-24) a.classList.remove('back-hidden');
+  },{passive:true});
+})();
+/* Tag the media lightbox overlay so the phone styles can target it. */
+[].forEach.call(document.querySelectorAll('body > div'),function(d){ if(d.style.position==='fixed'&&d.style.zIndex==='9999'&&d.querySelector('button[aria-label="close"]')) d.classList.add('lb-ov'); });
+/* Touch screens have no hover: play muted tile videos while they are on screen. */
+(function(){
+  if(!window.matchMedia||!matchMedia('(hover: none)').matches||!('IntersectionObserver' in window)) return;
+  var vids=[].slice.call(document.querySelectorAll('video')).filter(function(v){return v.id!=='heroVideo'&&(v.muted||v.hasAttribute('muted'));});
+  if(!vids.length) return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;
+    if(e.isIntersecting){v.preload='auto';v.style.opacity=1;var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    else v.pause();});},{threshold:.5});
+  vids.forEach(function(v){io.observe(v);});
+})();
+/* Before/after sliders on phones: the frame takes the picture's own proportions, so nothing is cropped. */
+(function(){
+  if(!matchMedia('(max-width:600px)').matches) return;
+  document.querySelectorAll('.devrow>[id$="Wrap"]').forEach(function(w){
+    var img=w.querySelector('img'); if(!img) return;
+    function fit(){ if(img.naturalWidth) w.style.setProperty('aspect-ratio',img.naturalWidth+' / '+img.naturalHeight,'important'); }
+    if(img.complete) fit(); else img.addEventListener('load',fit);
+  });
+})();
+</script>
+<!--mobile:js-end-->
+</body></html>

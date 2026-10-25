@@ -1,0 +1,241 @@
+#apartments-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+#floor-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    --floor-panel-x: calc(50vw - 176px);
+    --floor-panel-y: 50vh;
+    width: max-content;
+    max-width: none;
+    height: auto;
+    overflow: visible;
+    transform: translate3d(var(--floor-panel-x), var(--floor-panel-y), 0) translate(-100%, -50%);
+    z-index: 1;
+}
+
+#floor-panel > .glass-panel {
+    display: none;
+}
+
+#floor-panel .panel-container {
+    width: max-content;
+    min-width: max-content;
+    height: auto;
+    gap: 8px;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.floor-panel-label {
+    display: none;
+}
+
+.floor-panel-scroll {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column-reverse;
+    gap: 8px;
+    overflow: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.floor-panel-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.floor-panel-item {
+    position: relative;
+    flex: 0 0 auto;
+    display: block;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--glass-bg-dark);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.96);
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+        width 0.24s ease,
+        background-color 0.2s ease;
+}
+
+.floor-panel-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.0001) 33%,
+        rgba(255, 255, 255, 0.0001) 66%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.floor-panel-item-number {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.96);
+    transition:
+        opacity 0.2s ease,
+        transform 0.24s ease;
+    pointer-events: none;
+}
+
+.floor-panel-item-label {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    transform: translateX(4px);
+    color: rgba(255, 255, 255, 0.95);
+    transition:
+        opacity 0.2s ease,
+        transform 0.24s ease;
+    padding: 0 8px;
+    pointer-events: none;
+}
+
+.floor-panel-item:hover,
+.floor-panel-item:focus-visible {
+    width: 40px;
+    background-color: rgba(36, 36, 36, 0.48);
+}
+
+.floor-panel-item.active .floor-panel-item-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.floor-panel-item.active .floor-panel-item-number {
+    opacity: 0;
+    transform: translateX(4px);
+}
+
+.floor-panel-item.active {
+    width: 80px;
+    background-color: rgba(36, 36, 36, 0.48);
+}
+
+
+.apartment-pin {
+    position: absolute;
+    height: 40px;
+    min-width: 40px;
+    width: max-content;
+    max-width: min(460px, calc(100vw - 64px));
+    overflow: visible;
+    display: flex;
+    pointer-events: auto;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    border-radius: 999px;
+    will-change: transform;
+    cursor: pointer;
+}
+
+.apartment-pin .glass-panel {
+    background-color: var(--glass-bg-dark);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    z-index: 0;
+}
+
+.apartment-pin .border-shadow {
+    border: none;
+    filter: none;
+    border-radius: 999px;
+}
+
+.apartment-pin .amenities-line {
+    padding: 1px;
+    border-radius: 999px;
+    background: var(--gradient-line);
+}
+
+.apartment-pin .panel-container {
+    position: relative;
+    height: 100%;
+    max-width: 100%;
+    min-width: 40px;
+    gap: 0;
+    padding: 0 6px 0 0;
+    align-items: center;
+    z-index: 2;
+}
+
+.apartment-pin-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+    object-fit: contain;
+    display: block;
+    align-self: center;
+    flex: 0 0 auto;
+}
+
+.apartment-pin-text {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    font-size: 16px;
+    line-height: 1;
+    max-width: min(380px, calc(100vw - 120px));
+    padding-right: 8px;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.apartment-pin.selected-for-info .glass-panel {
+    background-color: rgba(40, 40, 40, 0.46);
+}
+
+.apartment-pin .glass-panel,
+.apartment-pin .panel-container {
+    pointer-events: none;
+}

@@ -1,0 +1,18 @@
+# Enable MIME types for JavaScript modules
+<IfModule mod_mime.c>
+    AddType text/javascript .js .mjs
+    RemoveType .mjs
+    AddType text/javascript .mjs
+</IfModule>
+
+<FilesMatch "\.(js|mjs)$">
+    <IfModule mod_headers.c>
+        Header set Content-Type "text/javascript; charset=utf-8"
+        Header set X-Content-Type-Options "nosniff"
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set Cross-Origin-Opener-Policy "same-origin"
+    Header set Cross-Origin-Embedder-Policy "require-corp"
+</IfModule>

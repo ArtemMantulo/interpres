@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>AR Simulation</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <link rel="stylesheet" href="assets/web/asset.css"/>
+    </head>
+    <body>
+        <video id="camera-video" playsinline muted></video>
+        <canvas id="application-canvas"></canvas>
+        <script src="playcanvas.min.js"></script>
+        <script type="module" src="main.js"></script>
+        <div id="launch" class="hidden" role="button" tabindex="1" aria-label="Launch" alt="Launch">LAUNCH</div>
+        <div id="hint" class="hidden">
+            <div class="hint-line"></div>
+            <div class="hint-text">Выровняйте телефон по горизонту<br>и нажмите LAUNCH</div>
+        </div>
+        <div id="start-screen">
+            <div class="start-image"></div>
+            <div id="start-button" role="button" tabindex="0" aria-label="Start" alt="Start"></div>
+        </div>
+
+        <script>
+            function resizeCanvasForiOS() {
+                const canvas = document.getElementById('application-canvas');
+                canvas.style.width = window.innerWidth + 'px';
+                canvas.style.height = window.innerHeight + 'px';
+            }
+
+            window.addEventListener('resize', resizeCanvasForiOS);
+            window.addEventListener('orientationchange', resizeCanvasForiOS);
+            resizeCanvasForiOS();
+        </script>
+    </body>
+</html>
