@@ -191,12 +191,15 @@ h1,h2,h3{margin:0}
   .stepcards{grid-template-columns:repeat(4,1fr)!important}
   .stepcards>.stepcard{grid-column:span 2}
   .stepcards>.stepcard:last-child:nth-child(odd){grid-column:2/span 2}
-  /* Digital Twin "four ways" panels: image on top, text below it */
-  .surf-hero{height:auto!important;overflow:visible!important;display:flex;flex-direction:column}
+  /* Digital Twin "four ways" panels: eyebrow + title on the photo, description below it */
+  .surf-hero{height:auto!important;overflow:visible!important;display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto auto auto}
   .surf-hero::after{display:none!important}
-  .surf-hero>.surf-media{position:relative!important;inset:auto!important;height:auto!important;aspect-ratio:4/3;border-radius:12px!important;overflow:hidden}
-  .surf-hero .surf-info{position:static!important;max-width:none!important;padding:18px 4px 4px!important}
-  .surf-hero .surf-info h3{font-size:24px!important}
+  .surf-hero>.surf-media{position:relative!important;inset:auto!important;height:auto!important;aspect-ratio:4/3;border-radius:12px!important;overflow:hidden;grid-row:1/4;grid-column:1}
+  .surf-hero>.surf-media::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,10,7,.85) 0%,rgba(8,10,7,.35) 38%,rgba(8,10,7,0) 62%)}
+  .surf-hero .surf-info{display:contents!important}
+  .surf-hero .surf-info>.eyebrow{grid-row:2;grid-column:1;position:relative;z-index:2;padding:0 18px;margin-bottom:6px!important}
+  .surf-hero .surf-info>h3{grid-row:3;grid-column:1;position:relative;z-index:2;padding:0 18px 16px;margin:0!important;font-size:24px!important}
+  .surf-hero .surf-info>:not(.eyebrow):not(h3){grid-row:4;grid-column:1;padding:16px 4px 4px}
   .casecard .cap .t{font-size:24px!important}
   .pill{padding:12px 20px}
 }
