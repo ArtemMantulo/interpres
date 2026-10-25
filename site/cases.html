@@ -128,8 +128,12 @@ h1,h2,h3{margin:0}
   [style*="position:absolute;left:52px;bottom:31px"] #heroTitle{display:inline-block}
   [style*="position:absolute;left:52px;bottom:31px"] #heroSub{margin-left:auto!important;margin-right:auto!important}
   .heroBtns{justify-content:center}
-  .trust{gap:8px 22px!important;padding:14px 18px!important}
-  .trust>span{flex-basis:100%;margin-bottom:2px}
+  /* partners: label on top, names in one swipeable row */
+  .trust{display:grid!important;grid-auto-flow:column;grid-auto-columns:max-content;grid-template-rows:auto auto;gap:8px 26px!important;padding:14px 18px!important;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .trust::-webkit-scrollbar{display:none}
+  .trust>span{grid-row:1;grid-column:1/span 6}
+  .trust>b{grid-row:2;font-size:15px}
   .heroMore{display:block!important;margin:-4px auto 20px;max-width:340px;font:300 14px/1.55 Inter;color:var(--mut)}
   /* first phone screen = hero + "Trusted by" strip; the products block starts below the fold */
   .heroFill{display:flex;flex-direction:column}
