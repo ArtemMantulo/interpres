@@ -109,11 +109,15 @@ h1,h2,h3{margin:0}
   .hstats .v{font-size:20px!important}
   .hstats .st{padding:0 10px!important}
   /* home: hero */
-  /* home hero: showreel cropped 30% in total (15% each side) over a blurred backdrop */
-  [style*="height:calc(100vh - 63px)"]{height:calc(100svh - 92px)!important;min-height:560px!important;overflow:hidden;background:#0d100c}
-  [style*="height:calc(100vh - 63px)"]::before{content:"";position:absolute;inset:-40px;background:url(media/index/hero/057-hero-poster.jpg) center/cover;filter:blur(28px) brightness(.45);transform:scale(1.1)}
-  #heroVideo{position:absolute;left:50%;top:18%;width:142.86vw!important;height:auto!important;max-width:none!important;aspect-ratio:971/540;transform:translateX(-50%);object-fit:cover!important;z-index:0}  /* 30% of the width cropped in total (15% per side) */
-  [style*="position:absolute;left:52px;bottom:31px"]{left:18px!important;right:18px!important;bottom:22px!important}
+  /* home hero (phone): video pinned to the top (30% side crop), text centred below it on a green panel */
+  [style*="height:calc(100vh - 63px)"]{height:auto!important;min-height:0!important;overflow:hidden;background:#0d100c}
+  #heroVideo{position:relative;display:block;margin-left:-21.43vw;width:142.86vw!important;height:auto!important;max-width:none!important;aspect-ratio:971/540;object-fit:cover!important}
+  [style*="height:calc(100vh - 63px)"]>[style*="pointer-events:none;background:linear-gradient(180deg,rgba(20,18,14,.42)"]{display:none}
+  [style*="position:absolute;left:52px;bottom:31px"]{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;max-width:none!important;
+    text-align:center;padding:26px 20px 28px;background:linear-gradient(158deg,#27302c 0%,#202824 48%,#1b221e 100%);border-top:1px solid var(--line);box-shadow:inset 0 0 0 9999px rgba(134,184,160,.05)}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroTitle{display:inline-block}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroSub{margin-left:auto!important;margin-right:auto!important}
+  .heroBtns{justify-content:center}
   #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
   /* home: products — menu becomes a swipeable row above full-screen slides */
   .prodrow{grid-template-columns:minmax(0,1fr)!important}
