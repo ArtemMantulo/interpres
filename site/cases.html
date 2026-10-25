@@ -67,6 +67,8 @@ h1,h2,h3{margin:0}
   img,video,iframe{max-width:100%}
   .sec{padding:28px 18px!important}
   .sec[style*="height:"]{height:auto!important}
+  .sec[style*="padding-top:0"]{padding-top:0!important}  /* keep sections that sit flush under the previous one */
+  .sec>p:last-child{margin-bottom:0!important}
   h1{font-size:clamp(34px,10vw,44px)!important;line-height:1.05!important}
   h2{font-size:clamp(26px,7.4vw,32px)!important;line-height:1.12!important}
   h3{font-size:clamp(20px,5.8vw,24px)!important}
