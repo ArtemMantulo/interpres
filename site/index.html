@@ -159,7 +159,10 @@ h1,h2,h3{margin:0}
   /* home: products — menu becomes a swipeable row above full-screen slides */
   .prodrow{grid-template-columns:minmax(0,1fr)!important}
   .prodrow>*{min-width:0}
-  .prod-scroll{height:calc(100svh - 92px - 56px)!important;min-height:480px!important}
+  /* products: slides flow in the page (no inner scroller on phones), menu sticks under the top bar */
+  .prod-scroll{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;scroll-snap-type:none!important}
+  .prod-scroll>div{height:calc(100svh - 148px)!important;min-height:480px!important}
+  .prodrow>div:first-child{position:sticky;top:56px;z-index:6}
   .prodrow>div:first-child{width:auto!important;padding:18px 18px 12px!important}
   .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
   .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
@@ -396,17 +399,26 @@ h1,h2,h3{margin:0}
 </div></div>
 <script>
   // Products menu: click scrolls the slides to that chapter; the active item follows the scroll.
+  // Desktop: the slides scroll inside .prod-scroll. Phones: .prod-scroll is not a scroller (iOS
+  // does not hand an inner scroll over to the page, so users got stuck after the last slide);
+  // the slides flow in the page and the menu sticks under the top bar.
   (function () {
     var inner = document.querySelector('.prod-scroll'), items = document.querySelectorAll('.prodnav .pn');
     if (!inner || !items.length) return;
     var slides = inner.children;
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var phoneMQ = window.matchMedia('(max-width:600px)');
+    function phone() { return phoneMQ.matches; }
+    function stickyH() { var m = document.querySelector('.prodrow > div:first-child'), b = document.querySelector('.topbar');
+      return (m ? m.getBoundingClientRect().height : 0) + (b && getComputedStyle(b).display !== 'none' ? b.getBoundingClientRect().height : 0); }
     function slideTop(i) { return slides[i].getBoundingClientRect().top - inner.getBoundingClientRect().top + inner.scrollTop; }
     function setActive(i) {
       items.forEach(function (it, k) {
         it.classList.toggle('on', k === i);
         if (k === i) it.setAttribute('aria-current', 'true'); else it.removeAttribute('aria-current');
       });
+      var on = items[i], nav = on && on.parentElement;   // keep the active tab visible in the swipeable row
+      if (phone() && nav && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: on.offsetLeft - 18, behavior: reduce ? 'auto' : 'smooth' });
     }
     var lockUntil = 0;
     items.forEach(function (it, i) {
@@ -414,19 +426,27 @@ h1,h2,h3{margin:0}
         if (!slides[i]) return;
         setActive(i);
         lockUntil = Date.now() + 900; // keep the clicked item highlighted while the scroll animates
-        inner.scrollTo({ top: slideTop(i), behavior: reduce ? 'auto' : 'smooth' });
+        if (phone()) window.scrollTo({ top: slides[i].getBoundingClientRect().top + window.scrollY - stickyH(), behavior: reduce ? 'auto' : 'smooth' });
+        else inner.scrollTo({ top: slideTop(i), behavior: reduce ? 'auto' : 'smooth' });
       });
     });
-    inner.addEventListener('scroll', function () {
+    var last = -1;
+    function update() {
       if (Date.now() < lockUntil) return;
-      var max = inner.scrollHeight - inner.clientHeight, i;
-      if (inner.scrollTop >= max - 2) i = slides.length - 1; // last slide can't reach the top
-      else {
-        i = 0;
-        for (var k = 1; k < slides.length; k++) if (slideTop(k) - inner.scrollTop <= inner.clientHeight * 0.4) i = k;
+      var i = 0;
+      if (phone()) {
+        var line = stickyH() + window.innerHeight * 0.25;
+        for (var k = 1; k < slides.length; k++) if (slides[k].getBoundingClientRect().top <= line) i = k;
+      } else {
+        var max = inner.scrollHeight - inner.clientHeight;
+        if (inner.scrollTop >= max - 2) i = slides.length - 1; // last slide can't reach the top
+        else for (var j = 1; j < slides.length; j++) if (slideTop(j) - inner.scrollTop <= inner.clientHeight * 0.4) i = j;
       }
-      setActive(Math.min(i, items.length - 1));
-    }, { passive: true });
+      i = Math.min(i, items.length - 1);
+      if (i !== last) { last = i; setActive(i); }
+    }
+    inner.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('scroll', function () { if (phone()) update(); }, { passive: true });
   })();
 </script>
 <script>

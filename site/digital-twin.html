@@ -222,7 +222,10 @@ h1,h2,h3{margin:0}
   /* home: products — menu becomes a swipeable row above full-screen slides */
   .prodrow{grid-template-columns:minmax(0,1fr)!important}
   .prodrow>*{min-width:0}
-  .prod-scroll{height:calc(100svh - 92px - 56px)!important;min-height:480px!important}
+  /* products: slides flow in the page (no inner scroller on phones), menu sticks under the top bar */
+  .prod-scroll{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;scroll-snap-type:none!important}
+  .prod-scroll>div{height:calc(100svh - 148px)!important;min-height:480px!important}
+  .prodrow>div:first-child{position:sticky;top:56px;z-index:6}
   .prodrow>div:first-child{width:auto!important;padding:18px 18px 12px!important}
   .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
   .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
