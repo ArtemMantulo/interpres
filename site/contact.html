@@ -53,6 +53,69 @@ h1,h2,h3{margin:0}
   h1{font-size:40px!important}
 }
 </style>
+<!--mobile:css-->
+<style id="mobile-fixes">
+/* Phone layout (iPhone 14 and up: 390–430 px wide). Pages use inline styles, so rules
+   below target those inline declarations; desktop is untouched (max-width:600px only). */
+@media (max-width:600px){
+  html,body{overflow-x:hidden}
+  .main{min-width:0}
+  img,video,iframe{max-width:100%}
+  .sec{padding:28px 18px!important}
+  .sec[style*="height:"]{height:auto!important}
+  h1{font-size:clamp(34px,10vw,44px)!important;line-height:1.05!important}
+  h2{font-size:clamp(26px,7.4vw,32px)!important;line-height:1.12!important}
+  h3{font-size:clamp(20px,5.8vw,24px)!important}
+  p[style*="font:300 28px"],p[style*="font:300 24px"]{font-size:20px!important;line-height:1.45!important}
+  p[style*="font:300 21px"],p[style*="font:300 19px"]{font-size:17px!important}
+  [style*="white-space:nowrap"]:not(.subLine):not(#heroTitle):not(.pill):not(button){white-space:normal!important}
+  [style*="max-width:90%"]{max-width:100%!important}
+  p[style*="width:880px"],p[style*="width:720px"],p[style*="width:760px"]{width:auto!important}
+  [style*="transform:translateX(-15%)"]{transform:none!important}
+
+  /* multi-column inline grids -> one column */
+  [style*="grid-template-columns:1fr 1fr"],[style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:1.4fr 1fr 1fr"],[style*="grid-template-columns:.95fr 1.05fr"],
+  [style*="grid-template-columns:1.05fr .95fr"],[style*="grid-template-columns:1fr 340px"],
+  [style*="grid-template-columns:1.3fr 1fr"],[style*="grid-template-columns:1.15fr .85fr"]{
+    grid-template-columns:1fr!important;gap:20px!important}
+  /* stat strips -> two columns */
+  [style*="grid-template-columns:repeat(4,minmax(0,1fr))"],[style*="grid-template-columns:repeat(4,1fr)"],
+  [style*="grid-template-columns:repeat(5,1fr)"]{grid-template-columns:1fr 1fr!important}
+  /* film + two reels grid: film full width, reels side by side */
+  [style*="grid-template-columns:2fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;height:auto!important}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:first-child{grid-column:1/-1;aspect-ratio:16/10}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:not(:first-child){aspect-ratio:9/16}
+
+  /* fixed-width tiles in rails and rows never wider than the screen */
+  [style*="flex:none;width:"]{max-width:84vw!important}
+  [style*="flex:1 1 460px"],[style*="flex:1 1 360px"]{flex-basis:100%!important;min-width:0!important}
+  [style*="min-width:320px"],[style*="min-width:300px"]{min-width:0!important}
+  [style*="min-height:420px"],[style*="min-height:469px"]{min-height:0!important;aspect-ratio:16/10}
+  [style*="flex:1 1 200px"]{flex:1 1 calc(50% - 8px)!important;min-width:0!important}  /* VR clips: two per row */
+  [style*="width:236px"],[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
+  #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
+  .cinewrap>button{display:none!important}  /* swipe instead of arrows */
+  /* home: hero */
+  [style*="position:absolute;left:52px;bottom:31px"]{left:18px!important;right:18px!important;bottom:22px!important}
+  #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
+  /* home: products — menu becomes a swipeable row above full-screen slides */
+  .prodrow{grid-template-columns:minmax(0,1fr)!important}
+  .prodrow>*{min-width:0}
+  .prod-scroll{height:calc(100svh - 92px)!important;min-height:480px!important}
+  .prodrow>div:first-child{width:auto!important;padding:18px 18px 12px!important}
+  .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
+  .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
+  .prodnav::-webkit-scrollbar{display:none}
+  .pn{width:auto!important;white-space:nowrap;padding:9px 12px!important;font-size:14px!important;border-left:0!important;border-bottom:2px solid transparent!important;border-radius:8px}
+  .pn.on{border-bottom-color:var(--acc)!important}
+  .prod-scroll [style*="left:44px;bottom:44px"]{left:18px!important;right:18px!important;bottom:22px!important;max-width:none!important}
+  .prod-scroll [style*="display:inline-flex;gap:30px"]{gap:14px 20px!important;padding:12px 14px!important}
+  .casecard .cap .t{font-size:24px!important}
+  .pill{padding:12px 20px}
+}
+</style>
+<!--mobile:css-end-->
 </head>
 <body><div class="shell"><aside class="side">
   <a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
@@ -106,4 +169,18 @@ h1,h2,h3{margin:0}
   });
 })();
 </script>
+<!--mobile:js-->
+<script id="mobile-video">
+/* Touch screens have no hover: play muted tile videos while they are on screen. */
+(function(){
+  if(!window.matchMedia||!matchMedia('(hover: none)').matches||!('IntersectionObserver' in window)) return;
+  var vids=[].slice.call(document.querySelectorAll('video')).filter(function(v){return v.id!=='heroVideo'&&(v.muted||v.hasAttribute('muted'));});
+  if(!vids.length) return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;
+    if(e.isIntersecting){v.preload='auto';v.style.opacity=1;var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    else v.pause();});},{threshold:.5});
+  vids.forEach(function(v){io.observe(v);});
+})();
+</script>
+<!--mobile:js-end-->
 </body></html>
