@@ -212,3 +212,10 @@ case-magnum.html — "VR build" tiles (hover play). Clips cut from 04_Magnum_cin
 - 120-vr-grounds.mp4 (+poster)  _(Walk the grounds, 41–49 s)_
 - 121-vr-beach-club.mp4 (+poster)  _(Pools & beach club, 26–33 s)_
 - 122-vr-sunset-lounge.mp4 (+poster)  _(Sunset lounge, 86–92.4 s)_
+
+## media/renders/gallery/ (added 2026-10-25)
+renders.html — Digital Twin · Photoshoot mode rail (also uses case-magnum 072 and 073)
+
+- 123-living-apartments-v05.jpg  _(Street-level façade; source Living_apartments_v05.jpg, 4500 px -> 1680 px)_
+- 124-living-apartments-v04.jpg  _(Courtyard & pergola; source Living_apartments_v04.jpg, 8192 px -> 1680 px)_
+- 125-living-apartments-v02.jpg  _(Evening courtyard lounge; source Living_apartments_v02.png, 46 MB -> 376 KB)_
