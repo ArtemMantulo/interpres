@@ -164,6 +164,7 @@ h1,h2,h3{margin:0}
   .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
   .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
   .prodnav::-webkit-scrollbar{display:none}
+  .prodnav,.trust,.hrail,.caseRail{overscroll-behavior-x:contain}
   /* swipeable rows hint that there is more: fade on the side that still has content */
   .swipe-more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent)}
   .swipe-more.swipe-mid{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent)}
@@ -453,14 +454,28 @@ h1,h2,h3{margin:0}
       if (busy) { if (window.scrollY <= prodTop() + 1) e.preventDefault(); return; }
       if (snap(e.deltaY, e.target)) e.preventDefault();
     }, { passive: false });
-    window.addEventListener('touchstart', function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+    // Touch: ignore gestures that start in a sideways-scrolling row (product tabs, partners, rails)
+    // and any gesture that is mostly horizontal, so swiping a row never triggers the page snap.
+    var touchX = null, touchLock = null;
+    var H_ROWS = '.prodnav, .trust, .hrail, .caseRail, .cinewrap';
+    window.addEventListener('touchstart', function (e) {
+      var t = e.touches[0];
+      touchY = t.clientY; touchX = t.clientX;
+      touchLock = e.target.closest && e.target.closest(H_ROWS) ? 'h' : null;
+    }, { passive: true });
     window.addEventListener('touchmove', function (e) {
-      if (touchY === null) return;
-      var dy = touchY - e.touches[0].clientY;
+      if (touchY === null || touchLock === 'h') return;
+      var t = e.touches[0], dy = touchY - t.clientY, dx = touchX - t.clientX;
+      if (!touchLock) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        touchLock = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+        if (touchLock === 'h') return;
+      }
       if (busy) { if (window.scrollY <= prodTop() + 1) e.preventDefault(); return; }
       if (Math.abs(dy) < 12) return;
       if (snap(dy, e.target)) { e.preventDefault(); touchY = null; }
     }, { passive: false });
+    window.addEventListener('touchend', function () { touchY = null; touchLock = null; }, { passive: true });
     window.addEventListener('keydown', function (e) {
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
       var dir = { ArrowDown: 1, PageDown: 1, ' ': e.shiftKey ? -1 : 1, ArrowUp: -1, PageUp: -1 }[e.key];
