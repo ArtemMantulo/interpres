@@ -269,7 +269,8 @@ h1,h2,h3{margin:0}
   /* case pages: "All cases" stays pinned under the top bar while scrolling */
   a[href="cases.html"][style*="left:52px;top:34px"]{position:fixed!important;left:18px!important;top:66px!important;z-index:19;
     padding:8px 14px;border-radius:999px;font:500 13px Inter!important;color:#fff!important;
-    background:rgba(20,24,22,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 6px 18px rgba(0,0,0,.3)}
+    background:rgba(20,24,22,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 6px 18px rgba(0,0,0,.3);transition:transform .3s ease,opacity .3s ease}
+  a.back-hidden{transform:translateY(-140%);opacity:0;pointer-events:none}
   .casecard .cap .t{font-size:24px!important}
   .pill{padding:12px 20px}
 }
@@ -491,6 +492,19 @@ document.querySelectorAll('.feat, .featrow .fmedia').forEach(function(f){
       if(el.scrollWidth-el.clientWidth<=2||el.scrollLeft>0)return;
       setTimeout(function(){el.scrollTo({left:48,behavior:'smooth'});setTimeout(function(){el.scrollTo({left:0,behavior:'smooth'});},450);},400);},{threshold:.9});io.observe(el);}
   });
+})();
+/* Case pages: "All cases" pill hides while scrolling down and comes back on scroll up. */
+(function(){
+  var a=document.querySelector('a[href="cases.html"][style*="top:34px"]'); if(!a) return;
+  var last=scrollY, acc=0;
+  addEventListener('scroll',function(){
+    var y=scrollY, d=y-last; last=y;
+    if(!matchMedia('(max-width:600px)').matches){a.classList.remove('back-hidden');return;}
+    if(y<80){a.classList.remove('back-hidden');acc=0;return;}
+    acc=(d>0)===(acc>0)?acc+d:d;           // distance moved in the current direction
+    if(acc>24) a.classList.add('back-hidden');
+    else if(acc<-24) a.classList.remove('back-hidden');
+  },{passive:true});
 })();
 /* Touch screens have no hover: play muted tile videos while they are on screen. */
 (function(){
