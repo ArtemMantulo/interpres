@@ -434,7 +434,10 @@ document.querySelectorAll('.feat, .featrow .fmedia').forEach(function(f){
 (function () {
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var TEXT = '.sec h2, .sec h3, .sec .eyebrow, .sec p, .sec h2 + span, .sec .pill';
-  var MEDIA = '.stage, .stepcard, .feat, .featrow .fmedia, #surfTabs, #surfPanels';
+  // On phones the step cards sit in a 2-column grid: reveal the grid as one block, otherwise
+  // the cards rise one by one at different heights and the last ones stay dimmed until scrolled to.
+  var phone = window.matchMedia('(max-width:600px)').matches;
+  var MEDIA = '.stage, ' + (phone ? '.stepcards' : '.stepcard') + ', .feat, .featrow .fmedia, #surfTabs, #surfPanels';
   var els = [].slice.call(document.querySelectorAll(TEXT + ', ' + MEDIA)).filter(function (el) {
     var panel = el.closest('#surfPanels'); // hidden tab panels never intersect: reveal the panel box as a whole
     return !(panel && panel !== el);
@@ -453,7 +456,7 @@ document.querySelectorAll('.feat, .featrow .fmedia').forEach(function(f){
         el.removeEventListener('animationend', done);
       });
     });
-  }, { rootMargin: '0px 0px -10% 0px' });
+  }, { rootMargin: phone ? '0px' : '0px 0px -10% 0px', threshold: phone ? 0.05 : 0 });
   els.forEach(function (el) {
     el.classList.add('rv');
     if (el.matches(MEDIA)) el.classList.add('rv-media');
