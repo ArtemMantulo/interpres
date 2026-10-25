@@ -11,6 +11,7 @@ Case cards — index.html (Cases), cases.html, and the hero of each case page
 - 017-breig-card.webp
 - 068-magnum-hero.jpg
 - 106-loyo-card.png  _(LOYO Unitsystem card; links to loyo-unitsystem.com, opens in a new tab)_
+- 126-nda-city-card.jpg  _("Under NDA" case card, no link; source city-uds-card from interpres.cc)_
 
 ## media/shared/products/
 Product shots — index.html (Our products), digital-twin.html (Every surface), crm.html, demos.html, renders.html
