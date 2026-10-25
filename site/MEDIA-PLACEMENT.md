@@ -204,3 +204,11 @@ renders.html — "Interior & exterior design" rail (first two tiles)
 - 114-ue-interior.mp4 + 114-ue-interior-poster.jpg  _(Bedroom — Unreal Engine; source 05_Education_UE_Interior.mp4, 1:11, sound)_
 - 105-breig-ai-reel.mp4 (+poster) — replaced by 116, moved to unused-media
 - 118-magnum-gameplay-poster.jpg  _("Magnum Sanur — gameplay" tile in the design rail; poster: interior frame of the gameplay, cursor/label removed; Watch opens kinescope.io/embed/mUDWQPLXsWg2NDnozReqz6)_
+
+## media/case-magnum/vr/
+case-magnum.html — "VR build" tiles (hover play). Clips cut from 04_Magnum_cinematic_UE.mp4 (2160x3840) -> 720x1280, H.264 CRF 23, no audio.
+
+- 119-vr-terrace.mp4 (+poster)  _(Ocean-view terrace, 49.8–57.8 s)_
+- 120-vr-grounds.mp4 (+poster)  _(Walk the grounds, 41–49 s)_
+- 121-vr-beach-club.mp4 (+poster)  _(Pools & beach club, 26–33 s)_
+- 122-vr-sunset-lounge.mp4 (+poster)  _(Sunset lounge, 86–92.4 s)_
