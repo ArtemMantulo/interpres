@@ -76,12 +76,34 @@ h1,h2,h3{margin:0}
     <p style="font:300 17px/1.6 Inter;color:var(--mut);max-width:420px;margin-bottom:28px">Send the outline and we'll come back with what we'd build and how long it takes. Email or Telegram — whatever is easiest.</p>
     <div style="display:flex;flex-direction:column;gap:10px;font:400 14px Inter;color:var(--mut)"><div>Email · <a href="mailto:artemmantulo@immersivesolutions.eu" style="color:var(--ink)">artemmantulo@immersivesolutions.eu</a></div><div>Telegram · <a href="https://t.me/artem_mantulo" target="_blank" rel="noopener" style="color:var(--ink)">@artem_mantulo</a></div></div>
   </div>
-  <form onsubmit="return false" style="display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px">
-    <input class="field" placeholder="Name">
-    <input class="field" placeholder="Email or Telegram">
-    <input class="field" placeholder="Project and location">
-    <textarea class="field" rows="4" placeholder="What do you need?"></textarea>
-    <button class="pill" style="border:none;cursor:pointer;margin-top:4px">Send</button>
+  <form id="contactForm" action="contact.php" method="post" novalidate style="display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px">
+    <input class="field" name="name" placeholder="Name" autocomplete="name" required maxlength="120">
+    <input class="field" name="contact" placeholder="Email or Telegram" autocomplete="email" required maxlength="200">
+    <input class="field" name="project" placeholder="Project and location" maxlength="200">
+    <textarea class="field" name="message" rows="4" placeholder="What do you need?" required maxlength="5000"></textarea>
+    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+    <button type="submit" class="pill" style="border:none;cursor:pointer;margin-top:4px">Send</button>
+    <div id="contactStatus" role="status" aria-live="polite" style="min-height:20px;font:400 14px/1.5 Inter;color:var(--mut)"></div>
   </form>
 </div></div>
-<div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>RU · EN</span></div></div></div></body></html>
+<div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>RU · EN</span></div></div></div><script>
+(function(){
+  // Contact form -> contact.php (PHP mail on the host). Shows the result under the button.
+  var f=document.getElementById('contactForm'), st=document.getElementById('contactStatus');
+  if(!f) return;
+  var btn=f.querySelector('button[type=submit]');
+  function say(t,ok){st.textContent=t;st.style.color=ok?'var(--acc)':'#e8a0a0';}
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var el=f.elements, name=el['name'].value.trim(), contact=el['contact'].value.trim(), msg=el['message'].value.trim();
+    if(!name||!contact||!msg){say('Please fill in your name, contact and message.');return;}
+    btn.disabled=true; btn.style.opacity=.6; say('Sending…',true);
+    fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}})
+      .then(function(r){return r.json().catch(function(){return {ok:false};});})
+      .then(function(d){ if(d&&d.ok){f.reset(); say('Thank you! We will get back to you shortly.',true);} else say((d&&d.error)||'Something went wrong. Please email us directly.'); })
+      .catch(function(){ say('Network error. Please email us directly.'); })
+      .then(function(){ btn.disabled=false; btn.style.opacity=''; });
+  });
+})();
+</script>
+</body></html>
