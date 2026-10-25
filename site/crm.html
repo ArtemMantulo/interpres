@@ -110,10 +110,10 @@ h1,h2,h3{margin:0}
   .hstats .v{font-size:20px!important}
   .hstats .st{padding:0 10px!important}
   /* home: hero */
-  /* home hero: show the whole 16:9 showreel (no side crop) over a blurred backdrop */
+  /* home hero: showreel cropped 35% in total (17.5% each side) over a blurred backdrop */
   [style*="height:calc(100vh - 63px)"]{height:calc(100svh - 92px)!important;min-height:560px!important;overflow:hidden;background:#0d100c}
   [style*="height:calc(100vh - 63px)"]::before{content:"";position:absolute;inset:-40px;background:url(media/index/hero/057-hero-poster.jpg) center/cover;filter:blur(28px) brightness(.45);transform:scale(1.1)}
-  #heroVideo{position:absolute;left:0;right:0;top:24%;height:auto!important;aspect-ratio:16/9;object-fit:contain!important;z-index:0;border-radius:0}
+  #heroVideo{position:absolute;left:50%;top:18%;width:153.85vw!important;height:auto!important;max-width:none!important;aspect-ratio:971/540;transform:translateX(-50%);object-fit:cover!important;z-index:0}  /* 35% of the width cropped in total (17.5% per side) */
   [style*="position:absolute;left:52px;bottom:31px"]{left:18px!important;right:18px!important;bottom:22px!important}
   #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
   /* home: products — menu becomes a swipeable row above full-screen slides */
