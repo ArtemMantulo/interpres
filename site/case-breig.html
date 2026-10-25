@@ -230,6 +230,13 @@ h1,h2,h3{margin:0}
   /* Digital Twin showreel (YouTube) block: 15% taller on phones */
   .ytwrap{aspect-ratio:1677/972}
   .ytwrap img{height:100%!important;object-fit:cover!important}
+  /* media lightbox (overlay created by JS, so its inline style is serialised as "z-index: 9999"):
+     close button in its own strip at the top, media starts below it */
+  .lb-ov{padding:72px 12px 20px!important}
+  .lb-ov>div{max-height:none!important;width:100%}
+  .lb-ov video,.lb-ov img{max-width:100%!important;max-height:calc(100svh - 100px)!important}
+  .lb-ov iframe{max-height:calc(100svh - 100px)!important}
+  .lb-ov>button[aria-label="close"]{top:calc(env(safe-area-inset-top,0px) + 14px)!important;right:14px!important;width:42px!important;height:42px!important;font-size:20px!important}
   .casecard .cap .t{font-size:24px!important}
   .pill{padding:12px 20px}
 }
@@ -415,6 +422,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.style.di
     else if(acc<-24) a.classList.remove('back-hidden');
   },{passive:true});
 })();
+/* Tag the media lightbox overlay so the phone styles can target it. */
+[].forEach.call(document.querySelectorAll('body > div'),function(d){ if(d.style.position==='fixed'&&d.style.zIndex==='9999'&&d.querySelector('button[aria-label="close"]')) d.classList.add('lb-ov'); });
 /* Touch screens have no hover: play muted tile videos while they are on screen. */
 (function(){
   if(!window.matchMedia||!matchMedia('(hover: none)').matches||!('IntersectionObserver' in window)) return;
