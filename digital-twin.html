@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Twin · Immersive Solutions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+:root{--bg:#1e2623;--panel:#161d1a;--panel2:#121815;--card:#26302c;--line:rgba(255,255,255,.08);--ink:#eef3ef;--mut:#a8b3ac;--mut2:#7f8b83;--acc:#86b8a0}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+a{color:inherit;text-decoration:none}img,video{display:block}
+.shell{display:flex;min-height:100vh}
+.side{width:238px;flex:none;background:var(--panel);border-right:1px solid var(--line);padding:26px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 22px 4px}
+.brand span{font:600 14px/1.18 'Inter',sans-serif;color:#fff}
+.side .grp{padding:20px 22px 12px;font:600 10px 'Inter',sans-serif;letter-spacing:.16em;color:var(--mut2)}
+.side .grp.mt{padding-top:26px}
+.nav a{padding:11px 22px;border-left:3px solid transparent;font:400 14px 'Inter',sans-serif;color:var(--mut);display:block}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--card);border-left-color:var(--acc);font-weight:500;color:var(--ink)}
+.side .cta{margin:auto 22px 0;background:var(--acc);color:#fff;text-align:center;padding:12px;border-radius:999px;font:500 13px 'Inter',sans-serif}
+.main{flex:1;min-width:0}
+.pill{display:inline-block;background:var(--acc);color:#fff;padding:13px 24px;border-radius:999px;font:500 14px 'Inter',sans-serif}
+.sec{padding:48px 52px}
+.eyebrow{font:500 11px 'Inter',sans-serif;letter-spacing:.18em;color:var(--acc);text-transform:uppercase}
+h1,h2,h3{margin:0}
+.topbar{display:none}
+/* light hero */
+.hero-lt{position:relative;background:var(--bg);color:var(--ink);padding:40px 52px 34px;text-align:center;overflow:hidden}
+.hero-lt::before{content:"";position:absolute;left:50%;top:-120px;width:900px;height:520px;transform:translateX(-50%);background:radial-gradient(50% 50% at 50% 50%,rgba(134,184,160,.22),transparent 70%);pointer-events:none;filter:blur(10px)}
+.hero-lt::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(70% 60% at 50% 30%,#000,transparent 75%);pointer-events:none}
+.hero-lt>*{position:relative;z-index:1}
+.eyerow{display:flex;align-items:center;justify-content:center;gap:16px;opacity:0;animation:rise .8s ease .05s forwards}
+.eyerow .ln{height:1px;width:54px;background:linear-gradient(90deg,transparent,var(--acc))}
+.eyerow .ln.r{background:linear-gradient(90deg,var(--acc),transparent)}
+.hstats{display:flex;justify-content:center;gap:0;margin:30px 0 6px;opacity:0;animation:rise .9s ease 1.25s forwards}
+.hstats .st{padding:0 30px}
+.hstats .st+.st{border-left:1px solid var(--line)}
+.hstats .v{font:300 30px Inter;color:var(--ink);letter-spacing:-.02em}
+.hstats .l{font:500 10px Inter;letter-spacing:.12em;color:var(--mut2);margin-top:4px;text-transform:uppercase}
+.hero-lt .eyebrow{opacity:0;animation:rise .8s ease .05s forwards}
+.hero-lt h1{font:300 82px/1 Inter;letter-spacing:-.04em;color:var(--ink);opacity:0;transform:translateY(24px);animation:rise .9s cubic-bezier(.2,.7,.2,1) .1s forwards}
+.hero-lt .sub{font:300 22px/1.5 Inter;color:var(--mut);margin:16px 0 30px;opacity:0;animation:rise .9s ease .9s forwards}
+.hero-lt .cta{display:inline-flex;align-items:center;gap:8px;background:var(--acc);border:none;color:#fff;padding:15px 30px;border-radius:999px;font:500 15px Inter;opacity:0;animation:rise .9s ease 1.1s forwards}
+.hands{position:relative;height:340px;margin:8px auto 4px;max-width:1000px}
+.hands .h{position:absolute;top:0;height:100%;width:56%;object-fit:contain}
+.hand-l{left:0;object-position:right center;transform:translateX(-120px);opacity:0;animation:inL 1.6s cubic-bezier(.22,.8,.25,1) .35s forwards}
+.hand-r{right:0;object-position:left center;transform:translateX(120px);opacity:0;animation:inR 1.6s cubic-bezier(.22,.8,.25,1) .35s forwards}
+.spark{position:absolute;left:50%;top:56%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff,rgba(147,167,182,.6) 45%,transparent 70%);transform:translate(-50%,-50%) scale(0);opacity:0;animation:spark 1.4s ease-out 1.7s infinite}
+.hero-lt .sub{font:300 22px/1.5 Inter;color:#5b6167;margin:14px 0 30px;opacity:0;animation:rise .9s ease .9s forwards}
+.hero-lt .cta{display:inline-flex;align-items:center;gap:8px;background:var(--acc);border:none;color:#fff;padding:15px 30px;border-radius:999px;font:500 15px Inter;opacity:0;animation:rise .9s ease 1.1s forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes inL{to{opacity:1;transform:translateX(0)}}
+@keyframes inR{to{opacity:1;transform:translateX(0)}}
+@keyframes spark{0%{transform:translate(-50%,-50%) scale(0);opacity:0}30%{opacity:1}60%{transform:translate(-50%,-50%) scale(1.6);opacity:.8}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+/* stepper */
+/* Step images (1124×420) have a light frame baked in: ~74px on the right, ~13px at the bottom, rounded corners.
+   The stage takes the ratio of the picture inside the frame (1047×404, cropped 3px from top/left) and the image is
+   stretched/offset so the frame falls outside the stage's rounded clip. */
+.stage{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1047/404;background:#0d0f12}
+.stage img{position:absolute;left:-.2865%;top:-.7426%;width:107.354%;height:103.96%;max-width:none;object-fit:fill;opacity:0;transition:opacity .7s ease}
+.stage img.on{opacity:1}
+.stepcards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:16px}
+.stepcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 18px;cursor:pointer;position:relative;overflow:hidden;transition:background .3s,transform .3s,box-shadow .3s;box-shadow:14px 18px 34px rgba(0,0,0,.28)}
+.stepcard .n{font:300 30px Inter;color:rgba(255,255,255,.16);margin-bottom:8px;transition:color .3s}
+.stepcard .t{font:400 14px/1.35 Inter;color:var(--ink)}
+.stepcard .l{font:600 9px Inter;letter-spacing:.14em;color:var(--mut2);margin-top:10px}
+.stepcard.on{background:#0f1114;border-color:rgba(147,167,182,.5)}
+.stepcard.on .n{color:var(--acc)}
+.stepcard .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--acc)}
+.stepcard.on .bar{animation:fill 2.4s linear forwards}
+@keyframes fill{from{width:0}to{width:100%}}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.feat{position:relative;border-radius:14px;overflow:hidden;height:300px;cursor:pointer}
+.feat.big{grid-column:1 / -1;height:380px}
+.feat.big.tall{height:494px} /* "Switch development scenarios": 30% taller */
+@media(max-width:900px){.feat.big.tall{height:312px}}
+.feat img,.feat video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.feat video{opacity:0;transition:opacity .5s ease}
+.ytwrap .cbar{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:rgba(0,0,0,.5);pointer-events:none}
+.ytwrap .cbar .t{font:500 14px Inter;color:#fff}
+.ytwrap .cbar .r{font:500 11px Inter;letter-spacing:.1em;color:rgba(255,255,255,.7)}
+.ytwrap::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none}
+.feat:hover video{opacity:1}
+.featrow{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;margin-top:24px;background:linear-gradient(180deg,#12180f 0%,#232a26 100%);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.featrow>div:last-child{padding:8px 28px}
+.featrow .fmedia{position:relative;height:340px;border-radius:14px;overflow:hidden;cursor:pointer}
+.featrow .fmedia img,.featrow .fmedia video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.featrow .fmedia video{opacity:0;transition:opacity .5s ease}
+.featrow .fmedia:hover video{opacity:1}
+.featrow .fmedia .badge{position:absolute;left:16px;top:14px;z-index:2;font:600 10px Inter;letter-spacing:.12em;color:#fff;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px}
+.featrow.rev .fmedia{order:2}
+@media(max-width:900px){.featrow{grid-template-columns:1fr;gap:18px}.featrow.rev .fmedia{order:0}.featrow .fmedia{height:230px}}
+.ytwrap{max-width:940px;margin:32px auto 0;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--line);box-shadow:0 24px 60px rgba(0,0,0,.4);line-height:0}
+.ytwrap img{width:100%;height:auto;object-fit:contain;display:block}
+.ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ytwrap .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:82px;height:82px;border-radius:999px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;transition:transform .3s,background .3s}
+.ytwrap:hover .play{transform:translate(-50%,-50%) scale(1.08);background:var(--acc)}
+.ytwrap .play svg{margin-left:5px}
+.feat::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent 55%);z-index:1;pointer-events:none}
+.feat .lab{position:absolute;left:0;right:0;bottom:0;padding:26px 24px;font:500 20px Inter;color:#fff;z-index:2;background:linear-gradient(0deg,rgba(10,13,8,.96) 0%,rgba(10,13,8,.82) 45%,rgba(10,13,8,.35) 78%,transparent 100%)}
+.feat .badge{position:absolute;left:16px;top:14px;z-index:2;font:600 10px Inter;letter-spacing:.12em;color:#fff;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px}
+@media(max-width:900px){.side{display:none}.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.topbar .m{display:flex;gap:16px;font:400 13px Inter;color:var(--mut);flex-wrap:wrap}.sec{padding:30px 18px}.hero-lt{padding:44px 18px 50px}.hero-lt h1{font-size:44px}.stepcards{grid-template-columns:1fr 1fr}.feat-grid{grid-template-columns:1fr}.feat.big{height:240px}.feat{height:210px}.surf-tabs{flex-wrap:wrap}.surf-body{grid-template-columns:1fr}}
+.surf-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.surf-tab{flex:1;min-width:150px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .25s,background .25s}
+.surf-tab .tt{font:500 15px Inter;color:var(--mut);transition:color .25s}
+.surf-tab .ts{font:400 11px Inter;color:var(--mut2);margin-top:3px}
+.surf-tab.on{border-color:var(--acc);background:linear-gradient(180deg,rgba(134,184,160,.14),transparent)}
+.surf-tab.on .tt{color:var(--ink)}
+.surf-panel{display:none}
+.surf-panel.on{display:block;background:linear-gradient(180deg,#12180f 0%,#232a26 100%);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.surf-hero{position:relative;border-radius:14px;overflow:hidden;height:440px}
+.surf-hero>.surf-media{position:absolute;inset:0;height:100%;border-radius:0}
+.surf-hero>.surf-media img{width:100%;height:100%;object-fit:cover}
+.surf-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,10,7,.9) 0%,rgba(8,10,7,.5) 45%,rgba(8,10,7,0) 78%)}
+.surf-hero .surf-info{position:absolute;left:40px;bottom:40px;max-width:520px;z-index:2}
+.surf-body{display:grid;grid-template-columns:1.15fr .85fr;gap:28px}
+.surf-media{position:relative;height:380px;border-radius:14px;overflow:hidden}
+.surf-media img{width:100%;height:100%;object-fit:cover}
+.surf-info{align-self:center;padding-right:14px}
+.spectbl{margin-top:18px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:rgba(0,0,0,.18)}
+.spectbl .sthead{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.05);border-bottom:1px solid var(--line)}
+.spectbl .hcell{font:600 10px Inter;letter-spacing:.1em;color:var(--mut2);text-transform:uppercase;padding:13px 18px}
+.spectbl .stbody{display:grid;grid-template-columns:repeat(4,1fr)}
+.spectbl .vcell{font:400 14px/1.45 Inter;color:var(--ink);padding:16px 18px}
+.spectbl .hcell+.hcell,.spectbl .vcell+.vcell{border-left:1px solid var(--line)}
+@media(max-width:900px){.spectbl .sthead,.spectbl .stbody{grid-template-columns:1fr 1fr}}
+</style>
+<!--mobile:css-->
+<style id="mobile-fixes">
+/* Phone layout (iPhone 14 and up: 390–430 px wide). Pages use inline styles, so rules
+   below target those inline declarations; desktop is untouched (max-width:600px only). */
+@media (max-width:600px){
+  html,body{overflow-x:clip}  /* clip, not hidden: keeps the sticky top bar working */
+  .main{min-width:0}
+  img,video,iframe{max-width:100%}
+  .sec{padding:28px 18px!important}
+  .sec[style*="height:"]{height:auto!important}
+  .sec[style*="padding-top:0"]{padding-top:0!important}  /* keep sections that sit flush under the previous one */
+  .sec>p:last-child{margin-bottom:0!important}
+  h1{font-size:clamp(34px,10vw,44px)!important;line-height:1.05!important}
+  h2{font-size:clamp(26px,7.4vw,32px)!important;line-height:1.12!important}
+  h3{font-size:clamp(20px,5.8vw,24px)!important}
+  p[style*="font:300 28px"],p[style*="font:300 24px"]{font-size:20px!important;line-height:1.45!important}
+  p[style*="font:300 21px"],p[style*="font:300 19px"]{font-size:17px!important}
+  [style*="white-space:nowrap"]:not(.subLine):not(#heroTitle):not(.pill):not(button){white-space:normal!important}
+  [style*="max-width:90%"]{max-width:100%!important}
+  [style*="width:93%"]{width:100%!important;margin-left:auto;margin-right:auto}
+  p[style*="width:880px"],p[style*="width:720px"],p[style*="width:760px"]{width:auto!important}
+  [style*="transform:translateX(-15%)"]{transform:none!important}
+
+  /* multi-column inline grids -> one column */
+  [style*="grid-template-columns:1fr 1fr"],[style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:1.4fr 1fr 1fr"],[style*="grid-template-columns:.95fr 1.05fr"],
+  [style*="grid-template-columns:1.05fr .95fr"],[style*="grid-template-columns:1fr 340px"],
+  [style*="grid-template-columns:1.3fr 1fr"],[style*="grid-template-columns:1.15fr .85fr"]{
+    grid-template-columns:1fr!important;gap:20px!important}
+  /* stat strips -> two columns */
+  [style*="grid-template-columns:repeat(4,minmax(0,1fr))"],[style*="grid-template-columns:repeat(4,1fr)"],
+  [style*="grid-template-columns:repeat(5,1fr)"]{grid-template-columns:1fr 1fr!important}
+  /* film + two reels grid: film full width, reels side by side */
+  [style*="grid-template-columns:2fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;height:auto!important}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:first-child{grid-column:1/-1;aspect-ratio:16/10}
+  [style*="grid-template-columns:2fr 1fr 1fr"]>:not(:first-child){aspect-ratio:9/16}
+
+  /* fixed-width tiles in rails and rows never wider than the screen */
+  [style*="flex:none;width:"]{max-width:84vw!important}
+  [style*="flex:1 1 460px"],[style*="flex:1 1 360px"]{flex-basis:100%!important;min-width:0!important}
+  [style*="min-width:320px"],[style*="min-width:300px"]{min-width:0!important}
+  [style*="min-height:420px"],[style*="min-height:469px"]{min-height:0!important;aspect-ratio:16/10}
+  [style*="flex:1 1 200px"]{flex:1 1 calc(50% - 8px)!important;min-width:0!important}  /* VR clips: two per row */
+  :not(.hrail)>[style*="width:236px"],:not(.hrail)>[style*="width:264px"]{flex:1 1 calc(50% - 8px)!important;width:auto!important}
+  /* cinematic reels rail: film ~84vw, vertical reels ~44vw, all the same height */
+  #cineRail{height:340px!important;scroll-padding-left:0}
+  #intrRail{height:300px!important}
+  #intrRail>[style*="width:250px"]{width:52vw!important}
+  #cineRail>[style*="width:236px"]{width:44vw!important;max-width:none!important}
+  #intRail{height:230px!important}  /* 16:9 walkthrough tiles at ~84vw */
+  .cinewrap>button{display:none!important}  /* swipe instead of arrows */
+  /* top bar: centred logo, sections in a burger menu */
+  .topbar{position:sticky!important;top:0;flex-direction:row!important;justify-content:center!important;align-items:center!important;padding:14px 56px!important;min-height:56px;box-sizing:border-box}
+  .topbar>div:first-child{padding:0;justify-content:center}
+  .topbar .m{display:none!important}
+  .topbar.open .m{display:flex!important;flex-direction:column;position:absolute;left:0;right:0;top:100%;gap:4px!important;padding:10px 14px 16px;
+    background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+  .topbar .m a{display:block;padding:13px 14px;border-radius:10px;font-size:17px;color:var(--ink);white-space:nowrap}
+  .topbar .m a.on{background:rgba(134,184,160,.14);color:var(--acc)}
+  .burger{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:10px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:0}
+  .burger span{display:block;width:22px;height:2px;border-radius:2px;background:var(--ink);transition:transform .25s ease,opacity .2s ease}
+  .topbar.open .burger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .topbar.open .burger span:nth-child(2){opacity:0}
+  .topbar.open .burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  /* digital twin hero */
+  .hero-lt .sub{font-size:17px!important;line-height:1.5!important;color:var(--mut)!important}
+  .hero-lt .sub br{display:none}
+  .hstats .v{font-size:20px!important}
+  .hstats .st{padding:0 10px!important}
+  /* home: hero */
+  /* home hero (phone): video pinned to the top (30% side crop), text centred below it on a green panel */
+  .hero{height:auto!important;min-height:0!important;overflow:hidden;background:#0d100c}
+  #heroVideo{position:relative;display:block;margin-left:-21.43vw;width:142.86vw!important;height:auto!important;max-width:none!important;aspect-ratio:971/540;object-fit:cover!important}
+  .hero>[style*="pointer-events:none;background:linear-gradient(180deg,rgba(20,18,14,.42)"]{display:none}
+  [style*="position:absolute;left:52px;bottom:31px"]{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;max-width:none!important;
+    text-align:center;padding:26px 20px 28px;background:linear-gradient(158deg,#27302c 0%,#202824 48%,#1b221e 100%);border-top:1px solid var(--line);box-shadow:inset 0 0 0 9999px rgba(134,184,160,.05)}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroTitle{display:inline-block}
+  [style*="position:absolute;left:52px;bottom:31px"] #heroSub{margin-left:auto!important;margin-right:auto!important}
+  .heroBtns{justify-content:center}
+  /* partners: label on top, names in one swipeable row */
+  .trust{display:grid!important;grid-auto-flow:column;grid-auto-columns:max-content;grid-template-rows:auto auto;gap:8px 26px!important;padding:14px 18px!important;
+    overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .trust::-webkit-scrollbar{display:none}
+  .trust>span{grid-row:1;grid-column:1/span 6}
+  .trust>b{grid-row:2;font-size:15px}
+  .heroMore{display:block!important;margin:-4px auto 20px;max-width:340px;font:300 14px/1.55 Inter;color:var(--mut)}
+  /* first phone screen = hero + "Trusted by" strip; the products block starts below the fold */
+  .heroFill{display:flex;flex-direction:column}
+  .heroFill>[style*="position:absolute;left:52px;bottom:31px"]{flex:1;display:flex;flex-direction:column;justify-content:center}
+  #heroSound{top:14px!important;right:14px!important;bottom:auto!important;width:42px!important;height:42px!important}
+  /* home: products — menu becomes a swipeable row above full-screen slides */
+  .prodrow{grid-template-columns:minmax(0,1fr)!important}
+  .prodrow>*{min-width:0}
+  /* products: slides flow in the page (no inner scroller on phones), menu sticks under the top bar */
+  .prod-scroll{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;scroll-snap-type:none!important}
+  .prod-scroll>div{height:calc(100svh - 148px)!important;min-height:480px!important}
+  .prodrow>div:first-child{position:sticky;top:56px;z-index:6}
+  .prodrow>div:first-child{width:auto!important;padding:18px 18px 12px!important}
+  .prodrow>div:first-child>div:first-child{margin-bottom:10px!important}
+  .prodnav{flex-direction:row!important;overflow-x:auto;scrollbar-width:none;gap:6px!important}
+  .prodnav::-webkit-scrollbar{display:none}
+  .prodnav,.trust,.hrail,.caseRail{overscroll-behavior-x:contain}
+  /* swipeable rows hint that there is more: fade on the side that still has content */
+  .swipe-more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent)}
+  .swipe-more.swipe-mid{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 90px),transparent)}
+  .swipe-more.swipe-end{-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px);mask-image:linear-gradient(90deg,transparent,#000 40px)}
+  .pn{width:auto!important;white-space:nowrap;padding:9px 12px!important;font-size:14px!important;border-left:0!important;border-bottom:2px solid transparent!important;border-radius:8px}
+  .pn.on{border-bottom-color:var(--acc)!important}
+  /* laptop slide: lift the laptop above the slide text (image is shifted up, slide bg shows below) */
+  .prod-scroll img[src*="033-dt-laptop"]{transform:translateY(-24%);height:124%!important}
+  .prod-scroll [style*="left:44px;bottom:44px"]{left:18px!important;right:18px!important;bottom:22px!important;max-width:none!important}
+  .prod-scroll [style*="display:inline-flex;gap:30px"]{gap:14px 20px!important;padding:12px 14px!important}
+  /* "Get in touch" call-to-action card */
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"]{position:relative;overflow:hidden;flex-direction:column!important;align-items:stretch!important;gap:22px!important;
+    padding:32px 24px 26px!important;border-radius:20px!important;text-align:center;
+    background:radial-gradient(120% 90% at 50% 0%,rgba(134,184,160,.22),transparent 60%),linear-gradient(160deg,#27302c 0%,#1d2521 55%,#151b18 100%)!important;
+    border:1px solid rgba(134,184,160,.22);box-shadow:0 24px 50px rgba(0,0,0,.35)}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] [style*="color:var(--acc);margin-bottom:10px"]{font:600 11px Inter!important;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px!important}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] h2{font:300 30px/1.12 Inter!important;letter-spacing:-.02em!important;max-width:none!important;margin:0 auto!important;text-wrap:balance}
+  [style*="background:var(--panel2);border-radius:14px;padding:44px"] .pill{display:block;width:100%;box-sizing:border-box;text-align:center;padding:15px 20px!important;font-size:16px!important;
+    box-shadow:0 10px 24px rgba(134,184,160,.25)}
+  /* footer */
+  [style*="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter"]{flex-direction:column;align-items:center;text-align:center;gap:6px!important;padding:22px 18px 30px!important;font-size:12px!important;line-height:1.5}
+  /* Digital Twin steps: 2 per row, the odd last card centred */
+  .stepcards{grid-template-columns:repeat(4,1fr)!important}
+  .stepcards>.stepcard{grid-column:span 2}
+  .stepcards>.stepcard:last-child:nth-child(odd){grid-column:2/span 2}
+  /* Digital Twin "four ways" panels: eyebrow + title on the photo, description below it */
+  .surf-hero{height:auto!important;overflow:visible!important;display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto auto auto}
+  .surf-hero::after{display:none!important}
+  .surf-hero>.surf-media{position:relative!important;inset:auto!important;height:auto!important;aspect-ratio:4/3;border-radius:12px!important;overflow:hidden;grid-row:1/4;grid-column:1}
+  .surf-hero>.surf-media::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,10,7,.85) 0%,rgba(8,10,7,.35) 38%,rgba(8,10,7,0) 62%)}
+  .surf-hero .surf-info{display:contents!important}
+  .surf-hero .surf-info>.eyebrow{grid-row:2;grid-column:1;position:relative;z-index:2;padding:0 18px;margin-bottom:6px!important}
+  .surf-hero .surf-info>h3{grid-row:3;grid-column:1;position:relative;z-index:2;padding:0 18px 16px;margin:0!important;font-size:18px!important}
+  .surf-hero .surf-info>:not(.eyebrow):not(h3){grid-row:4;grid-column:1;padding:16px 4px 4px;font-size:14px!important;line-height:1.6!important}
+  /* case pages "What we developed": less card padding, bigger visuals reaching the card edges */
+  .devrow{padding:22px 0 0!important;margin-bottom:20px!important}
+  .devrow .txt{padding:0 18px;margin-bottom:16px!important}
+  .devrow>:not(.txt){border-radius:0 0 17px 17px!important}
+  /* case images and before/after sliders on phones: the whole picture, nothing cropped */
+  .devrow .m:has(img){aspect-ratio:auto!important;height:auto!important}
+  .devrow .m img{height:auto!important;display:block}
+  .devrow .m{aspect-ratio:4/3!important}
+  .devrow .m.full{aspect-ratio:16/9!important}
+  /* case videos on phones: native frame, nothing cropped (they are screen recordings of the apps) */
+  .devrow .m:has(video){aspect-ratio:auto!important;height:auto!important}
+  .devrow .m:has(video) video{height:auto!important;display:block;object-fit:contain!important}
+  .devrow>[id$="Wrap"] img[id$="Before"]{max-width:none!important;object-fit:cover!important;object-position:center!important}
+  /* case pages: "All cases" stays pinned under the top bar while scrolling */
+  a[href="cases.html"][style*="left:52px;top:34px"]{position:fixed!important;left:18px!important;top:66px!important;z-index:19;
+    padding:8px 14px;border-radius:999px;font:500 13px Inter!important;color:#fff!important;
+    background:rgba(20,24,22,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 6px 18px rgba(0,0,0,.3);transition:transform .3s ease,opacity .3s ease}
+  a.back-hidden{transform:translateY(-140%);opacity:0;pointer-events:none}
+  /* case "Digital Twin | Gameplay" banner: taller on phones (it is a cover image, cropping is fine) */
+  .gameplay-card{aspect-ratio:5/3!important}
+  .gameplay-card>[style*="font:500 22px"]{left:20px!important;top:18px!important;font-size:20px!important}
+  /* Digital Twin showreel (YouTube) block: 15% taller on phones */
+  .ytwrap{aspect-ratio:1677/972}
+  .ytwrap img{height:100%!important;object-fit:cover!important}
+  /* media lightbox (overlay created by JS, so its inline style is serialised as "z-index: 9999"):
+     close button in its own strip at the top, media starts below it */
+  .lb-ov{padding:72px 12px 20px!important}
+  .lb-ov>div{max-height:none!important;width:100%}
+  .lb-ov video,.lb-ov img{max-width:100%!important;max-height:calc(100svh - 100px)!important}
+  .lb-ov iframe{max-height:calc(100svh - 100px)!important}
+  .lb-ov>button[aria-label="close"]{top:calc(env(safe-area-inset-top,0px) + 14px)!important;right:14px!important;width:42px!important;height:42px!important;font-size:20px!important}
+  .casecard .cap .t{font-size:24px!important}
+  .pill{padding:12px 20px}
+}
+</style>
+<!--mobile:css-end-->
+</head>
+<body><div class="shell"><aside class="side"><a class="brand" href="index.html"><svg width="20" height="20" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63ZM45.234 41.795 30.561 50.56V33.358l-14.679-8.432 14.68-8.506 14.672 8.506v16.87Z"/></svg><span>Immersive<br>Solutions</span></a>
+<div class="grp">PRODUCTS</div><nav class="nav"><a href="index.html">Overview</a><a href="digital-twin.html" class="on">Digital Twin</a><a href="renders.html">Renders and Visualisation</a></nav>
+<div class="grp mt">COMPANY</div><nav class="nav"><a href="cases.html">Cases</a><a href="contact.html">Contact</a></nav>
+<a class="cta" href="contact.html">Book a demo</a></aside><div class="main"><div class="topbar"><div style="display:flex;align-items:center;gap:9px"><svg width="18" height="18" viewBox="0 0 67 67" fill="none"><path fill="#fff" d="M60.393 20.86a8.009 8.009 0 0 0-3.975-6.894L45.503 7.61 34.537 1.335a7.998 7.998 0 0 0-7.957 0L15.614 7.61 4.699 13.966a8.009 8.009 0 0 0-3.976 6.893L.672 33.49l.051 12.637A8.007 8.007 0 0 0 4.7 53.014l10.915 6.361 10.966 6.27a7.998 7.998 0 0 0 7.957 0l10.966-6.27 10.915-6.361a8.007 8.007 0 0 0 3.975-6.888l.052-12.636-.052-12.63Z"/></svg><b style="font:600 14px Inter">Immersive Solutions</b></div><div class="m"><a href="index.html">Overview</a><a href="digital-twin.html" class="on" aria-current="page">Digital Twin</a><a href="renders.html">Renders</a><a href="cases.html">Cases</a><a href="contact.html">Contact</a></div></div>
+<section class="hero-lt">
+  <div class="eyerow" style="margin-bottom:20px"><span class="ln"></span><span class="eyebrow">SOLUTION · DIGITAL TWIN</span><span class="ln r"></span></div>
+  <h1>Digital&nbsp;Twin</h1>
+  <div class="sub">A living, explorable model of your project —<br>architectural visualisation for marketing, sales and internal approvals.</div>
+  <div><a class="cta" href="contact.html">Contact us for a project estimate ↗</a></div>
+  <div class="hstats">
+    <div class="st"><div class="v">Any format</div><div class="l">Your 3D model</div></div>
+    <div class="st"><div class="v">.exe · web · touch</div><div class="l">One asset, three surfaces</div></div>
+    <div class="st"><div class="v">Real-time</div><div class="l">Time · weather · scenarios</div></div>
+  </div>
+  <div class="ytwrap" id="ytwrap" onclick="if(this.dataset.on)return;this.dataset.on=1;var i=document.createElement('iframe');i.src='https://www.youtube-nocookie.com/embed/qNbnbMKXicQ?autoplay=1&rel=0&playsinline=1';i.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';i.allowFullscreen=true;i.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5';this.appendChild(i);var p=this.querySelector('.play');if(p)p.style.display='none';this.style.cursor='default';">
+    <img src="media/digital-twin/hero/035-dt-poster-full2.jpg" alt="Digital Twin showreel">
+    <div class="play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+  </div>
+</section>
+<div class="sec">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:8px">
+    <h2 style="font:300 34px Inter;letter-spacing:-.02em;color:var(--ink)">How we turn an idea into a package</h2>
+    <span style="font:300 14px Inter;color:var(--mut2)">Five steps from your model to a shipped application</span>
+  </div>
+  <div class="stage" id="stage">
+    <img src="media/digital-twin/steps/040-dt-step1.jpg" data-i="0" class="on" alt=""><img src="media/digital-twin/steps/041-dt-step2.jpg" data-i="1" alt=""><img src="media/digital-twin/steps/042-dt-step3.jpg" data-i="2" alt=""><img src="media/digital-twin/steps/043-dt-step4.jpg" data-i="3" alt=""><img src="media/digital-twin/steps/044-dt-step5.jpg" data-i="4" alt="">
+  </div>
+  <div class="stepcards" id="stepcards">
+    <div class="stepcard on" data-i="0"><div class="n">01</div><div class="t">We take 3D models in any format</div><div class="l">STEP 1</div><div class="bar"></div></div><div class="stepcard" data-i="1"><div class="n">02</div><div class="t">We build surroundings based on maps</div><div class="l">STEP 2</div><div class="bar"></div></div><div class="stepcard" data-i="2"><div class="n">03</div><div class="t">We set up realistic materials</div><div class="l">STEP 3</div><div class="bar"></div></div><div class="stepcard" data-i="3"><div class="n">04</div><div class="t">We add interface and controls</div><div class="l">STEP 4</div><div class="bar"></div></div><div class="stepcard" data-i="4"><div class="n">05</div><div class="t">We package the project into a Digital Twin application</div><div class="l">STEP 5</div><div class="bar"></div></div>
+  </div>
+</div>
+<div class="sec" style="padding-top:0">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:8px">
+    <h2 style="font:300 34px/1.1 Inter;letter-spacing:-.02em;color:var(--ink)">Application features</h2>
+    <span style="font:300 14px Inter;color:var(--mut2)">Hover any tile to see it in motion</span>
+  </div>
+  <div class="feat-grid">
+    <div class="feat big"><img src="media/digital-twin/features/047-feat-surroundings.jpg" alt=""><video src="media/digital-twin/features/091-feat-surroundings.mp4" muted loop playsinline preload="none"></video><span class="badge">01</span><span class="lab">Showcase infrastructure around the project</span></div>
+  </div>
+  <div style="background:linear-gradient(180deg,#12180f 0%,#232a26 100%);border:1px solid var(--line);border-top:none;border-radius:0 0 18px 18px;padding:26px 30px;margin-top:-6px">
+    <div class="eyebrow" style="margin-bottom:10px">CONTEXT MATTERS</div>
+    <p style="font:300 16px/1.65 Inter;color:var(--mut);max-width:820px;margin:0">Buyers commit to a place, not just a floor plan. We rebuild the real neighbourhood around your project — roads, parks, schools and the coastline — so a client can see how the development sits in the city before a single wall exists.</p>
+  </div>
+  <div class="featrow">
+    <div class="fmedia"><img src="media/digital-twin/features/050-feat-walking.jpg" alt=""><video src="media/digital-twin/features/094-feat-walking.mp4" muted loop playsinline preload="none"></video><span class="badge">02</span></div>
+    <div><div class="eyebrow" style="margin-bottom:12px">FIRST-PERSON MODE</div><h3 style="font:300 30px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px">Walk around as if you were there.</h3><p style="font:300 16px/1.65 Inter;color:var(--mut)">Buyers move through the scheme at eye level — no doubt about scale, layout or the feel of the space.</p></div>
+  </div>
+  <div class="featrow rev">
+    <div class="fmedia"><img src="media/shared/misc/046-feat-cinematic.jpg" alt=""><video src="media/shared/misc/090-feat-cinematic.mp4" muted loop playsinline preload="none"></video><span class="badge">03</span></div>
+    <div><div class="eyebrow" style="margin-bottom:12px">CINEMATICS & RENDERS</div><h3 style="font:300 30px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px">Every marketing asset from one model.</h3><p style="font:300 16px/1.65 Inter;color:var(--mut)">Films and stills come straight out of the twin — ship campaigns faster and stay perfectly on-brand.</p></div>
+  </div>
+  <div class="featrow">
+    <div class="fmedia"><img src="media/digital-twin/features/051-feat-weather.jpg" alt=""><video src="media/digital-twin/features/095-feat-weather.mp4" muted loop playsinline preload="none"></video><span class="badge">04</span></div>
+    <div><div class="eyebrow" style="margin-bottom:12px">TIME, SEASON & WEATHER</div><h3 style="font:300 30px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px">Change the world around the building.</h3><p style="font:300 16px/1.65 Inter;color:var(--mut)">Morning light, summer courtyard, winter facade — answer “what will it feel like?” on the spot.</p></div>
+  </div>
+  <div class="featrow rev">
+    <div class="fmedia"><img src="media/digital-twin/features/049-feat-views.jpg" alt=""><video src="media/digital-twin/features/093-feat-views.mp4" muted loop playsinline preload="none"></video><span class="badge">05</span></div>
+    <div><div class="eyebrow" style="margin-bottom:12px">VIEWS PER UNIT</div><h3 style="font:300 30px/1.15 Inter;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px">Prove the view before it exists.</h3><p style="font:300 16px/1.65 Inter;color:var(--mut)">Show the exact view characteristics of every apartment and justify premium pricing floor by floor.</p></div>
+  </div>
+  <div class="feat-grid" style="margin-top:40px">
+    <div class="feat big tall"><img src="media/digital-twin/features/048-feat-switching.jpg" alt=""><video src="media/digital-twin/features/092-feat-switching.mp4" muted loop playsinline preload="none"></video><span class="badge">06</span><span class="lab">Switch development scenarios</span></div>
+  </div>
+  <div style="background:linear-gradient(180deg,#12180f 0%,#232a26 100%);border:1px solid var(--line);border-top:none;border-radius:0 0 18px 18px;padding:26px 30px;margin-top:-6px">
+    <div class="eyebrow" style="margin-bottom:10px">DECIDE FASTER</div>
+    <p style="font:300 16px/1.65 Inter;color:var(--mut);max-width:820px;margin:0">Compare phases, layouts and massing options live in the same scene. Stakeholders see the trade-offs side by side, which turns long approval cycles and investor debates into a decision made in the room.</p>
+  </div>
+</div>
+<div class="sec" style="padding-top:0">
+  <div class="eyebrow" style="margin-bottom:6px">ONE TWIN, EVERY SURFACE</div>
+  <h2 style="font:300 34px/1.1 Inter;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px">The same model, delivered four ways</h2>
+  <div class="surf-tabs" id="surfTabs">
+    <div class="surf-tab on" data-i="0"><div class="tt">Digital Twin</div><div class="ts">Desktop application</div></div>
+    <div class="surf-tab" data-i="1"><div class="tt">Web Application</div><div class="ts">Any browser, any device</div></div>
+    <div class="surf-tab" data-i="2"><div class="tt">Table</div><div class="ts">Sales-office touchscreen</div></div>
+    <div class="surf-tab" data-i="3"><div class="tt">VR</div><div class="ts">Headset walkthrough</div></div>
+  </div>
+  <div id="surfPanels">
+    <div class="surf-panel on" data-i="0">
+      <div class="surf-hero"><div class="surf-media"><img src="media/shared/products/033-dt-laptop.png" style="object-position:center 68%" alt=""></div>
+      <div class="surf-info"><div class="eyebrow" style="margin-bottom:12px">DIGITAL TWIN · DESKTOP</div><h3 style="font:300 30px/1.15 Inter;color:#fff;margin-bottom:12px">Full-power presentation build</h3><p style="font:300 16px/1.6 Inter;color:rgba(255,255,255,.85)">A standalone desktop application with maximum visual fidelity — real-time lighting, weather and development scenarios. Built for the sales team's own machines and for high-stakes investor presentations.</p></div></div><div class="spectbl"><div class="sthead"><div class="hcell">Technical spec</div><div class="hcell">Development time</div><div class="hcell">Main audience</div><div class="hcell">Where it's used</div></div><div class="stbody"><div class="vcell">Standalone .exe · GPU-accelerated real-time engine · 4K/60fps</div><div class="vcell">4–6 weeks from your 3D model</div><div class="vcell">Sales &amp; marketing teams, investors</div><div class="vcell">Presentations, sales offices, investor meetings</div></div></div>
+    </div>
+    <div class="surf-panel" data-i="1">
+      <div class="surf-hero"><div class="surf-media"><img src="media/shared/products/045-dt-webapp.jpg" alt=""></div>
+      <div class="surf-info"><div class="eyebrow" style="margin-bottom:12px">WEB APPLICATION</div><h3 style="font:300 30px/1.15 Inter;color:#fff;margin-bottom:12px">The same world, sent as a link</h3><p style="font:300 16px/1.6 Inter;color:rgba(255,255,255,.85)">Buyers explore unit availability, balcony views and a 3D interior tour from any browser — no install. Send it to a client in another country and they see exactly what your visitors see.</p></div></div><div class="spectbl"><div class="sthead"><div class="hcell">Technical spec</div><div class="hcell">Development time</div><div class="hcell">Main audience</div><div class="hcell">Where it's used</div></div><div class="stbody"><div class="vcell">Browser-based (WebGL) · streamed 3D · CRM-linked inventory</div><div class="vcell">3–5 weeks after the desktop twin</div><div class="vcell">Remote &amp; international buyers, brokers</div><div class="vcell">Your website, email links, online listings</div></div></div>
+    </div>
+    <div class="surf-panel" data-i="2">
+      <div class="surf-hero"><div class="surf-media"><img src="media/shared/products/079-touch-table.jpg" alt=""></div>
+      <div class="surf-info"><div class="eyebrow" style="margin-bottom:12px">TABLE · TOUCHSCREEN</div><h3 style="font:300 30px/1.15 Inter;color:#fff;margin-bottom:12px">Built for the screen in the sales office</h3><p style="font:300 16px/1.6 Inter;color:rgba(255,255,255,.85)">A full-scale, touch-driven presentation of the twin your agents use to close deals on site. Same data as the web app, tuned for a large wall or table display.</p></div></div><div class="spectbl"><div class="sthead"><div class="hcell">Technical spec</div><div class="hcell">Development time</div><div class="hcell">Main audience</div><div class="hcell">Where it's used</div></div><div class="stbody"><div class="vcell">Multi-touch UI · large-format display · offline-safe</div><div class="vcell">4–6 weeks incl. hardware setup</div><div class="vcell">Walk-in buyers, on-site sales agents</div><div class="vcell">Sales offices, showrooms, exhibitions</div></div></div>
+    </div>
+    <div class="surf-panel" data-i="3">
+      <div class="surf-hero"><div class="surf-media"><img src="media/shared/products/081-vr.jpg" alt=""></div>
+      <div class="surf-info"><div class="eyebrow" style="margin-bottom:12px">VR · HEADSET</div><h3 style="font:300 30px/1.15 Inter;color:#fff;margin-bottom:12px">Step inside at true scale</h3><p style="font:300 16px/1.6 Inter;color:rgba(255,255,255,.85)">A room-scale VR walkthrough that lets buyers feel the real proportions of an apartment and its views before construction — the most convincing demo in the room.</p></div></div><div class="spectbl"><div class="sthead"><div class="hcell">Technical spec</div><div class="hcell">Development time</div><div class="hcell">Main audience</div><div class="hcell">Where it's used</div></div><div class="stbody"><div class="vcell">Standalone headset (Quest) · room-scale · 1:1 true scale</div><div class="vcell">5–7 weeks after the desktop twin</div><div class="vcell">High-intent buyers, premium clients</div><div class="vcell">Sales offices, launch events, roadshows</div></div></div>
+    </div>
+  </div>
+</div>
+<div class="sec"><div style="background:var(--panel2);border-radius:14px;padding:44px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap"><div><div style="font:300 14px Inter;color:var(--acc);margin-bottom:10px">Get in touch</div><h2 style="max-width:560px;font:300 38px/1.08 Inter;letter-spacing:-.025em;color:var(--ink)">We'd love to consult and develop your project together.</h2></div><a class="pill" href="contact.html">Contact us for a project estimate →</a></div></div><div class="sec" style="border-top:1px solid var(--line);color:var(--mut2);font:400 12px Inter;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px"><span>Immersive Solutions · Interactive visualisation for real estate</span><span>EN</span></div>
+<script>
+(function(){
+  var n=5,cur=0,timer=null;
+  var imgs=document.querySelectorAll('#stage img');
+  var cards=document.querySelectorAll('#stepcards .stepcard');
+  function go(i){
+    cur=i;
+    imgs.forEach(function(im){im.classList.toggle('on',+im.dataset.i===i);});
+    cards.forEach(function(c){c.classList.remove('on');});
+    var active=cards[i];
+    // restart progress bar animation
+    var bar=active.querySelector('.bar'); bar.style.animation='none'; void bar.offsetWidth; bar.style.animation='';
+    active.classList.add('on');
+  }
+  function next(){ go((cur+1)%n); }
+  function start(){ stop(); timer=setInterval(next,2400); }
+  function stop(){ if(timer){clearInterval(timer);timer=null;} }
+  cards.forEach(function(c){c.addEventListener('click',function(){ go(+c.dataset.i); start(); });});
+  go(0); start();
+})();
+document.querySelectorAll('.feat, .featrow .fmedia').forEach(function(f){
+  var vid=f.querySelector('video');
+  f.addEventListener('mouseenter',function(){ if(vid){ vid.currentTime=0; var p=vid.play(); if(p&&p.catch)p.catch(function(){}); } });
+  f.addEventListener('mouseleave',function(){ if(vid){ vid.pause(); } });
+});
+(function(){
+  var tabs=document.querySelectorAll('#surfTabs .surf-tab');
+  var panels=document.querySelectorAll('#surfPanels .surf-panel');
+  tabs.forEach(function(t){t.addEventListener('click',function(){
+    var i=t.dataset.i;
+    tabs.forEach(function(x){x.classList.toggle('on',x.dataset.i===i);});
+    panels.forEach(function(p){p.classList.toggle('on',p.dataset.i===i);});
+  });});
+})();
+</script>
+</div></div>
+<style>
+/* Apple-style scroll reveal: elements wait dimmed and slightly lower, then rise and brighten as they enter the viewport. */
+.rv{opacity:.15;transform:translateY(40px)}
+.rv.rv-media{transform:translateY(40px) scale(.96)}
+.rv-play{animation:rvIn 1.1s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:var(--rv-d,0ms)}
+.rv-play.rv-media{animation-name:rvMedia;animation-duration:1.3s}
+@keyframes rvIn{from{opacity:.15;transform:translateY(40px)}}
+@keyframes rvMedia{from{opacity:.15;transform:translateY(40px) scale(.96)}}
+</style>
+<script>
+(function () {
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var TEXT = '.sec h2, .sec h3, .sec .eyebrow, .sec p, .sec h2 + span, .sec .pill';
+  // On phones the step cards sit in a 2-column grid: reveal the grid as one block, otherwise
+  // the cards rise one by one at different heights and the last ones stay dimmed until scrolled to.
+  var phone = window.matchMedia('(max-width:600px)').matches;
+  var MEDIA = '.stage, ' + (phone ? '.stepcards' : '.stepcard') + ', .feat, .featrow .fmedia, #surfTabs, #surfPanels';
+  var els = [].slice.call(document.querySelectorAll(TEXT + ', ' + MEDIA)).filter(function (el) {
+    var panel = el.closest('#surfPanels'); // hidden tab panels never intersect: reveal the panel box as a whole
+    return !(panel && panel !== el);
+  });
+  var io = new IntersectionObserver(function (entries) {
+    var batch = entries.filter(function (e) { return e.isIntersecting; }).map(function (e) { return e.target; });
+    batch.sort(function (a, b) { return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1; });
+    batch.forEach(function (el, i) {
+      io.unobserve(el);
+      el.style.setProperty('--rv-d', Math.min(i, 6) * 90 + 'ms'); // stagger items that enter together
+      el.classList.remove('rv');
+      el.classList.add('rv-play');
+      el.addEventListener('animationend', function done(ev) {
+        if (ev.target !== el) return;
+        el.classList.remove('rv-play', 'rv-media'); el.style.removeProperty('--rv-d'); // back to the element's own styles
+        el.removeEventListener('animationend', done);
+      });
+    });
+  }, { rootMargin: phone ? '0px' : '0px 0px -10% 0px', threshold: phone ? 0.05 : 0 });
+  els.forEach(function (el) {
+    el.classList.add('rv');
+    if (el.matches(MEDIA)) el.classList.add('rv-media');
+    io.observe(el);
+  });
+})();
+</script>
+<!--mobile:js-->
+<script id="mobile-video">
+/* Mobile top bar: burger button that opens the section menu. */
+(function(){
+  var bar=document.querySelector('.topbar'), menu=bar&&bar.querySelector('.m');
+  if(!bar||!menu||bar.querySelector('.burger')) return;
+  menu.id=menu.id||'mobileMenu';
+  var btn=document.createElement('button');
+  btn.type='button'; btn.className='burger'; btn.setAttribute('aria-label','Menu'); btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-controls',menu.id);
+  btn.innerHTML='<span></span><span></span><span></span>';
+  bar.appendChild(btn);
+  function set(open){bar.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open));btn.setAttribute('aria-label',open?'Close menu':'Menu');}
+  btn.addEventListener('click',function(e){e.stopPropagation();set(!bar.classList.contains('open'));});
+  menu.addEventListener('click',function(e){if(e.target.closest('a'))set(false);});
+  document.addEventListener('click',function(e){if(bar.classList.contains('open')&&!bar.contains(e.target))set(false);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+})();
+/* Home on phones: stretch the hero panel so hero + trust strip fill exactly one screen. */
+(function(){
+  var v=document.getElementById('heroVideo'); if(!v||!matchMedia('(max-width:600px)').matches) return;
+  var hero=v.parentElement, trust=document.querySelector('.trust'), bar=document.querySelector('.topbar');
+  hero.classList.add('heroFill'); /* style attr gets rewritten by JS, so CSS targets .hero */
+  function fit(){ if(!matchMedia('(max-width:600px)').matches){hero.style.minHeight='';return;}
+    var h=innerHeight-(bar?bar.getBoundingClientRect().height:0)-(trust?trust.getBoundingClientRect().height:0)-4; hero.style.setProperty('min-height',Math.max(h,0)+'px','important'); }
+  fit(); addEventListener('resize',fit); addEventListener('orientationchange',fit);
+})();
+/* Swipeable rows (product tabs, partners): fade the edge that still has hidden content. */
+(function(){
+  [].forEach.call(document.querySelectorAll('.prodnav, .trust'),function(el){
+    function upd(){
+      var max=el.scrollWidth-el.clientWidth;
+      if(max<=2||!matchMedia('(max-width:600px)').matches){el.classList.remove('swipe-more','swipe-mid','swipe-end');return;}
+      el.classList.add('swipe-more');
+      el.classList.toggle('swipe-end',el.scrollLeft>=max-2);
+      el.classList.toggle('swipe-mid',el.scrollLeft>2&&el.scrollLeft<max-2);
+    }
+    el.addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd); upd();
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(upd);
+    // one gentle nudge the first time the row comes into view, so it reads as swipeable
+    if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;io.disconnect();
+      if(el.scrollWidth-el.clientWidth<=2||el.scrollLeft>0)return;
+      setTimeout(function(){el.scrollTo({left:48,behavior:'smooth'});setTimeout(function(){el.scrollTo({left:0,behavior:'smooth'});},450);},400);},{threshold:.9});io.observe(el);}
+  });
+})();
+/* Case pages: "All cases" pill hides while scrolling down and comes back on scroll up. */
+(function(){
+  var a=document.querySelector('a[href="cases.html"][style*="top:34px"]'); if(!a) return;
+  var last=scrollY, acc=0;
+  addEventListener('scroll',function(){
+    var y=scrollY, d=y-last; last=y;
+    if(!matchMedia('(max-width:600px)').matches){a.classList.remove('back-hidden');return;}
+    if(y<80){a.classList.remove('back-hidden');acc=0;return;}
+    acc=(d>0)===(acc>0)?acc+d:d;           // distance moved in the current direction
+    if(acc>24) a.classList.add('back-hidden');
+    else if(acc<-24) a.classList.remove('back-hidden');
+  },{passive:true});
+})();
+/* Tag the media lightbox overlay so the phone styles can target it. */
+[].forEach.call(document.querySelectorAll('body > div'),function(d){ if(d.style.position==='fixed'&&d.style.zIndex==='9999'&&d.querySelector('button[aria-label="close"]')) d.classList.add('lb-ov'); });
+/* Touch screens have no hover: play muted tile videos while they are on screen. */
+(function(){
+  if(!window.matchMedia||!matchMedia('(hover: none)').matches||!('IntersectionObserver' in window)) return;
+  var vids=[].slice.call(document.querySelectorAll('video')).filter(function(v){return v.id!=='heroVideo'&&(v.muted||v.hasAttribute('muted'));});
+  if(!vids.length) return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;
+    if(e.isIntersecting){v.preload='auto';v.style.opacity=1;var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    else v.pause();});},{threshold:.5});
+  vids.forEach(function(v){io.observe(v);});
+})();
+/* Before/after sliders on phones: the frame takes the picture's own proportions, so nothing is cropped. */
+(function(){
+  if(!matchMedia('(max-width:600px)').matches) return;
+  document.querySelectorAll('.devrow>[id$="Wrap"]').forEach(function(w){
+    var img=w.querySelector('img'); if(!img) return;
+    function fit(){ if(img.naturalWidth) w.style.setProperty('aspect-ratio',img.naturalWidth+' / '+img.naturalHeight,'important'); }
+    if(img.complete) fit(); else img.addEventListener('load',fit);
+  });
+})();
+</script>
+<!--mobile:js-end-->
+</body></html>

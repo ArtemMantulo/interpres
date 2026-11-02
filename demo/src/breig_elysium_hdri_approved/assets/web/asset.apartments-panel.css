@@ -1,0 +1,166 @@
+#apartments-info-panel,
+.apartments-info-panel-clone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    --apartments-panel-x: 50vw;
+    --apartments-panel-y: 50vh;
+    --apartments-panel-drag-y: 0px;
+    --apartments-panel-opacity: 1;
+    --apartments-panel-scale: 1;
+    width: 320px;
+    height: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    -webkit-backdrop-filter: blur(68px);
+    backdrop-filter: blur(68px);
+    background-color: rgba(51, 51, 51, 0.4);
+    pointer-events: none;
+    transform: translate3d(calc(var(--apartments-panel-x) - 8px), var(--apartments-panel-y), 0)
+        translate(-50%, -50%);
+    clip-path: inset(0 100% 0 0 round 24px);
+    transition:
+        transform 0.24s ease,
+        clip-path 0.24s ease;
+    will-change: transform, clip-path;
+    z-index: 0;
+}
+
+#apartments-info-panel .glass-panel.border-shadow,
+.apartments-info-panel-clone .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+#apartments-info-panel .amenities-line,
+.apartments-info-panel-clone .amenities-line {
+    padding: 1px;
+    border-radius: 24px;
+    background: var(--gradient-line);
+}
+
+#apartments-info-panel .panel-container,
+.apartments-info-panel-clone .panel-container {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: normal;
+    gap: 12px;
+    padding: 16px;
+}
+
+#apartments-info-panel.visible {
+    pointer-events: auto;
+    transform: translate3d(var(--apartments-panel-x), var(--apartments-panel-y), 0)
+        translate(-50%, -50%) translateY(var(--apartments-panel-drag-y))
+        scale(var(--apartments-panel-scale));
+    opacity: var(--apartments-panel-opacity);
+    clip-path: inset(0 0 0 0 round 24px);
+    transition: clip-path 0.24s ease;
+    display: flex;
+}
+
+.apartments-info-panel-clone {
+    pointer-events: none !important;
+    z-index: 0;
+}
+
+.apartments-info-panel-clone.visible {
+    transform: translate3d(var(--apartments-panel-x), var(--apartments-panel-y), 0)
+        translate(-50%, -50%) translateY(var(--apartments-panel-drag-y))
+        scale(var(--apartments-panel-scale));
+    opacity: var(--apartments-panel-opacity);
+    clip-path: inset(0 0 0 0 round 24px);
+    display: flex;
+}
+
+.apartment-panel-close {
+    top: 12px;
+    right: 12px;
+}
+
+.apartment-panel-data {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 12px;
+    line-height: 1;
+}
+
+.apartment-panel-value {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.apartment-panel-separator {
+    width: 1px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.26);
+}
+
+.apartment-bed-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    flex: 0 0 auto;
+    background: url('../../assets/images/icons/ui_bed.png') no-repeat center / contain;
+}
+
+#apartments-info-panel.is-floor-animating {
+    pointer-events: none;
+}
+
+#apartments-info-panel.is-content-swapping .panel-container {
+    animation: apartments-panel-content-swap 0.28s ease;
+}
+
+@keyframes apartments-panel-content-swap {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.apartment-panel-visit {
+    width: 100%;
+    height: 40px;
+    border: 0;
+    border-radius: 999px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.96);
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    transition: background-color 0.2s ease;
+}
+
+.apartment-panel-visit:hover,
+.apartment-panel-visit:focus-visible {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+@media screen and (max-height: 812px) and (orientation: portrait),
+    screen and (max-width: 480px) and (orientation: portrait),
+    screen and (max-aspect-ratio: 3/4) and (orientation: portrait) {
+    #apartments-info-panel,
+    .apartments-info-panel-clone {
+        width: min(340px, calc(100vw - 24px));
+    }
+}

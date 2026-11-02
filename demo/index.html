@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaussian Splats Viewer</title>
+    <link rel="stylesheet" crossorigin href="./assets/main-CEbNBvh5.css" />
+    <style>
+      /* Password Protection Styles */
+      .password-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .password-overlay.hidden {
+        display: none;
+      }
+
+      .password-modal {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: slideUp 0.4s ease;
+      }
+
+      .password-modal h2 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+        color: #333;
+      }
+
+      .password-modal p {
+        margin: 0 0 30px 0;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .password-input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+        outline: none;
+      }
+
+      .password-input:focus {
+        border-color: #4caf50;
+      }
+
+      .password-input.error {
+        border-color: #f44336;
+        animation: shake 0.5s ease;
+      }
+
+      .password-button {
+        width: 100%;
+        padding: 15px 20px;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .password-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .password-button:active {
+        transform: translateY(0);
+      }
+
+      .error-message {
+        color: #f44336;
+        font-size: 14px;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .error-message.show {
+        opacity: 1;
+      }
+
+      .checkout-link {
+        margin-top: 16px;
+        margin-bottom: -10px;
+        font-size: 13px;
+        color: #999;
+        text-align: center;
+      }
+
+      .checkout-link a {
+        display: block;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .checkout-link a:hover {
+        text-decoration: underline;
+      }
+
+      .content-blur {
+        filter: blur(8px);
+        pointer-events: none;
+        user-select: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Password Protection Overlay -->
+    <div id="passwordOverlay" class="password-overlay">
+      <div class="password-modal">
+        <h2>🔒 Protected Access</h2>
+        <p>Please enter the password to continue</p>
+        <input
+          type="password"
+          id="passwordInput"
+          class="password-input"
+          placeholder="Enter password"
+          autocomplete="off"
+        />
+        <button id="passwordButton" class="password-button">Unlock</button>
+        <div id="errorMessage" class="error-message">
+          Incorrect password. Try again.
+        </div>
+        <p class="checkout-link">Check out more at our website<br><a href="https://interpres.cc/" target="_blank">Interpres.cc</a></p>
+      </div>
+    </div>
+
+    <!-- SVG Definitions -->
+    <svg style="display: none">
+      <defs>
+        <symbol id="arrow-icon" viewBox="0 0 24 24">
+          <path
+            d="M7 17L17 7M17 7H7M17 7V17"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div id="container" class="content-blur"></div>
+
+    <script>
+      // Password Protection
+      const CORRECT_PASSWORD = "Ourbestproducts";
+      const passwordOverlay = document.getElementById("passwordOverlay");
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordButton = document.getElementById("passwordButton");
+      const errorMessage = document.getElementById("errorMessage");
+      const container = document.getElementById("container");
+
+      // Check if password was already entered in this session
+      const isAuthenticated =
+        sessionStorage.getItem("authenticated") === "true";
+      if (isAuthenticated) {
+        unlockPage();
+      }
+
+      // Focus on input when page loads
+      passwordInput.focus();
+
+      function checkPassword() {
+        const enteredPassword = passwordInput.value;
+
+        if (enteredPassword === CORRECT_PASSWORD) {
+          sessionStorage.setItem("authenticated", "true");
+          unlockPage();
+        } else {
+          // Show error
+          passwordInput.classList.add("error");
+          errorMessage.classList.add("show");
+
+          // Clear error after animation
+          setTimeout(() => {
+            passwordInput.classList.remove("error");
+            errorMessage.classList.remove("show");
+          }, 2000);
+
+          // Clear input
+          passwordInput.value = "";
+          passwordInput.focus();
+        }
+      }
+
+      function unlockPage() {
+        passwordOverlay.classList.add("hidden");
+        container.classList.remove("content-blur");
+      }
+
+      // Button click
+      passwordButton.addEventListener("click", checkPassword);
+
+      // Enter key press
+      passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          checkPassword();
+        }
+      });
+
+      const projects = [
+        {
+          title: "Visualisation",
+          url: "src/project2/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Digital Twin",
+          url: "src/breigproject/current/generalviewentrance/index.html",
+          image: "./assets/breig/Initial_picture.webp",
+        },
+        {
+          title: "3D Widget",
+          url: "src/breigproject/current/closeview/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Web Catalog",
+          url: "src/breigproject/future/generalview/index.html",
+          image: "./assets/breig/Breig_shot_05_v01.png",
+        },
+        {
+          title: "Future Close View",
+          url: "src/breigproject/future/closeview/index.html",
+          image: "./assets/breig/pool_chill_area_photo.png",
+        },
+        {
+          title: "Atrium MVP",
+          url: "src/project4/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Magnum Project",
+          url: "src/magnum/index.html",
+          image: "./assets/second-BBil4YOb.png",
+        },
+        {
+          title: "Test Atrium",
+          url: "src/test_atrium/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "Test Breig",
+          url: "src/test_breig/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Project 5",
+          url: "src/project5/index.html",
+          image: "./assets/second-BBil4YOb.png",
+        },
+        {
+          title: "Drone Scan",
+          url: "src/test_dron_scan/index.html",
+          image: "./assets/unnamed.jpg",
+        },
+        {
+          title: "Interior",
+          url: "src/interior/index.html",
+          image: "./assets/project1-WAM7J1zO.jpg",
+        },
+        {
+          title: "UDS Project",
+          url: "src/UDS_project/index.html",
+          image: "src/UDS_project/assets/images/pictures/pic_startscreen.jpg",
+        },
+        {
+          title: "Nuanu Project",
+          url: "src/nuanu/index.html",
+          image: "src/nuanu/assets/icons/bg_default.jpg",
+        },
+        {
+          title: "Breig Elysium",
+          url: "src/breig_elysium/index.html",
+          image: "src/breig_elysium/assets/images/pictures/pic_startscreen.jpg",
+        },
+        {
+          title: "Room Project",
+          url: "src/room/index.html",
+          image: "src/room/assets/icons/bg_default.jpg",
+        },
+        {
+          title: "UDS AR",
+          url: "src/uds_ar/index.html",
+          image: "src/uds_ar/assets/images/pictures/pic_startscreen.jpg",
+        },
+        {
+          title: "Breig Elysium HDRI",
+          url: "src/breig_elysium_hdri/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Breig Elysium HDRI Approved",
+          url: "src/breig_elysium_hdri_approved/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+        {
+          title: "Breig Elysium HDRI Test",
+          url: "src/breig_elysium_hdri_test/index.html",
+          image: "./assets/breig/Breig_shot_04_v01.webp",
+        },
+      ];
+
+      const defaultImage = "./assets/second-BBil4YOb.png";
+
+      projects.forEach((project) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <a href="${project.url}">
+            <div class="card-image" style="background-image: url('${
+              project.image || defaultImage
+            }')">
+              <h3 class="card-title">${project.title}</h3>
+              <div class="card-arrow">
+                <svg width="24" height="24" fill="none">
+                  <use href="#arrow-icon" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        `;
+        container.appendChild(card);
+      });
+    </script>
+  </body>
+</html>

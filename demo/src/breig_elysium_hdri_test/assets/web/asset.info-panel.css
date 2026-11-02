@@ -1,0 +1,192 @@
+#amenities-info-panel {
+    position: fixed;
+    top: 88px;
+    left: 50%;
+    width: 300px;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    pointer-events: none;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+#amenities-info-panel > .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    background-color: var(--glass-bg-medium);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    clip-path: inset(0 100% 0 0 round 24px);
+    transition: clip-path 0.24s ease;
+}
+
+#amenities-info-panel > .glass-panel.border-shadow .amenities-line {
+    padding: 1px;
+    border-radius: var(--radius-lg);
+    background: var(--gradient-line);
+}
+
+#amenities-info-panel .panel-container {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: normal;
+    gap: 12px;
+    padding: 16px;
+    clip-path: inset(0 100% 0 0 round 24px);
+    transition: clip-path 0.24s ease;
+}
+
+.amenities-info-panel-nav {
+    position: absolute;
+    top: 50%;
+    width: 28px;
+    height: 215px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    transform: translateY(-50%);
+    transition: none;
+    z-index: 3;
+    pointer-events: auto;
+    overflow: visible;
+}
+
+.amenities-info-panel-nav:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+.amenities-info-panel-nav:hover,
+.amenities-info-panel-nav:focus-visible,
+.amenities-info-panel-nav:active {
+    background-color: transparent;
+    outline: none;
+}
+
+.amenities-info-panel-nav-prev {
+    left: -27px;
+    border-radius: 16px 0 0 16px;
+    overflow: hidden;
+}
+
+.amenities-info-panel-nav-next {
+    right: -27px;
+    left: auto;
+    border-radius: 0 16px 16px 0;
+    overflow: hidden;
+}
+
+.amenities-info-panel-nav .glass-panel.border-shadow {
+    border: none;
+    filter: none;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border-radius: 0;
+    background-color: var(--glass-bg-medium);
+}
+
+.amenities-info-panel-nav-prev .glass-panel.border-shadow {
+    border-radius: 16px 0 0 16px;
+}
+
+.amenities-info-panel-nav-next .glass-panel.border-shadow {
+    border-radius: 0 16px 16px 0;
+}
+
+.amenities-info-panel-nav-arrow {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    z-index: 2;
+    border: none;
+}
+
+.amenities-info-panel-nav-prev .amenities-info-panel-nav-arrow {
+    background-image: url('../../assets/images/icons/ui_arrow_left.png');
+}
+
+.amenities-info-panel-nav-next .amenities-info-panel-nav-arrow {
+    background-image: url('../../assets/images/icons/ui_arrow_right.png');
+}
+
+.panel-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.16);
+    background-image: url('../../assets/images/icons/ui_panel_close.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 11px 11px;
+    transition: background-color 0.2s ease;
+    z-index: 3;
+}
+
+.panel-close:hover,
+.panel-close:focus-visible {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.panel-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin: 0;
+    border-radius: 16px;
+    display: block;
+}
+
+.panel-title {
+    padding: 0 30px 0 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.panel-description {
+    padding: 0px;
+    font-size: 12px;
+    font-weight: 400;
+    color: white;
+}
+
+.panel-line {
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
+    flex: 0 0 auto;
+}
+
+#amenities-info-panel.visible > .glass-panel.border-shadow {
+    pointer-events: auto;
+    clip-path: inset(0 0 0 0 round 24px);
+}
+
+#amenities-info-panel.visible > .panel-container {
+    pointer-events: auto;
+    clip-path: inset(0 0 0 0 round 24px);
+}

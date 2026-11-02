@@ -1,0 +1,261 @@
+#apartments-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+#floor-panel {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1;
+    transform: none;
+}
+
+#floor-panel > .glass-panel {
+    display: none;
+}
+
+#floor-panel .panel-container {
+    display: contents;
+}
+
+.floor-panel-label {
+    display: none;
+}
+
+.floor-panel-scroll {
+    display: contents;
+}
+
+.floor-panel-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.floor-panel-item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: none;
+    pointer-events: auto;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background-color: var(--glass-bg-dark);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
+    font-family: 'Inter', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+        width 0.24s ease,
+        margin-left 0.24s ease,
+        background-color 0.2s ease;
+}
+
+.floor-panel-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.0001) 33%,
+        rgba(255, 255, 255, 0.0001) 66%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.floor-panel-item-number {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    color: var(--text-primary);
+    transition:
+        opacity 0.2s ease,
+        transform 0.24s ease;
+    pointer-events: none;
+}
+
+.floor-panel-item-label {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    transform: translateX(-4px);
+    color: rgba(255, 255, 255, 0.95);
+    transition:
+        opacity 0.2s ease,
+        transform 0.24s ease;
+    padding: 0 8px;
+    pointer-events: none;
+}
+
+.floor-panel-item:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.floor-panel-item:focus-visible,
+.floor-panel-item.active {
+    width: 80px;
+    /* Grow 20px to each side instead of only to the right, so the "Floor N" pill stays
+       centred on the same axis as the 40px number circles (all share one left edge). */
+    margin-left: -20px;
+    background-color: rgba(36, 36, 36, 0.48);
+}
+
+/* Portrait mobile: the column is pinned to the screen's left edge, keep growing rightwards. */
+@media screen and (pointer: coarse) and (max-width: 767px) {
+    .floor-panel-item:focus-visible,
+    .floor-panel-item.active {
+        margin-left: 0;
+    }
+}
+
+.floor-panel-item:focus-visible .floor-panel-item-label,
+.floor-panel-item.active .floor-panel-item-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.floor-panel-item:focus-visible .floor-panel-item-number,
+.floor-panel-item.active .floor-panel-item-number {
+    opacity: 0;
+    transform: translateX(-4px);
+}
+
+
+/* Apartment pin looks and behaves like the amenity pins: an icon circle whose label
+   slides out on hover/focus (sizes kept in sync with asset.amenities.css). */
+.apartment-pin {
+    position: absolute;
+    height: 32px;
+    width: max-content;
+    overflow: visible;
+    display: flex;
+    pointer-events: auto;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+}
+
+.apartment-pin .glass-panel {
+    background-color: rgba(28, 28, 28, 0.4);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    z-index: 0;
+}
+
+.apartment-pin .border-shadow {
+    border: none;
+    filter: none;
+    border-radius: var(--radius-pill);
+}
+
+.apartment-pin .amenities-line {
+    padding: 1px;
+    border-radius: var(--radius-pill);
+    background: var(--gradient-line);
+}
+
+.apartment-pin .panel-container {
+    position: relative;
+    height: 100%;
+    gap: 0;
+    padding: 0;
+    align-items: center;
+    transition:
+        gap 0.8s ease,
+        padding 0.8s ease;
+    z-index: 2;
+}
+
+.apartment-pin-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    padding: 8px;
+    object-fit: contain;
+    display: block;
+    align-self: center;
+    flex: 0 0 auto;
+}
+
+.apartment-pin-text {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-right: 0;
+    opacity: 0;
+    transform: translateX(-6px);
+    color: white;
+    font-size: 14px;
+    line-height: 1;
+    transition:
+        max-width 0.48s ease,
+        padding-right 0.48s ease,
+        opacity 0.36s ease,
+        transform 0.48s ease;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.apartment-pin:hover:not(.selected-for-info) .panel-container,
+.apartment-pin.expanded .panel-container,
+.apartment-pin:focus-visible:not(.selected-for-info) .panel-container {
+    gap: 0px;
+    padding: 0 4px 0 0;
+}
+
+.apartment-pin:hover:not(.selected-for-info) .apartment-pin-text,
+.apartment-pin.expanded .apartment-pin-text,
+.apartment-pin:focus-visible:not(.selected-for-info) .apartment-pin-text {
+    max-width: min(380px, calc(100vw - 120px));
+    padding-right: 6px;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.apartment-pin.selected-for-info .glass-panel {
+    background-color: rgba(40, 40, 40, 0.46);
+}
+
+.apartment-pin .glass-panel,
+.apartment-pin .panel-container {
+    pointer-events: none;
+}
